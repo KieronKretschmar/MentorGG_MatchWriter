@@ -1,0 +1,16 @@
+﻿using System;
+using System.Collections.Generic;
+
+namespace Entities
+{
+    public partial class BombExplosion
+    {
+        public long MatchId { get; set; }
+        public short Round { get; set; }
+        public int Time { get; set; }
+        public int Tick { get; set; }
+
+        public MatchStats Match { get; set; }
+        public RoundStats RoundStats { get; set; }
+    }
+}
