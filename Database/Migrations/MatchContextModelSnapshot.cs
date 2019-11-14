@@ -39,18 +39,14 @@ namespace Database.Migrations
 
                     b.HasKey("MatchId", "Round");
 
-                    b.HasIndex("MatchId")
-                        .HasName("IX_FK_BombDefused_MatchStats");
+                    b.HasIndex("MatchId");
 
-                    b.HasIndex("MatchId", "PlayerId")
-                        .HasName("IX_FK_BombDefused_PlayerMatchStats");
+                    b.HasIndex("MatchId", "PlayerId");
 
                     b.HasIndex("MatchId", "Round")
-                        .IsUnique()
-                        .HasName("IX_FK_BombDefused_RoundStats");
+                        .IsUnique();
 
-                    b.HasIndex("MatchId", "Round", "PlayerId")
-                        .HasName("IX_FK_BombDefused_PlayerRoundStats");
+                    b.HasIndex("MatchId", "Round", "PlayerId");
 
                     b.ToTable("BombDefused");
                 });
@@ -71,12 +67,10 @@ namespace Database.Migrations
 
                     b.HasKey("MatchId", "Round");
 
-                    b.HasIndex("MatchId")
-                        .HasName("IX_FK_BombExplosion_MatchStats");
+                    b.HasIndex("MatchId");
 
                     b.HasIndex("MatchId", "Round")
-                        .IsUnique()
-                        .HasName("IX_FK_BombExplosion_RoundStats");
+                        .IsUnique();
 
                     b.ToTable("BombExplosion");
                 });
@@ -131,90 +125,6 @@ namespace Database.Migrations
                         .HasName("IX_FK_BombPlant_PlayerRoundStats");
 
                     b.ToTable("BombPlant");
-                });
-
-            modelBuilder.Entity("Entities.BombPolygonPoint", b =>
-                {
-                    b.Property<int>("ZoneId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("PointId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Map")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
-
-                    b.Property<double>("Xingame")
-                        .HasColumnName("XIngame")
-                        .HasColumnType("double");
-
-                    b.Property<int>("Xpixel")
-                        .HasColumnName("XPixel")
-                        .HasColumnType("int");
-
-                    b.Property<double>("Yingame")
-                        .HasColumnName("YIngame")
-                        .HasColumnType("double");
-
-                    b.Property<int>("Ypixel")
-                        .HasColumnName("YPixel")
-                        .HasColumnType("int");
-
-                    b.HasKey("ZoneId", "PointId");
-
-                    b.HasIndex("ZoneId")
-                        .HasName("IX_FK__BombPolygonPoint__BombZone");
-
-                    b.ToTable("_BombPolygonPoint");
-                });
-
-            modelBuilder.Entity("Entities.BombZone", b =>
-                {
-                    b.Property<int>("ZoneId")
-                        .HasColumnType("int");
-
-                    b.Property<double>("CenterXingame")
-                        .HasColumnName("CenterXIngame")
-                        .HasColumnType("double");
-
-                    b.Property<int>("CenterXpixel")
-                        .HasColumnName("CenterXPixel")
-                        .HasColumnType("int");
-
-                    b.Property<double>("CenterYingame")
-                        .HasColumnName("CenterYIngame")
-                        .HasColumnType("double");
-
-                    b.Property<int>("CenterYpixel")
-                        .HasColumnName("CenterYPixel")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Map")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
-
-                    b.Property<int>("ParentZoneId")
-                        .HasColumnType("int");
-
-                    b.Property<byte>("Team")
-                        .HasColumnType("tinyint unsigned");
-
-                    b.Property<double?>("Zmax")
-                        .HasColumnName("ZMax")
-                        .HasColumnType("double");
-
-                    b.Property<double?>("Zmin")
-                        .HasColumnName("ZMin")
-                        .HasColumnType("double");
-
-                    b.Property<int>("ZoneDepth")
-                        .HasColumnType("int");
-
-                    b.HasKey("ZoneId");
-
-                    b.ToTable("_BombZone");
                 });
 
             modelBuilder.Entity("Entities.BotTakeOver", b =>
@@ -475,276 +385,6 @@ namespace Database.Migrations
                     b.ToTable("Decoy");
                 });
 
-            modelBuilder.Entity("Entities.DemoStats", b =>
-                {
-                    b.Property<long>("DemoId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    b.Property<short>("Attempts")
-                        .HasColumnType("smallint");
-
-                    b.Property<DateTime>("DemoAnalyzerVersion")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime")
-                        .HasDefaultValueSql("('1900-01-01 00:00:00')");
-
-                    b.Property<string>("DemoFileHashMd5")
-                        .IsRequired()
-                        .ValueGeneratedOnAdd()
-                        .HasColumnName("DemoFileHashMD5")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4")
-                        .HasDefaultValueSql("('')");
-
-                    b.Property<string>("DemoFileName")
-                        .IsRequired()
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("longtext CHARACTER SET utf8mb4")
-                        .HasDefaultValueSql("('')");
-
-                    b.Property<string>("DemoFilePath")
-                        .IsRequired()
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("longtext CHARACTER SET utf8mb4")
-                        .HasDefaultValueSql("('')");
-
-                    b.Property<string>("DemoUrl")
-                        .IsRequired()
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("longtext CHARACTER SET utf8mb4")
-                        .HasDefaultValueSql("('')");
-
-                    b.Property<string>("FaceItMatchId")
-                        .IsRequired()
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("longtext CHARACTER SET utf8mb4")
-                        .HasDefaultValueSql("('')");
-
-                    b.Property<DateTime>("MatchDate")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime")
-                        .HasDefaultValueSql("(getdate())");
-
-                    b.Property<long?>("MatchId")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime>("PyAnalyzerVersion")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime")
-                        .HasDefaultValueSql("('1900-01-01 00:00:00')");
-
-                    b.Property<string>("Source")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
-
-                    b.Property<short>("Status")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("UploadType")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("smallint")
-                        .HasDefaultValueSql("((-1))");
-
-                    b.Property<long>("UploadedBy")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasDefaultValueSql("((-1))");
-
-                    b.HasKey("DemoId");
-
-                    b.ToTable("DemoStats");
-                });
-
-            modelBuilder.Entity("Entities.Equipment", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnName("ID")
-                        .HasColumnType("bigint");
-
-                    b.Property<double>("Bullets")
-                        .HasColumnType("double");
-
-                    b.Property<int>("ClipSize")
-                        .HasColumnType("int");
-
-                    b.Property<double>("CycleTime")
-                        .HasColumnType("double");
-
-                    b.Property<double>("CycleTimeAlt")
-                        .HasColumnType("double");
-
-                    b.Property<double>("CycletimeBurst")
-                        .HasColumnType("double");
-
-                    b.Property<int>("Damage")
-                        .HasColumnType("int");
-
-                    b.Property<string>("DisplayName")
-                        .IsRequired()
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("longtext CHARACTER SET utf8mb4")
-                        .HasDefaultValueSql("('')");
-
-                    b.Property<double>("FlinchVelocityModifierLarge")
-                        .HasColumnType("double");
-
-                    b.Property<double>("FlinchVelocityModifierSmall")
-                        .HasColumnType("double");
-
-                    b.Property<double>("FullAuto")
-                        .HasColumnType("double");
-
-                    b.Property<string>("InGameName")
-                        .IsRequired()
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("longtext CHARACTER SET utf8mb4")
-                        .HasDefaultValueSql("('')");
-
-                    b.Property<double>("InaccuracyCrouch")
-                        .HasColumnType("double");
-
-                    b.Property<double>("InaccuracyCrouchAlt")
-                        .HasColumnType("double");
-
-                    b.Property<double>("InaccuracyFire")
-                        .HasColumnType("double");
-
-                    b.Property<double>("InaccuracyFireAlt")
-                        .HasColumnType("double");
-
-                    b.Property<double>("InaccuracyJump")
-                        .HasColumnType("double");
-
-                    b.Property<double>("InaccuracyJumpAlt")
-                        .HasColumnType("double");
-
-                    b.Property<double>("InaccuracyJumpIntial")
-                        .HasColumnType("double");
-
-                    b.Property<double>("InaccuracyLadder")
-                        .HasColumnType("double");
-
-                    b.Property<double>("InaccuracyLadderAlt")
-                        .HasColumnType("double");
-
-                    b.Property<double>("InaccuracyLand")
-                        .HasColumnType("double");
-
-                    b.Property<double>("InaccuracyLandAlt")
-                        .HasColumnType("double");
-
-                    b.Property<double>("InaccuracyMove")
-                        .HasColumnType("double");
-
-                    b.Property<double>("InaccuracyMoveAlt")
-                        .HasColumnType("double");
-
-                    b.Property<double>("InaccuracyStand")
-                        .HasColumnType("double");
-
-                    b.Property<double>("InaccuracyStandAlt")
-                        .HasColumnType("double");
-
-                    b.Property<int>("KillAward")
-                        .HasColumnType("int");
-
-                    b.Property<int>("MaxPlayerSpeed")
-                        .HasColumnType("int");
-
-                    b.Property<double>("MaxPlayerSpeedAlt")
-                        .HasColumnType("double");
-
-                    b.Property<double>("Penetration")
-                        .HasColumnType("double");
-
-                    b.Property<int>("Price")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Range")
-                        .HasColumnType("int");
-
-                    b.Property<double>("RangeModifier")
-                        .HasColumnType("double");
-
-                    b.Property<double>("RecoilAngleVariance")
-                        .HasColumnType("double");
-
-                    b.Property<double>("RecoilAngleVarianceAlt")
-                        .HasColumnType("double");
-
-                    b.Property<double>("RecoilMagnitude")
-                        .HasColumnType("double");
-
-                    b.Property<double>("RecoilMagnitudeAlt")
-                        .HasColumnType("double");
-
-                    b.Property<double>("RecoilMagnitudeVariance")
-                        .HasColumnType("double");
-
-                    b.Property<double>("RecoilMagnitudeVarianceAlt")
-                        .HasColumnType("double");
-
-                    b.Property<double>("RecoveryTimeCrouch")
-                        .HasColumnType("double");
-
-                    b.Property<double>("RecoveryTimeCrouchFinal")
-                        .HasColumnType("double");
-
-                    b.Property<double>("RecoveryTimeStand")
-                        .HasColumnType("double");
-
-                    b.Property<double>("RecoveryTimeStandFinal")
-                        .HasColumnType("double");
-
-                    b.Property<string>("Source")
-                        .IsRequired()
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("longtext CHARACTER SET utf8mb4")
-                        .HasDefaultValueSql("('')");
-
-                    b.Property<double>("Spread")
-                        .HasColumnType("double");
-
-                    b.Property<double>("SpreadAlt")
-                        .HasColumnType("double");
-
-                    b.Property<DateTime>("StartDate")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime")
-                        .HasDefaultValueSql("(getdate())");
-
-                    b.Property<double>("TimeInbetweenBurstShots")
-                        .HasColumnType("double");
-
-                    b.Property<double>("TracerFrequency")
-                        .HasColumnType("double");
-
-                    b.Property<double>("TracerFrequencyAlt")
-                        .HasColumnType("double");
-
-                    b.Property<short>("Type")
-                        .HasColumnType("smallint");
-
-                    b.Property<string>("WeaponClass")
-                        .IsRequired()
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("longtext CHARACTER SET utf8mb4")
-                        .HasDefaultValueSql("('')");
-
-                    b.Property<double>("WeaporArmorRatio")
-                        .HasColumnType("double");
-
-                    b.Property<double>("ZoomFov")
-                        .HasColumnType("double");
-
-                    b.Property<double>("ZoomFovAlt")
-                        .HasColumnType("double");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Equipment");
-                });
-
             modelBuilder.Entity("Entities.FireNade", b =>
                 {
                     b.Property<long>("MatchId")
@@ -823,90 +463,6 @@ namespace Database.Migrations
                     b.ToTable("FireNade");
                 });
 
-            modelBuilder.Entity("Entities.FireNadePolygonPoint", b =>
-                {
-                    b.Property<int>("ZoneId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("PointId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Map")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
-
-                    b.Property<double>("Xingame")
-                        .HasColumnName("XIngame")
-                        .HasColumnType("double");
-
-                    b.Property<int>("Xpixel")
-                        .HasColumnName("XPixel")
-                        .HasColumnType("int");
-
-                    b.Property<double>("Yingame")
-                        .HasColumnName("YIngame")
-                        .HasColumnType("double");
-
-                    b.Property<int>("Ypixel")
-                        .HasColumnName("YPixel")
-                        .HasColumnType("int");
-
-                    b.HasKey("ZoneId", "PointId");
-
-                    b.HasIndex("ZoneId")
-                        .HasName("IX_FK__FireNadePolygonPoint__FireNadeZone");
-
-                    b.ToTable("_FireNadePolygonPoint");
-                });
-
-            modelBuilder.Entity("Entities.FireNadeZone", b =>
-                {
-                    b.Property<int>("ZoneId")
-                        .HasColumnType("int");
-
-                    b.Property<double>("CenterXingame")
-                        .HasColumnName("CenterXIngame")
-                        .HasColumnType("double");
-
-                    b.Property<int>("CenterXpixel")
-                        .HasColumnName("CenterXPixel")
-                        .HasColumnType("int");
-
-                    b.Property<double>("CenterYingame")
-                        .HasColumnName("CenterYIngame")
-                        .HasColumnType("double");
-
-                    b.Property<int>("CenterYpixel")
-                        .HasColumnName("CenterYPixel")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Map")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
-
-                    b.Property<int>("ParentZoneId")
-                        .HasColumnType("int");
-
-                    b.Property<byte>("Team")
-                        .HasColumnType("tinyint unsigned");
-
-                    b.Property<double?>("Zmax")
-                        .HasColumnName("ZMax")
-                        .HasColumnType("double");
-
-                    b.Property<double?>("Zmin")
-                        .HasColumnName("ZMin")
-                        .HasColumnType("double");
-
-                    b.Property<int>("ZoneDepth")
-                        .HasColumnType("int");
-
-                    b.HasKey("ZoneId");
-
-                    b.ToTable("_FireNadeZone");
-                });
-
             modelBuilder.Entity("Entities.Flash", b =>
                 {
                     b.Property<long>("MatchId")
@@ -979,90 +535,6 @@ namespace Database.Migrations
                     b.ToTable("Flash");
                 });
 
-            modelBuilder.Entity("Entities.FlashPolygonPoint", b =>
-                {
-                    b.Property<int>("ZoneId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("PointId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Map")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
-
-                    b.Property<double>("Xingame")
-                        .HasColumnName("XIngame")
-                        .HasColumnType("double");
-
-                    b.Property<int>("Xpixel")
-                        .HasColumnName("XPixel")
-                        .HasColumnType("int");
-
-                    b.Property<double>("Yingame")
-                        .HasColumnName("YIngame")
-                        .HasColumnType("double");
-
-                    b.Property<int>("Ypixel")
-                        .HasColumnName("YPixel")
-                        .HasColumnType("int");
-
-                    b.HasKey("ZoneId", "PointId");
-
-                    b.HasIndex("ZoneId")
-                        .HasName("IX_FK__FlashPolygonPoint__FlashZone");
-
-                    b.ToTable("_FlashPolygonPoint");
-                });
-
-            modelBuilder.Entity("Entities.FlashZone", b =>
-                {
-                    b.Property<int>("ZoneId")
-                        .HasColumnType("int");
-
-                    b.Property<double>("CenterXingame")
-                        .HasColumnName("CenterXIngame")
-                        .HasColumnType("double");
-
-                    b.Property<int>("CenterXpixel")
-                        .HasColumnName("CenterXPixel")
-                        .HasColumnType("int");
-
-                    b.Property<double>("CenterYingame")
-                        .HasColumnName("CenterYIngame")
-                        .HasColumnType("double");
-
-                    b.Property<int>("CenterYpixel")
-                        .HasColumnName("CenterYPixel")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Map")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
-
-                    b.Property<int>("ParentZoneId")
-                        .HasColumnType("int");
-
-                    b.Property<byte>("Team")
-                        .HasColumnType("tinyint unsigned");
-
-                    b.Property<double?>("Zmax")
-                        .HasColumnName("ZMax")
-                        .HasColumnType("double");
-
-                    b.Property<double?>("Zmin")
-                        .HasColumnName("ZMin")
-                        .HasColumnType("double");
-
-                    b.Property<int>("ZoneDepth")
-                        .HasColumnType("int");
-
-                    b.HasKey("ZoneId");
-
-                    b.ToTable("_FlashZone");
-                });
-
             modelBuilder.Entity("Entities.Flashed", b =>
                 {
                     b.Property<long>("MatchId")
@@ -1129,30 +601,6 @@ namespace Database.Migrations
                         .HasName("IX_FK_Flashed_PlayerRoundStats");
 
                     b.ToTable("Flashed");
-                });
-
-            modelBuilder.Entity("Entities.Friends", b =>
-                {
-                    b.Property<long>("SteamId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("FriendSteamId")
-                        .HasColumnType("bigint");
-
-                    b.Property<bool>("FaceIt")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<DateTime>("FriendsSince")
-                        .HasColumnType("datetime");
-
-                    b.Property<bool>("Steam")
-                        .HasColumnType("tinyint(1)");
-
-                    b.HasKey("SteamId", "FriendSteamId");
-
-                    b.HasIndex("FriendSteamId");
-
-                    b.ToTable("Friends");
                 });
 
             modelBuilder.Entity("Entities.He", b =>
@@ -1225,90 +673,6 @@ namespace Database.Migrations
                         .HasName("IX_FK_HE_PlayerRoundStats");
 
                     b.ToTable("HE");
-                });
-
-            modelBuilder.Entity("Entities.HepolygonPoint", b =>
-                {
-                    b.Property<int>("ZoneId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("PointId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Map")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
-
-                    b.Property<double>("Xingame")
-                        .HasColumnName("XIngame")
-                        .HasColumnType("double");
-
-                    b.Property<int>("Xpixel")
-                        .HasColumnName("XPixel")
-                        .HasColumnType("int");
-
-                    b.Property<double>("Yingame")
-                        .HasColumnName("YIngame")
-                        .HasColumnType("double");
-
-                    b.Property<int>("Ypixel")
-                        .HasColumnName("YPixel")
-                        .HasColumnType("int");
-
-                    b.HasKey("ZoneId", "PointId");
-
-                    b.HasIndex("ZoneId")
-                        .HasName("IX_FK__HEPolygonPoint__HEZone");
-
-                    b.ToTable("_HEPolygonPoint");
-                });
-
-            modelBuilder.Entity("Entities.Hezone", b =>
-                {
-                    b.Property<int>("ZoneId")
-                        .HasColumnType("int");
-
-                    b.Property<double>("CenterXingame")
-                        .HasColumnName("CenterXIngame")
-                        .HasColumnType("double");
-
-                    b.Property<int>("CenterXpixel")
-                        .HasColumnName("CenterXPixel")
-                        .HasColumnType("int");
-
-                    b.Property<double>("CenterYingame")
-                        .HasColumnName("CenterYIngame")
-                        .HasColumnType("double");
-
-                    b.Property<int>("CenterYpixel")
-                        .HasColumnName("CenterYPixel")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Map")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
-
-                    b.Property<int>("ParentZoneId")
-                        .HasColumnType("int");
-
-                    b.Property<byte>("Team")
-                        .HasColumnType("tinyint unsigned");
-
-                    b.Property<double?>("Zmax")
-                        .HasColumnName("ZMax")
-                        .HasColumnType("double");
-
-                    b.Property<double?>("Zmin")
-                        .HasColumnName("ZMin")
-                        .HasColumnType("double");
-
-                    b.Property<int>("ZoneDepth")
-                        .HasColumnType("int");
-
-                    b.HasKey("ZoneId");
-
-                    b.ToTable("_HEZone");
                 });
 
             modelBuilder.Entity("Entities.HostageDrop", b =>
@@ -1707,47 +1071,6 @@ namespace Database.Migrations
                     b.ToTable("Kills");
                 });
 
-            modelBuilder.Entity("Entities.MapSettings", b =>
-                {
-                    b.Property<int>("Id")
-                        .HasColumnType("int");
-
-                    b.Property<double>("ConversionOffsetX")
-                        .HasColumnType("double");
-
-                    b.Property<double>("ConversionOffsetY")
-                        .HasColumnType("double");
-
-                    b.Property<double>("ConversionScaleX")
-                        .HasColumnType("double");
-
-                    b.Property<double>("ConversionScaleY")
-                        .HasColumnType("double");
-
-                    b.Property<double>("CropXmax")
-                        .HasColumnName("CropXMax")
-                        .HasColumnType("double");
-
-                    b.Property<double>("CropXmin")
-                        .HasColumnName("CropXMin")
-                        .HasColumnType("double");
-
-                    b.Property<double>("CropYmax")
-                        .HasColumnName("CropYMax")
-                        .HasColumnType("double");
-
-                    b.Property<double>("CropYmin")
-                        .HasColumnName("CropYMin")
-                        .HasColumnType("double");
-
-                    b.Property<string>("Map")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("_MapSettings");
-                });
-
             modelBuilder.Entity("Entities.MatchStats", b =>
                 {
                     b.Property<long>("MatchId")
@@ -1871,23 +1194,6 @@ namespace Database.Migrations
                     b.ToTable("MatchStats");
                 });
 
-            modelBuilder.Entity("Entities.OpposingZones", b =>
-                {
-                    b.Property<int>("TzoneId")
-                        .HasColumnName("TZoneId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("CtZoneId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Map")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
-
-                    b.HasKey("TzoneId", "CtZoneId");
-
-                    b.ToTable("_OpposingZones");
-                });
-
             modelBuilder.Entity("Entities.OverTimeStats", b =>
                 {
                     b.Property<long>("MatchId")
@@ -1914,45 +1220,6 @@ namespace Database.Migrations
                     b.ToTable("OverTimeStats");
                 });
 
-            modelBuilder.Entity("Entities.PlayerMatchSmokeStats", b =>
-                {
-                    b.Property<long>("MatchId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("PlayerId")
-                        .HasColumnType("bigint");
-
-                    b.Property<int>("Category")
-                        .HasColumnName("_Category")
-                        .HasColumnType("int");
-
-                    b.Property<byte>("Attempts")
-                        .HasColumnName("_Attempts")
-                        .HasColumnType("tinyint unsigned");
-
-                    b.Property<byte>("Gapfrees")
-                        .HasColumnName("_Gapfrees")
-                        .HasColumnType("tinyint unsigned");
-
-                    b.Property<byte>("Insides")
-                        .HasColumnName("_Insides")
-                        .HasColumnType("tinyint unsigned");
-
-                    b.Property<byte>("Misses")
-                        .HasColumnName("_Misses")
-                        .HasColumnType("tinyint unsigned");
-
-                    b.HasKey("MatchId", "PlayerId", "Category");
-
-                    b.HasIndex("MatchId")
-                        .HasName("IX_FK__PlayerMatchSmokeStats_MatchStats");
-
-                    b.HasIndex("MatchId", "PlayerId")
-                        .HasName("IX_FK__PlayerMatchSmokeStats_PlayerMatchStats");
-
-                    b.ToTable("_PlayerMatchSmokeStats");
-                });
-
             modelBuilder.Entity("Entities.PlayerMatchStats", b =>
                 {
                     b.Property<long>("MatchId")
@@ -1961,7 +1228,7 @@ namespace Database.Migrations
                     b.Property<long>("SteamId")
                         .HasColumnType("bigint");
 
-                    b.Property<short>("Assists")
+                    b.Property<short>("AssistCount")
                         .HasColumnType("smallint");
 
                     b.Property<double>("AvgtimeAlive")
@@ -1986,7 +1253,7 @@ namespace Database.Migrations
                     b.Property<int>("DamageVictim")
                         .HasColumnType("int");
 
-                    b.Property<short>("Deaths")
+                    b.Property<short>("DeathCount")
                         .HasColumnType("smallint");
 
                     b.Property<short>("DecoysUsed")
@@ -2073,7 +1340,7 @@ namespace Database.Migrations
                         .HasColumnName("HSVictim")
                         .HasColumnType("smallint");
 
-                    b.Property<short>("Kills")
+                    b.Property<short>("KillCount")
                         .HasColumnType("smallint");
 
                     b.Property<int>("MoneyEarned")
@@ -2294,352 +1561,6 @@ namespace Database.Migrations
                     b.ToTable("PlayerRoundStats");
                 });
 
-            modelBuilder.Entity("Entities.PlayerStats", b =>
-                {
-                    b.Property<long>("SteamId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("Assists")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("AvatarIcon")
-                        .IsRequired()
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("longtext CHARACTER SET utf8mb4")
-                        .HasDefaultValueSql("('')");
-
-                    b.Property<double>("AvgtimeAlive")
-                        .HasColumnName("AVGTimeAlive")
-                        .HasColumnType("double");
-
-                    b.Property<bool>("Banned")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<int>("BlameCounter")
-                        .HasColumnType("int");
-
-                    b.Property<long>("BombDefuses")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("BombExplosions")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("BombPlants")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("BombVictim")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("Damage")
-                        .HasColumnType("bigint");
-
-                    b.Property<int>("DamageVictim")
-                        .HasColumnType("int");
-
-                    b.Property<long>("Deaths")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("DecoysUsed")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("Enemy2K")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("Enemy3K")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("Enemy4K")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("Enemy5K")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("EntryKillVictim")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("EntryKills")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("FireNadesDamage")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("FireNadesDamageVictim")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("FireNadesUsed")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("FirstBloodVictim")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("FirstBloods")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("FlashVictim")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("FlashesSucceeded")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("FlashesUsed")
-                        .HasColumnType("bigint");
-
-                    b.Property<int>("GamesPlayed")
-                        .HasColumnType("int");
-
-                    b.Property<int>("GamesWon")
-                        .HasColumnType("int");
-
-                    b.Property<long>("HesDamage")
-                        .HasColumnName("HEsDamage")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("HesDamageVictim")
-                        .HasColumnName("HEsDamageVictim")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("HesUsed")
-                        .HasColumnName("HEsUsed")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("Hits")
-                        .HasColumnType("bigint");
-
-                    b.Property<double>("Hltvrating1")
-                        .HasColumnName("HLTVRating1")
-                        .HasColumnType("double");
-
-                    b.Property<double>("Hltvrating2")
-                        .HasColumnName("HLTVRating2")
-                        .HasColumnType("double");
-
-                    b.Property<long>("Hs")
-                        .HasColumnName("HS")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("Hsdeaths")
-                        .HasColumnName("HSDeaths")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("Hskills")
-                        .HasColumnName("HSKills")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("Hsvictim")
-                        .HasColumnName("HSVictim")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("Kills")
-                        .HasColumnType("bigint");
-
-                    b.Property<int>("LastGameBan")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("LastRankUpdate")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime")
-                        .HasDefaultValueSql("('1900-01-01 00:00:00')");
-
-                    b.Property<int>("LastVacBan")
-                        .HasColumnType("int");
-
-                    b.Property<long>("MoneyEarned")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("MoneyLost")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("MoneySpent")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("Mvps")
-                        .HasColumnName("MVPs")
-                        .HasColumnType("bigint");
-
-                    b.Property<int>("NumOfGameBans")
-                        .HasColumnType("int");
-
-                    b.Property<int>("NumOfVacbans")
-                        .HasColumnName("NumOfVACBans")
-                        .HasColumnType("int");
-
-                    b.Property<byte>("Rank")
-                        .HasColumnType("tinyint unsigned");
-
-                    b.Property<long>("Score")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("SelfFlashed")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("Shots")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("SmokesUsed")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("SteamName")
-                        .IsRequired()
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("longtext CHARACTER SET utf8mb4")
-                        .HasDefaultValueSql("('')");
-
-                    b.Property<long>("Suicides")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("TeamDamage")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("TeamFlashVictim")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("TeamFlashed")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("TeamKills")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("SteamId");
-
-                    b.ToTable("PlayerStats");
-                });
-
-            modelBuilder.Entity("Entities.PolygonPoint", b =>
-                {
-                    b.Property<int>("ZoneId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("PointId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Map")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
-
-                    b.Property<double>("Xingame")
-                        .HasColumnName("XIngame")
-                        .HasColumnType("double");
-
-                    b.Property<int>("Xpixel")
-                        .HasColumnName("XPixel")
-                        .HasColumnType("int");
-
-                    b.Property<double>("Yingame")
-                        .HasColumnName("YIngame")
-                        .HasColumnType("double");
-
-                    b.Property<int>("Ypixel")
-                        .HasColumnName("YPixel")
-                        .HasColumnType("int");
-
-                    b.HasKey("ZoneId", "PointId");
-
-                    b.ToTable("_PolygonPoint");
-                });
-
-            modelBuilder.Entity("Entities.PositionOpposingZones", b =>
-                {
-                    b.Property<int>("TzoneId")
-                        .HasColumnName("TZoneId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("CtZoneId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Map")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
-
-                    b.HasKey("TzoneId", "CtZoneId");
-
-                    b.ToTable("_PositionOpposingZones");
-                });
-
-            modelBuilder.Entity("Entities.PositionPolygonPoint", b =>
-                {
-                    b.Property<int>("ZoneId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("PointId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Map")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
-
-                    b.Property<double>("Xingame")
-                        .HasColumnName("XIngame")
-                        .HasColumnType("double");
-
-                    b.Property<int>("Xpixel")
-                        .HasColumnName("XPixel")
-                        .HasColumnType("int");
-
-                    b.Property<double>("Yingame")
-                        .HasColumnName("YIngame")
-                        .HasColumnType("double");
-
-                    b.Property<int>("Ypixel")
-                        .HasColumnName("YPixel")
-                        .HasColumnType("int");
-
-                    b.HasKey("ZoneId", "PointId");
-
-                    b.HasIndex("ZoneId")
-                        .HasName("IX_FK__PositionPolygonPoint__PositionZone");
-
-                    b.ToTable("_PositionPolygonPoint");
-                });
-
-            modelBuilder.Entity("Entities.PositionZone", b =>
-                {
-                    b.Property<int>("ZoneId")
-                        .HasColumnType("int");
-
-                    b.Property<double>("CenterXingame")
-                        .HasColumnName("CenterXIngame")
-                        .HasColumnType("double");
-
-                    b.Property<int>("CenterXpixel")
-                        .HasColumnName("CenterXPixel")
-                        .HasColumnType("int");
-
-                    b.Property<double>("CenterYingame")
-                        .HasColumnName("CenterYIngame")
-                        .HasColumnType("double");
-
-                    b.Property<int>("CenterYpixel")
-                        .HasColumnName("CenterYPixel")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Map")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
-
-                    b.Property<int>("ParentZoneId")
-                        .HasColumnType("int");
-
-                    b.Property<short>("Team")
-                        .HasColumnType("smallint");
-
-                    b.Property<string>("VideoUrl")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
-
-                    b.Property<double?>("Zmax")
-                        .HasColumnName("ZMax")
-                        .HasColumnType("double");
-
-                    b.Property<double?>("Zmin")
-                        .HasColumnName("ZMin")
-                        .HasColumnType("double");
-
-                    b.Property<int>("ZoneDepth")
-                        .HasColumnType("int");
-
-                    b.HasKey("ZoneId");
-
-                    b.ToTable("_PositionZone");
-                });
-
             modelBuilder.Entity("Entities.Refrag", b =>
                 {
                     b.Property<long>("MatchId")
@@ -2776,25 +1697,6 @@ namespace Database.Migrations
                     b.ToTable("RoundStats");
                 });
 
-            modelBuilder.Entity("Entities.SinglePath", b =>
-                {
-                    b.Property<long>("PathId")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("Map")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
-
-                    b.Property<long?>("SuperOrdinateId")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("PathId");
-
-                    b.ToTable("_SinglePath");
-                });
-
             modelBuilder.Entity("Entities.Smoke", b =>
                 {
                     b.Property<long>("MatchId")
@@ -2874,229 +1776,6 @@ namespace Database.Migrations
                         .HasName("IX_FK_Smoke_PlayerRoundStats");
 
                     b.ToTable("Smoke");
-                });
-
-            modelBuilder.Entity("Entities.SmokeCategory", b =>
-                {
-                    b.Property<int>("CategoryId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("GrenadePosX")
-                        .HasColumnType("int");
-
-                    b.Property<int>("GrenadePosY")
-                        .HasColumnType("int");
-
-                    b.Property<int>("GrenadePosZ")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Map")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
-
-                    b.Property<int>("PlayerPosX")
-                        .HasColumnType("int");
-
-                    b.Property<int>("PlayerPosXmax")
-                        .HasColumnName("PlayerPosXMax")
-                        .HasColumnType("int");
-
-                    b.Property<int>("PlayerPosXmin")
-                        .HasColumnName("PlayerPosXMin")
-                        .HasColumnType("int");
-
-                    b.Property<int>("PlayerPosXpixel")
-                        .HasColumnName("PlayerPosXPixel")
-                        .HasColumnType("int");
-
-                    b.Property<int>("PlayerPosY")
-                        .HasColumnType("int");
-
-                    b.Property<int>("PlayerPosYmax")
-                        .HasColumnName("PlayerPosYMax")
-                        .HasColumnType("int");
-
-                    b.Property<int>("PlayerPosYmin")
-                        .HasColumnName("PlayerPosYMin")
-                        .HasColumnType("int");
-
-                    b.Property<int>("PlayerPosYpixel")
-                        .HasColumnName("PlayerPosYPixel")
-                        .HasColumnType("int");
-
-                    b.Property<int>("PlayerPosZ")
-                        .HasColumnType("int");
-
-                    b.Property<int>("PlayerPosZmax")
-                        .HasColumnName("PlayerPosZMax")
-                        .HasColumnType("int");
-
-                    b.Property<int>("PlayerPosZmin")
-                        .HasColumnName("PlayerPosZMin")
-                        .HasColumnType("int");
-
-                    b.Property<int>("PlayerViewX")
-                        .HasColumnType("int");
-
-                    b.Property<int>("PlayerViewXmax")
-                        .HasColumnName("PlayerViewXMax")
-                        .HasColumnType("int");
-
-                    b.Property<int>("PlayerViewXmin")
-                        .HasColumnName("PlayerViewXMin")
-                        .HasColumnType("int");
-
-                    b.Property<int>("PlayerViewY")
-                        .HasColumnType("int");
-
-                    b.Property<int>("PlayerViewYmax")
-                        .HasColumnName("PlayerViewYMax")
-                        .HasColumnType("int");
-
-                    b.Property<int>("PlayerViewYmin")
-                        .HasColumnName("PlayerViewYMin")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Setpos")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
-
-                    b.Property<int>("TargetId")
-                        .HasColumnType("int");
-
-                    b.Property<byte>("ThrowType")
-                        .HasColumnType("tinyint unsigned");
-
-                    b.Property<bool>("ViewXcontainsPole")
-                        .HasColumnName("ViewXContainsPole")
-                        .HasColumnType("tinyint(1)");
-
-                    b.HasKey("CategoryId");
-
-                    b.HasIndex("TargetId")
-                        .HasName("IX_FK__SmokeCategory__SmokeTarget");
-
-                    b.ToTable("_SmokeCategory");
-                });
-
-            modelBuilder.Entity("Entities.SmokeTarget", b =>
-                {
-                    b.Property<int>("TargetId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("GrenadePosX")
-                        .HasColumnType("int");
-
-                    b.Property<int>("GrenadePosXmax")
-                        .HasColumnName("GrenadePosXMax")
-                        .HasColumnType("int");
-
-                    b.Property<int>("GrenadePosXmin")
-                        .HasColumnName("GrenadePosXMin")
-                        .HasColumnType("int");
-
-                    b.Property<int>("GrenadePosXpixel")
-                        .HasColumnName("GrenadePosXPixel")
-                        .HasColumnType("int");
-
-                    b.Property<int>("GrenadePosY")
-                        .HasColumnType("int");
-
-                    b.Property<int>("GrenadePosYmax")
-                        .HasColumnName("GrenadePosYMax")
-                        .HasColumnType("int");
-
-                    b.Property<int>("GrenadePosYmin")
-                        .HasColumnName("GrenadePosYMin")
-                        .HasColumnType("int");
-
-                    b.Property<int>("GrenadePosYpixel")
-                        .HasColumnName("GrenadePosYPixel")
-                        .HasColumnType("int");
-
-                    b.Property<int>("GrenadePosZ")
-                        .HasColumnType("int");
-
-                    b.Property<int>("GrenadePosZmax")
-                        .HasColumnName("GrenadePosZMax")
-                        .HasColumnType("int");
-
-                    b.Property<int>("GrenadePosZmin")
-                        .HasColumnName("GrenadePosZMin")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Map")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
-
-                    b.HasKey("TargetId");
-
-                    b.ToTable("_SmokeTarget");
-                });
-
-            modelBuilder.Entity("Entities.StutterStep", b =>
-                {
-                    b.Property<long>("MatchId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("PlayerId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("StutterStepId")
-                        .HasColumnType("bigint");
-
-                    b.Property<short>("Lag")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("Round")
-                        .HasColumnType("smallint");
-
-                    b.Property<int>("StutterStartTime")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Under34Time")
-                        .HasColumnType("int");
-
-                    b.Property<long>("WeaponFiredId")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("MatchId", "PlayerId", "StutterStepId");
-
-                    b.HasIndex("MatchId")
-                        .HasName("IX_FK__StutterStep_MatchStats");
-
-                    b.HasIndex("MatchId", "PlayerId")
-                        .HasName("IX_FK__StutterStep_PlayerMatchStats");
-
-                    b.HasIndex("MatchId", "Round")
-                        .HasName("IX_FK__StutterStep_RoundStats");
-
-                    b.HasIndex("MatchId", "WeaponFiredId")
-                        .HasName("IX_FK__StutterStep_WeaponFired");
-
-                    b.ToTable("_StutterStep");
-                });
-
-            modelBuilder.Entity("Entities.TeamStrategy", b =>
-                {
-                    b.Property<long>("StrategyId")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("Map")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
-
-                    b.Property<long?>("SuperOrdinateId")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("StrategyId");
-
-                    b.ToTable("_TeamStrategy");
                 });
 
             modelBuilder.Entity("Entities.WeaponFired", b =>
@@ -3244,74 +1923,30 @@ namespace Database.Migrations
                     b.ToTable("WeaponReload");
                 });
 
-            modelBuilder.Entity("Entities.Zone", b =>
-                {
-                    b.Property<int>("ZoneId")
-                        .HasColumnType("int");
-
-                    b.Property<double>("CenterXingame")
-                        .HasColumnName("CenterXIngame")
-                        .HasColumnType("double");
-
-                    b.Property<int>("CenterXpixel")
-                        .HasColumnName("CenterXPixel")
-                        .HasColumnType("int");
-
-                    b.Property<double>("CenterYingame")
-                        .HasColumnName("CenterYIngame")
-                        .HasColumnType("double");
-
-                    b.Property<int>("CenterYpixel")
-                        .HasColumnName("CenterYPixel")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Map")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
-
-                    b.Property<string>("VideoUrl")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
-
-                    b.Property<double?>("Zmax")
-                        .HasColumnName("ZMax")
-                        .HasColumnType("double");
-
-                    b.Property<double?>("Zmin")
-                        .HasColumnName("ZMin")
-                        .HasColumnType("double");
-
-                    b.HasKey("ZoneId");
-
-                    b.ToTable("_Zone");
-                });
-
             modelBuilder.Entity("Entities.BombDefused", b =>
                 {
-                    b.HasOne("Entities.MatchStats", "Match")
+                    b.HasOne("Entities.MatchStats", "MatchStats")
                         .WithMany("BombDefused")
                         .HasForeignKey("MatchId")
-                        .HasConstraintName("FK_BombExplosion_MatchStats")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Entities.PlayerMatchStats", "PlayerMatchStats")
                         .WithMany("BombDefused")
                         .HasForeignKey("MatchId", "PlayerId")
-                        .HasConstraintName("FK_BombDefused_PlayerMatchStats")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Entities.RoundStats", "RoundStats")
                         .WithOne("BombDefused")
                         .HasForeignKey("Entities.BombDefused", "MatchId", "Round")
-                        .HasConstraintName("FK_BombDefused_RoundStats")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Entities.PlayerRoundStats", "PlayerRoundStats")
                         .WithMany("BombDefused")
                         .HasForeignKey("MatchId", "Round", "PlayerId")
-                        .HasConstraintName("FK_BombDefused_PlayerRoundStats")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
@@ -3320,7 +1955,6 @@ namespace Database.Migrations
                     b.HasOne("Entities.MatchStats", "Match")
                         .WithMany("BombExplosion")
                         .HasForeignKey("MatchId")
-                        .HasConstraintName("FK_BombExplosion_MatchStats")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -3356,15 +1990,6 @@ namespace Database.Migrations
                         .WithMany("BombPlant")
                         .HasForeignKey("MatchId", "Round", "PlayerId")
                         .HasConstraintName("FK_BombPlant_PlayerRoundStats")
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Entities.BombPolygonPoint", b =>
-                {
-                    b.HasOne("Entities.BombZone", "Zone")
-                        .WithMany("BombPolygonPoint")
-                        .HasForeignKey("ZoneId")
-                        .HasConstraintName("FK__BombPolygonPoint__BombZone")
                         .IsRequired();
                 });
 
@@ -3534,15 +2159,6 @@ namespace Database.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Entities.FireNadePolygonPoint", b =>
-                {
-                    b.HasOne("Entities.FireNadeZone", "Zone")
-                        .WithMany("FireNadePolygonPoint")
-                        .HasForeignKey("ZoneId")
-                        .HasConstraintName("FK__FireNadePolygonPoint__FireNadeZone")
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("Entities.Flash", b =>
                 {
                     b.HasOne("Entities.MatchStats", "Match")
@@ -3568,15 +2184,6 @@ namespace Database.Migrations
                         .WithMany("Flash")
                         .HasForeignKey("MatchId", "Round", "PlayerId")
                         .HasConstraintName("FK_Flash_PlayerRoundStats")
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Entities.FlashPolygonPoint", b =>
-                {
-                    b.HasOne("Entities.FlashZone", "Zone")
-                        .WithMany("FlashPolygonPoint")
-                        .HasForeignKey("ZoneId")
-                        .HasConstraintName("FK__FlashPolygonPoint__FlashZone")
                         .IsRequired();
                 });
 
@@ -3644,15 +2251,6 @@ namespace Database.Migrations
                         .WithMany("He")
                         .HasForeignKey("MatchId", "Round", "PlayerId")
                         .HasConstraintName("FK_HE_PlayerRoundStats")
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Entities.HepolygonPoint", b =>
-                {
-                    b.HasOne("Entities.Hezone", "Zone")
-                        .WithMany("HepolygonPoint")
-                        .HasForeignKey("ZoneId")
-                        .HasConstraintName("FK__HEPolygonPoint__HEZone")
                         .IsRequired();
                 });
 
@@ -3844,7 +2442,7 @@ namespace Database.Migrations
                         .HasConstraintName("FK_Kills_Damage");
 
                     b.HasOne("Entities.PlayerMatchStats", "PlayerMatchStats")
-                        .WithMany("KillsPlayerMatchStats")
+                        .WithMany("Kills")
                         .HasForeignKey("MatchId", "PlayerId")
                         .HasConstraintName("FK_Kills_PlayerMatchStats")
                         .IsRequired();
@@ -3855,8 +2453,8 @@ namespace Database.Migrations
                         .HasConstraintName("FK_Kills_RoundStats")
                         .IsRequired();
 
-                    b.HasOne("Entities.PlayerMatchStats", "PlayerMatchStatsNavigation")
-                        .WithMany("KillsPlayerMatchStatsNavigation")
+                    b.HasOne("Entities.PlayerMatchStats", "VictimMatchStats")
+                        .WithMany("Deaths")
                         .HasForeignKey("MatchId", "VictimId")
                         .HasConstraintName("FK_Kills_PlayerMatchStats_Victim")
                         .IsRequired();
@@ -3874,15 +2472,6 @@ namespace Database.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Entities.MatchStats", b =>
-                {
-                    b.HasOne("Entities.DemoStats", "Demo")
-                        .WithMany("MatchStats")
-                        .HasForeignKey("DemoId")
-                        .HasConstraintName("FK_MatchStats_DemoStats")
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("Entities.OverTimeStats", b =>
                 {
                     b.HasOne("Entities.MatchStats", "Match")
@@ -3893,22 +2482,6 @@ namespace Database.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Entities.PlayerMatchSmokeStats", b =>
-                {
-                    b.HasOne("Entities.MatchStats", "Match")
-                        .WithMany("PlayerMatchSmokeStats")
-                        .HasForeignKey("MatchId")
-                        .HasConstraintName("FK__PlayerMatchSmokeStats_MatchStats")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Entities.PlayerMatchStats", "PlayerMatchStats")
-                        .WithMany("PlayerMatchSmokeStats")
-                        .HasForeignKey("MatchId", "PlayerId")
-                        .HasConstraintName("FK__PlayerMatchSmokeStats_PlayerMatchStats")
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("Entities.PlayerMatchStats", b =>
                 {
                     b.HasOne("Entities.MatchStats", "Match")
@@ -3916,12 +2489,6 @@ namespace Database.Migrations
                         .HasForeignKey("MatchId")
                         .HasConstraintName("FK_PlayerMatchStats_MatchStats")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Entities.PlayerStats", "Steam")
-                        .WithMany("PlayerMatchStats")
-                        .HasForeignKey("SteamId")
-                        .HasConstraintName("FK_PlayerMatchStats_PlayerStats")
                         .IsRequired();
                 });
 
@@ -3962,12 +2529,6 @@ namespace Database.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Entities.PlayerStats", "Player")
-                        .WithMany("PlayerRoundStats")
-                        .HasForeignKey("PlayerId")
-                        .HasConstraintName("FK_PlayerRoundStats_PlayerStats")
-                        .IsRequired();
-
                     b.HasOne("Entities.PlayerMatchStats", "PlayerMatchStats")
                         .WithMany("PlayerRoundStats")
                         .HasForeignKey("MatchId", "PlayerId")
@@ -3978,15 +2539,6 @@ namespace Database.Migrations
                         .WithMany("PlayerRoundStats")
                         .HasForeignKey("MatchId", "Round")
                         .HasConstraintName("FK_PlayerRoundStats_RoundStats")
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Entities.PositionPolygonPoint", b =>
-                {
-                    b.HasOne("Entities.PositionZone", "Zone")
-                        .WithMany("PositionPolygonPoint")
-                        .HasForeignKey("ZoneId")
-                        .HasConstraintName("FK__PositionPolygonPoint__PositionZone")
                         .IsRequired();
                 });
 
@@ -4075,43 +2627,6 @@ namespace Database.Migrations
                         .WithMany("Smoke")
                         .HasForeignKey("MatchId", "Round", "PlayerId")
                         .HasConstraintName("FK_Smoke_PlayerRoundStats")
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Entities.SmokeCategory", b =>
-                {
-                    b.HasOne("Entities.SmokeTarget", "Target")
-                        .WithMany("SmokeCategory")
-                        .HasForeignKey("TargetId")
-                        .HasConstraintName("FK__SmokeCategory__SmokeTarget")
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Entities.StutterStep", b =>
-                {
-                    b.HasOne("Entities.MatchStats", "Match")
-                        .WithMany("StutterStep")
-                        .HasForeignKey("MatchId")
-                        .HasConstraintName("FK__StutterStep_MatchStats")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Entities.PlayerMatchStats", "PlayerMatchStats")
-                        .WithMany("StutterStep")
-                        .HasForeignKey("MatchId", "PlayerId")
-                        .HasConstraintName("FK__StutterStep_PlayerMatchStats")
-                        .IsRequired();
-
-                    b.HasOne("Entities.RoundStats", "RoundStats")
-                        .WithMany("StutterStep")
-                        .HasForeignKey("MatchId", "Round")
-                        .HasConstraintName("FK__StutterStep_RoundStats")
-                        .IsRequired();
-
-                    b.HasOne("Entities.WeaponFired", "WeaponFired")
-                        .WithMany("StutterStep")
-                        .HasForeignKey("MatchId", "WeaponFiredId")
-                        .HasConstraintName("FK__StutterStep_WeaponFired")
                         .IsRequired();
                 });
 

@@ -5,8 +5,20 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Migrations\20191113090457_InitialCreate.cs" />
+    <Compile Remove="Migrations\20191113090457_InitialCreate.Designer.cs" />
     <Compile Remove="Migrations\20191113092430_dummy.cs" />
     <Compile Remove="Migrations\20191113092430_dummy.Designer.cs" />
+    <Compile Remove="Migrations\20191114153925_BombDefuseCleanup.cs" />
+    <Compile Remove="Migrations\20191114153925_BombDefuseCleanup.Designer.cs" />
+    <Compile Remove="Migrations\20191114154104_RemovedUnusedTables.cs" />
+    <Compile Remove="Migrations\20191114154104_RemovedUnusedTables.Designer.cs" />
+    <Compile Remove="Migrations\20191114154131_BombDefuseCleanup.cs" />
+    <Compile Remove="Migrations\20191114154131_BombDefuseCleanup.Designer.cs" />
+    <Compile Remove="Migrations\20191114160427_temp.cs" />
+    <Compile Remove="Migrations\20191114160427_temp.Designer.cs" />
+    <Compile Remove="Migrations\20191114160750_InitialCreat.cs" />
+    <Compile Remove="Migrations\20191114160750_InitialCreat.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

@@ -24,14 +24,12 @@ namespace Entities
             ItemDropped = new HashSet<ItemDropped>();
             ItemPickedUp = new HashSet<ItemPickedUp>();
             ItemSaved = new HashSet<ItemSaved>();
-            KillsPlayerMatchStats = new HashSet<Kills>();
-            KillsPlayerMatchStatsNavigation = new HashSet<Kills>();
-            PlayerMatchSmokeStats = new HashSet<PlayerMatchSmokeStats>();
+            Kills = new HashSet<Kills>();
+            Deaths = new HashSet<Kills>();
             PlayerPosition = new HashSet<PlayerPosition>();
             PlayerRoundStats = new HashSet<PlayerRoundStats>();
             RoundItem = new HashSet<RoundItem>();
             Smoke = new HashSet<Smoke>();
-            StutterStep = new HashSet<StutterStep>();
             WeaponFired = new HashSet<WeaponFired>();
             WeaponReload = new HashSet<WeaponReload>();
         }
@@ -39,9 +37,9 @@ namespace Entities
         public long MatchId { get; set; }
         public long SteamId { get; set; }
         public byte Team { get; set; }
-        public short Kills { get; set; }
-        public short Assists { get; set; }
-        public short Deaths { get; set; }
+        public short KillCount { get; set; }
+        public short AssistCount { get; set; }
+        public short DeathCount { get; set; }
         public short Score { get; set; }
         public short Mvps { get; set; }
         public short Hs { get; set; }
@@ -96,7 +94,6 @@ namespace Entities
         public short RealMvps { get; set; }
 
         public MatchStats Match { get; set; }
-        public PlayerStats Steam { get; set; }
         public ICollection<BombDefused> BombDefused { get; set; }
         public ICollection<BombPlant> BombPlant { get; set; }
         public ICollection<BotTakeOver> BotTakeOver { get; set; }
@@ -114,14 +111,12 @@ namespace Entities
         public ICollection<ItemDropped> ItemDropped { get; set; }
         public ICollection<ItemPickedUp> ItemPickedUp { get; set; }
         public ICollection<ItemSaved> ItemSaved { get; set; }
-        public ICollection<Kills> KillsPlayerMatchStats { get; set; }
-        public ICollection<Kills> KillsPlayerMatchStatsNavigation { get; set; }
-        public ICollection<PlayerMatchSmokeStats> PlayerMatchSmokeStats { get; set; }
+        public ICollection<Kills> Kills { get; set; }
+        public ICollection<Kills> Deaths { get; set; }
         public ICollection<PlayerPosition> PlayerPosition { get; set; }
         public ICollection<PlayerRoundStats> PlayerRoundStats { get; set; }
         public ICollection<RoundItem> RoundItem { get; set; }
         public ICollection<Smoke> Smoke { get; set; }
-        public ICollection<StutterStep> StutterStep { get; set; }
         public ICollection<WeaponFired> WeaponFired { get; set; }
         public ICollection<WeaponReload> WeaponReload { get; set; }
     }

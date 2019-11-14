@@ -39,7 +39,7 @@ namespace TestEntities
         public int? PlayerZoneByTeam { get; set; }
         public int? VictimZoneByTeam { get; set; }
 
-        public MatchStats Match { get; set; }
+        public MatchStats MatchStats { get; set; }
         public PlayerMatchStats PlayerMatchStats { get; set; }
         public PlayerMatchStats VictimMatchStats { get; set; }
     }

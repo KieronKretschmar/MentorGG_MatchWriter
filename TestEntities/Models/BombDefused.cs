@@ -13,5 +13,6 @@ namespace TestEntities
         public int BombTimeLeft { get; set; }
 
         public MatchStats Match { get; set; }
+        public PlayerMatchStats PlayerMatchStats { get; set; }
     }
 }

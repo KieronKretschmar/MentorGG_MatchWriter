@@ -26,7 +26,6 @@ namespace Entities
             PlayerRoundStats = new HashSet<PlayerRoundStats>();
             RoundItem = new HashSet<RoundItem>();
             Smoke = new HashSet<Smoke>();
-            StutterStep = new HashSet<StutterStep>();
             WeaponFired = new HashSet<WeaponFired>();
             WeaponReload = new HashSet<WeaponReload>();
         }
@@ -74,7 +73,6 @@ namespace Entities
         public ICollection<PlayerRoundStats> PlayerRoundStats { get; set; }
         public ICollection<RoundItem> RoundItem { get; set; }
         public ICollection<Smoke> Smoke { get; set; }
-        public ICollection<StutterStep> StutterStep { get; set; }
         public ICollection<WeaponFired> WeaponFired { get; set; }
         public ICollection<WeaponReload> WeaponReload { get; set; }
     }

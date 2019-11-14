@@ -9,589 +9,6 @@ namespace Database.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "_BombZone",
-                columns: table => new
-                {
-                    ZoneId = table.Column<int>(nullable: false),
-                    Map = table.Column<string>(nullable: true),
-                    Name = table.Column<string>(nullable: true),
-                    Team = table.Column<byte>(nullable: false),
-                    ZMin = table.Column<double>(nullable: true),
-                    ZMax = table.Column<double>(nullable: true),
-                    CenterXIngame = table.Column<double>(nullable: false),
-                    CenterYIngame = table.Column<double>(nullable: false),
-                    CenterXPixel = table.Column<int>(nullable: false),
-                    CenterYPixel = table.Column<int>(nullable: false),
-                    ParentZoneId = table.Column<int>(nullable: false),
-                    ZoneDepth = table.Column<int>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK__BombZone", x => x.ZoneId);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "_FireNadeZone",
-                columns: table => new
-                {
-                    ZoneId = table.Column<int>(nullable: false),
-                    Map = table.Column<string>(nullable: true),
-                    Name = table.Column<string>(nullable: true),
-                    Team = table.Column<byte>(nullable: false),
-                    ZMin = table.Column<double>(nullable: true),
-                    ZMax = table.Column<double>(nullable: true),
-                    CenterXIngame = table.Column<double>(nullable: false),
-                    CenterYIngame = table.Column<double>(nullable: false),
-                    CenterXPixel = table.Column<int>(nullable: false),
-                    CenterYPixel = table.Column<int>(nullable: false),
-                    ParentZoneId = table.Column<int>(nullable: false),
-                    ZoneDepth = table.Column<int>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK__FireNadeZone", x => x.ZoneId);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "_FlashZone",
-                columns: table => new
-                {
-                    ZoneId = table.Column<int>(nullable: false),
-                    Map = table.Column<string>(nullable: true),
-                    Name = table.Column<string>(nullable: true),
-                    Team = table.Column<byte>(nullable: false),
-                    ZMin = table.Column<double>(nullable: true),
-                    ZMax = table.Column<double>(nullable: true),
-                    CenterXIngame = table.Column<double>(nullable: false),
-                    CenterYIngame = table.Column<double>(nullable: false),
-                    CenterXPixel = table.Column<int>(nullable: false),
-                    CenterYPixel = table.Column<int>(nullable: false),
-                    ParentZoneId = table.Column<int>(nullable: false),
-                    ZoneDepth = table.Column<int>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK__FlashZone", x => x.ZoneId);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "_HEZone",
-                columns: table => new
-                {
-                    ZoneId = table.Column<int>(nullable: false),
-                    Map = table.Column<string>(nullable: true),
-                    Name = table.Column<string>(nullable: true),
-                    Team = table.Column<byte>(nullable: false),
-                    ZMin = table.Column<double>(nullable: true),
-                    ZMax = table.Column<double>(nullable: true),
-                    CenterXIngame = table.Column<double>(nullable: false),
-                    CenterYIngame = table.Column<double>(nullable: false),
-                    CenterXPixel = table.Column<int>(nullable: false),
-                    CenterYPixel = table.Column<int>(nullable: false),
-                    ParentZoneId = table.Column<int>(nullable: false),
-                    ZoneDepth = table.Column<int>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK__HEZone", x => x.ZoneId);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "_MapSettings",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false),
-                    Map = table.Column<string>(nullable: true),
-                    ConversionOffsetX = table.Column<double>(nullable: false),
-                    ConversionOffsetY = table.Column<double>(nullable: false),
-                    ConversionScaleX = table.Column<double>(nullable: false),
-                    ConversionScaleY = table.Column<double>(nullable: false),
-                    CropXMin = table.Column<double>(nullable: false),
-                    CropYMin = table.Column<double>(nullable: false),
-                    CropXMax = table.Column<double>(nullable: false),
-                    CropYMax = table.Column<double>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK__MapSettings", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "_OpposingZones",
-                columns: table => new
-                {
-                    TZoneId = table.Column<int>(nullable: false),
-                    CtZoneId = table.Column<int>(nullable: false),
-                    Map = table.Column<string>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK__OpposingZones", x => new { x.TZoneId, x.CtZoneId });
-                });
-
-            migrationBuilder.CreateTable(
-                name: "_PolygonPoint",
-                columns: table => new
-                {
-                    ZoneId = table.Column<int>(nullable: false),
-                    PointId = table.Column<int>(nullable: false),
-                    Map = table.Column<string>(nullable: true),
-                    XIngame = table.Column<double>(nullable: false),
-                    YIngame = table.Column<double>(nullable: false),
-                    XPixel = table.Column<int>(nullable: false),
-                    YPixel = table.Column<int>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK__PolygonPoint", x => new { x.ZoneId, x.PointId });
-                });
-
-            migrationBuilder.CreateTable(
-                name: "_PositionOpposingZones",
-                columns: table => new
-                {
-                    TZoneId = table.Column<int>(nullable: false),
-                    CtZoneId = table.Column<int>(nullable: false),
-                    Map = table.Column<string>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK__PositionOpposingZones", x => new { x.TZoneId, x.CtZoneId });
-                });
-
-            migrationBuilder.CreateTable(
-                name: "_PositionZone",
-                columns: table => new
-                {
-                    ZoneId = table.Column<int>(nullable: false),
-                    Map = table.Column<string>(nullable: true),
-                    Name = table.Column<string>(nullable: true),
-                    Team = table.Column<short>(nullable: false),
-                    VideoUrl = table.Column<string>(nullable: true),
-                    ZMin = table.Column<double>(nullable: true),
-                    ZMax = table.Column<double>(nullable: true),
-                    CenterXIngame = table.Column<double>(nullable: false),
-                    CenterYIngame = table.Column<double>(nullable: false),
-                    CenterXPixel = table.Column<int>(nullable: false),
-                    CenterYPixel = table.Column<int>(nullable: false),
-                    ParentZoneId = table.Column<int>(nullable: false),
-                    ZoneDepth = table.Column<int>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK__PositionZone", x => x.ZoneId);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "_SinglePath",
-                columns: table => new
-                {
-                    PathId = table.Column<long>(nullable: false),
-                    Map = table.Column<string>(nullable: true),
-                    Name = table.Column<string>(nullable: true),
-                    SuperOrdinateId = table.Column<long>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK__SinglePath", x => x.PathId);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "_SmokeTarget",
-                columns: table => new
-                {
-                    TargetId = table.Column<int>(nullable: false),
-                    Map = table.Column<string>(nullable: true),
-                    Name = table.Column<string>(nullable: true),
-                    GrenadePosXPixel = table.Column<int>(nullable: false),
-                    GrenadePosYPixel = table.Column<int>(nullable: false),
-                    GrenadePosX = table.Column<int>(nullable: false),
-                    GrenadePosY = table.Column<int>(nullable: false),
-                    GrenadePosZ = table.Column<int>(nullable: false),
-                    GrenadePosXMin = table.Column<int>(nullable: false),
-                    GrenadePosYMin = table.Column<int>(nullable: false),
-                    GrenadePosZMin = table.Column<int>(nullable: false),
-                    GrenadePosXMax = table.Column<int>(nullable: false),
-                    GrenadePosYMax = table.Column<int>(nullable: false),
-                    GrenadePosZMax = table.Column<int>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK__SmokeTarget", x => x.TargetId);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "_TeamStrategy",
-                columns: table => new
-                {
-                    StrategyId = table.Column<long>(nullable: false),
-                    Map = table.Column<string>(nullable: true),
-                    Name = table.Column<string>(nullable: true),
-                    SuperOrdinateId = table.Column<long>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK__TeamStrategy", x => x.StrategyId);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "_Zone",
-                columns: table => new
-                {
-                    ZoneId = table.Column<int>(nullable: false),
-                    Map = table.Column<string>(nullable: true),
-                    Name = table.Column<string>(nullable: true),
-                    VideoUrl = table.Column<string>(nullable: true),
-                    ZMin = table.Column<double>(nullable: true),
-                    ZMax = table.Column<double>(nullable: true),
-                    CenterXIngame = table.Column<double>(nullable: false),
-                    CenterYIngame = table.Column<double>(nullable: false),
-                    CenterXPixel = table.Column<int>(nullable: false),
-                    CenterYPixel = table.Column<int>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK__Zone", x => x.ZoneId);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "DemoStats",
-                columns: table => new
-                {
-                    DemoId = table.Column<long>(nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    MatchId = table.Column<long>(nullable: true),
-                    DemoUrl = table.Column<string>(nullable: false, defaultValueSql: "('')"),
-                    DemoFileName = table.Column<string>(nullable: false, defaultValueSql: "('')"),
-                    DemoFilePath = table.Column<string>(nullable: false, defaultValueSql: "('')"),
-                    DemoFileHashMD5 = table.Column<string>(nullable: false, defaultValueSql: "('')"),
-                    MatchDate = table.Column<DateTime>(type: "datetime", nullable: false, defaultValueSql: "(getdate())"),
-                    Status = table.Column<short>(nullable: false),
-                    Attempts = table.Column<short>(nullable: false),
-                    DemoAnalyzerVersion = table.Column<DateTime>(type: "datetime", nullable: false, defaultValueSql: "('1900-01-01 00:00:00')"),
-                    PyAnalyzerVersion = table.Column<DateTime>(type: "datetime", nullable: false, defaultValueSql: "('1900-01-01 00:00:00')"),
-                    FaceItMatchId = table.Column<string>(nullable: false, defaultValueSql: "('')"),
-                    UploadedBy = table.Column<long>(nullable: false, defaultValueSql: "((-1))"),
-                    UploadType = table.Column<short>(nullable: false, defaultValueSql: "((-1))"),
-                    Source = table.Column<string>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_DemoStats", x => x.DemoId);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Equipment",
-                columns: table => new
-                {
-                    ID = table.Column<long>(nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    StartDate = table.Column<DateTime>(type: "datetime", nullable: false, defaultValueSql: "(getdate())"),
-                    Source = table.Column<string>(nullable: false, defaultValueSql: "('')"),
-                    Type = table.Column<short>(nullable: false),
-                    DisplayName = table.Column<string>(nullable: false, defaultValueSql: "('')"),
-                    InGameName = table.Column<string>(nullable: false, defaultValueSql: "('')"),
-                    WeaporArmorRatio = table.Column<double>(nullable: false),
-                    Damage = table.Column<int>(nullable: false),
-                    RangeModifier = table.Column<double>(nullable: false),
-                    CycleTime = table.Column<double>(nullable: false),
-                    Penetration = table.Column<double>(nullable: false),
-                    KillAward = table.Column<int>(nullable: false),
-                    MaxPlayerSpeed = table.Column<int>(nullable: false),
-                    ClipSize = table.Column<int>(nullable: false),
-                    Price = table.Column<int>(nullable: false),
-                    Range = table.Column<int>(nullable: false),
-                    WeaponClass = table.Column<string>(nullable: false, defaultValueSql: "('')"),
-                    FullAuto = table.Column<double>(nullable: false),
-                    Bullets = table.Column<double>(nullable: false),
-                    TracerFrequency = table.Column<double>(nullable: false),
-                    FlinchVelocityModifierLarge = table.Column<double>(nullable: false),
-                    FlinchVelocityModifierSmall = table.Column<double>(nullable: false),
-                    Spread = table.Column<double>(nullable: false),
-                    InaccuracyCrouch = table.Column<double>(nullable: false),
-                    InaccuracyStand = table.Column<double>(nullable: false),
-                    InaccuracyFire = table.Column<double>(nullable: false),
-                    InaccuracyMove = table.Column<double>(nullable: false),
-                    InaccuracyJump = table.Column<double>(nullable: false),
-                    InaccuracyJumpIntial = table.Column<double>(nullable: false),
-                    InaccuracyLand = table.Column<double>(nullable: false),
-                    InaccuracyLadder = table.Column<double>(nullable: false),
-                    RecoveryTimeCrouch = table.Column<double>(nullable: false),
-                    RecoveryTimeCrouchFinal = table.Column<double>(nullable: false),
-                    RecoveryTimeStand = table.Column<double>(nullable: false),
-                    RecoveryTimeStandFinal = table.Column<double>(nullable: false),
-                    RecoilAngleVariance = table.Column<double>(nullable: false),
-                    RecoilMagnitude = table.Column<double>(nullable: false),
-                    RecoilMagnitudeVariance = table.Column<double>(nullable: false),
-                    SpreadAlt = table.Column<double>(nullable: false),
-                    InaccuracyCrouchAlt = table.Column<double>(nullable: false),
-                    InaccuracyStandAlt = table.Column<double>(nullable: false),
-                    InaccuracyFireAlt = table.Column<double>(nullable: false),
-                    InaccuracyMoveAlt = table.Column<double>(nullable: false),
-                    InaccuracyJumpAlt = table.Column<double>(nullable: false),
-                    InaccuracyLandAlt = table.Column<double>(nullable: false),
-                    InaccuracyLadderAlt = table.Column<double>(nullable: false),
-                    RecoilAngleVarianceAlt = table.Column<double>(nullable: false),
-                    RecoilMagnitudeAlt = table.Column<double>(nullable: false),
-                    RecoilMagnitudeVarianceAlt = table.Column<double>(nullable: false),
-                    MaxPlayerSpeedAlt = table.Column<double>(nullable: false),
-                    TracerFrequencyAlt = table.Column<double>(nullable: false),
-                    ZoomFov = table.Column<double>(nullable: false),
-                    ZoomFovAlt = table.Column<double>(nullable: false),
-                    CycleTimeAlt = table.Column<double>(nullable: false),
-                    CycletimeBurst = table.Column<double>(nullable: false),
-                    TimeInbetweenBurstShots = table.Column<double>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Equipment", x => x.ID);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Friends",
-                columns: table => new
-                {
-                    SteamId = table.Column<long>(nullable: false),
-                    FriendSteamId = table.Column<long>(nullable: false),
-                    FriendsSince = table.Column<DateTime>(type: "datetime", nullable: false),
-                    Steam = table.Column<bool>(nullable: false),
-                    FaceIt = table.Column<bool>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Friends", x => new { x.SteamId, x.FriendSteamId });
-                });
-
-            migrationBuilder.CreateTable(
-                name: "PlayerStats",
-                columns: table => new
-                {
-                    SteamId = table.Column<long>(nullable: false),
-                    SteamName = table.Column<string>(nullable: false, defaultValueSql: "('')"),
-                    AvatarIcon = table.Column<string>(nullable: false, defaultValueSql: "('')"),
-                    Banned = table.Column<bool>(nullable: false),
-                    NumOfVACBans = table.Column<int>(nullable: false),
-                    NumOfGameBans = table.Column<int>(nullable: false),
-                    LastVacBan = table.Column<int>(nullable: false),
-                    LastGameBan = table.Column<int>(nullable: false),
-                    BlameCounter = table.Column<int>(nullable: false),
-                    GamesPlayed = table.Column<int>(nullable: false),
-                    GamesWon = table.Column<int>(nullable: false),
-                    Rank = table.Column<byte>(nullable: false),
-                    LastRankUpdate = table.Column<DateTime>(type: "datetime", nullable: false, defaultValueSql: "('1900-01-01 00:00:00')"),
-                    Kills = table.Column<long>(nullable: false),
-                    Assists = table.Column<long>(nullable: false),
-                    Deaths = table.Column<long>(nullable: false),
-                    Score = table.Column<long>(nullable: false),
-                    MVPs = table.Column<long>(nullable: false),
-                    HS = table.Column<long>(nullable: false),
-                    HSKills = table.Column<long>(nullable: false),
-                    Shots = table.Column<long>(nullable: false),
-                    Hits = table.Column<long>(nullable: false),
-                    HSVictim = table.Column<long>(nullable: false),
-                    HSDeaths = table.Column<long>(nullable: false),
-                    Enemy2K = table.Column<long>(nullable: false),
-                    Enemy3K = table.Column<long>(nullable: false),
-                    Enemy4K = table.Column<long>(nullable: false),
-                    Enemy5K = table.Column<long>(nullable: false),
-                    Damage = table.Column<long>(nullable: false),
-                    DamageVictim = table.Column<int>(nullable: false),
-                    BombPlants = table.Column<long>(nullable: false),
-                    BombExplosions = table.Column<long>(nullable: false),
-                    BombDefuses = table.Column<long>(nullable: false),
-                    MoneyEarned = table.Column<long>(nullable: false),
-                    MoneySpent = table.Column<long>(nullable: false),
-                    MoneyLost = table.Column<long>(nullable: false),
-                    DecoysUsed = table.Column<long>(nullable: false),
-                    FireNadesUsed = table.Column<long>(nullable: false),
-                    FireNadesDamage = table.Column<long>(nullable: false),
-                    FireNadesDamageVictim = table.Column<long>(nullable: false),
-                    FlashesUsed = table.Column<long>(nullable: false),
-                    FlashesSucceeded = table.Column<long>(nullable: false),
-                    FlashVictim = table.Column<long>(nullable: false),
-                    TeamFlashed = table.Column<long>(nullable: false),
-                    TeamFlashVictim = table.Column<long>(nullable: false),
-                    SelfFlashed = table.Column<long>(nullable: false),
-                    HEsUsed = table.Column<long>(nullable: false),
-                    HEsDamage = table.Column<long>(nullable: false),
-                    HEsDamageVictim = table.Column<long>(nullable: false),
-                    SmokesUsed = table.Column<long>(nullable: false),
-                    FirstBloods = table.Column<long>(nullable: false),
-                    FirstBloodVictim = table.Column<long>(nullable: false),
-                    AVGTimeAlive = table.Column<double>(nullable: false),
-                    TeamDamage = table.Column<long>(nullable: false),
-                    TeamKills = table.Column<long>(nullable: false),
-                    EntryKills = table.Column<long>(nullable: false),
-                    EntryKillVictim = table.Column<long>(nullable: false),
-                    Suicides = table.Column<long>(nullable: false),
-                    BombVictim = table.Column<long>(nullable: false),
-                    HLTVRating1 = table.Column<double>(nullable: false),
-                    HLTVRating2 = table.Column<double>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_PlayerStats", x => x.SteamId);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "_BombPolygonPoint",
-                columns: table => new
-                {
-                    ZoneId = table.Column<int>(nullable: false),
-                    PointId = table.Column<int>(nullable: false),
-                    Map = table.Column<string>(nullable: true),
-                    XIngame = table.Column<double>(nullable: false),
-                    YIngame = table.Column<double>(nullable: false),
-                    XPixel = table.Column<int>(nullable: false),
-                    YPixel = table.Column<int>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK__BombPolygonPoint", x => new { x.ZoneId, x.PointId });
-                    table.ForeignKey(
-                        name: "FK__BombPolygonPoint__BombZone",
-                        column: x => x.ZoneId,
-                        principalTable: "_BombZone",
-                        principalColumn: "ZoneId",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "_FireNadePolygonPoint",
-                columns: table => new
-                {
-                    ZoneId = table.Column<int>(nullable: false),
-                    PointId = table.Column<int>(nullable: false),
-                    Map = table.Column<string>(nullable: true),
-                    XIngame = table.Column<double>(nullable: false),
-                    YIngame = table.Column<double>(nullable: false),
-                    XPixel = table.Column<int>(nullable: false),
-                    YPixel = table.Column<int>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK__FireNadePolygonPoint", x => new { x.ZoneId, x.PointId });
-                    table.ForeignKey(
-                        name: "FK__FireNadePolygonPoint__FireNadeZone",
-                        column: x => x.ZoneId,
-                        principalTable: "_FireNadeZone",
-                        principalColumn: "ZoneId",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "_FlashPolygonPoint",
-                columns: table => new
-                {
-                    ZoneId = table.Column<int>(nullable: false),
-                    PointId = table.Column<int>(nullable: false),
-                    Map = table.Column<string>(nullable: true),
-                    XIngame = table.Column<double>(nullable: false),
-                    YIngame = table.Column<double>(nullable: false),
-                    XPixel = table.Column<int>(nullable: false),
-                    YPixel = table.Column<int>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK__FlashPolygonPoint", x => new { x.ZoneId, x.PointId });
-                    table.ForeignKey(
-                        name: "FK__FlashPolygonPoint__FlashZone",
-                        column: x => x.ZoneId,
-                        principalTable: "_FlashZone",
-                        principalColumn: "ZoneId",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "_HEPolygonPoint",
-                columns: table => new
-                {
-                    ZoneId = table.Column<int>(nullable: false),
-                    PointId = table.Column<int>(nullable: false),
-                    Map = table.Column<string>(nullable: true),
-                    XIngame = table.Column<double>(nullable: false),
-                    YIngame = table.Column<double>(nullable: false),
-                    XPixel = table.Column<int>(nullable: false),
-                    YPixel = table.Column<int>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK__HEPolygonPoint", x => new { x.ZoneId, x.PointId });
-                    table.ForeignKey(
-                        name: "FK__HEPolygonPoint__HEZone",
-                        column: x => x.ZoneId,
-                        principalTable: "_HEZone",
-                        principalColumn: "ZoneId",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "_PositionPolygonPoint",
-                columns: table => new
-                {
-                    ZoneId = table.Column<int>(nullable: false),
-                    PointId = table.Column<int>(nullable: false),
-                    Map = table.Column<string>(nullable: true),
-                    XIngame = table.Column<double>(nullable: false),
-                    YIngame = table.Column<double>(nullable: false),
-                    XPixel = table.Column<int>(nullable: false),
-                    YPixel = table.Column<int>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK__PositionPolygonPoint", x => new { x.ZoneId, x.PointId });
-                    table.ForeignKey(
-                        name: "FK__PositionPolygonPoint__PositionZone",
-                        column: x => x.ZoneId,
-                        principalTable: "_PositionZone",
-                        principalColumn: "ZoneId",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "_SmokeCategory",
-                columns: table => new
-                {
-                    CategoryId = table.Column<int>(nullable: false),
-                    Map = table.Column<string>(nullable: true),
-                    Name = table.Column<string>(nullable: true),
-                    TargetId = table.Column<int>(nullable: false),
-                    ThrowType = table.Column<byte>(nullable: false),
-                    Setpos = table.Column<string>(nullable: true),
-                    PlayerPosXPixel = table.Column<int>(nullable: false),
-                    PlayerPosYPixel = table.Column<int>(nullable: false),
-                    PlayerPosX = table.Column<int>(nullable: false),
-                    PlayerPosY = table.Column<int>(nullable: false),
-                    PlayerPosZ = table.Column<int>(nullable: false),
-                    PlayerViewX = table.Column<int>(nullable: false),
-                    PlayerViewY = table.Column<int>(nullable: false),
-                    GrenadePosX = table.Column<int>(nullable: false),
-                    GrenadePosY = table.Column<int>(nullable: false),
-                    GrenadePosZ = table.Column<int>(nullable: false),
-                    PlayerPosXMin = table.Column<int>(nullable: false),
-                    PlayerPosYMin = table.Column<int>(nullable: false),
-                    PlayerPosZMin = table.Column<int>(nullable: false),
-                    PlayerViewXMin = table.Column<int>(nullable: false),
-                    PlayerViewYMin = table.Column<int>(nullable: false),
-                    PlayerPosXMax = table.Column<int>(nullable: false),
-                    PlayerPosYMax = table.Column<int>(nullable: false),
-                    PlayerPosZMax = table.Column<int>(nullable: false),
-                    PlayerViewXMax = table.Column<int>(nullable: false),
-                    PlayerViewYMax = table.Column<int>(nullable: false),
-                    ViewXContainsPole = table.Column<bool>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK__SmokeCategory", x => x.CategoryId);
-                    table.ForeignKey(
-                        name: "FK__SmokeCategory__SmokeTarget",
-                        column: x => x.TargetId,
-                        principalTable: "_SmokeTarget",
-                        principalColumn: "TargetId",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "MatchStats",
                 columns: table => new
                 {
@@ -633,12 +50,6 @@ namespace Database.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_MatchStats", x => x.MatchId);
-                    table.ForeignKey(
-                        name: "FK_MatchStats_DemoStats",
-                        column: x => x.DemoId,
-                        principalTable: "DemoStats",
-                        principalColumn: "DemoId",
-                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -669,9 +80,9 @@ namespace Database.Migrations
                     MatchId = table.Column<long>(nullable: false),
                     SteamId = table.Column<long>(nullable: false),
                     Team = table.Column<byte>(nullable: false),
-                    Kills = table.Column<short>(nullable: false),
-                    Assists = table.Column<short>(nullable: false),
-                    Deaths = table.Column<short>(nullable: false),
+                    KillCount = table.Column<short>(nullable: false),
+                    AssistCount = table.Column<short>(nullable: false),
+                    DeathCount = table.Column<short>(nullable: false),
                     Score = table.Column<short>(nullable: false),
                     MVPs = table.Column<short>(nullable: false),
                     HS = table.Column<short>(nullable: false),
@@ -734,12 +145,6 @@ namespace Database.Migrations
                         principalTable: "MatchStats",
                         principalColumn: "MatchId",
                         onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_PlayerMatchStats_PlayerStats",
-                        column: x => x.SteamId,
-                        principalTable: "PlayerStats",
-                        principalColumn: "SteamId",
-                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -778,35 +183,6 @@ namespace Database.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "_PlayerMatchSmokeStats",
-                columns: table => new
-                {
-                    MatchId = table.Column<long>(nullable: false),
-                    PlayerId = table.Column<long>(nullable: false),
-                    _Category = table.Column<int>(nullable: false),
-                    _Attempts = table.Column<byte>(nullable: false),
-                    _Misses = table.Column<byte>(nullable: false),
-                    _Insides = table.Column<byte>(nullable: false),
-                    _Gapfrees = table.Column<byte>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK__PlayerMatchSmokeStats", x => new { x.MatchId, x.PlayerId, x._Category });
-                    table.ForeignKey(
-                        name: "FK__PlayerMatchSmokeStats_MatchStats",
-                        column: x => x.MatchId,
-                        principalTable: "MatchStats",
-                        principalColumn: "MatchId",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK__PlayerMatchSmokeStats_PlayerMatchStats",
-                        columns: x => new { x.MatchId, x.PlayerId },
-                        principalTable: "PlayerMatchStats",
-                        principalColumns: new[] { "MatchId", "SteamId" },
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "BombExplosion",
                 columns: table => new
                 {
@@ -819,7 +195,7 @@ namespace Database.Migrations
                 {
                     table.PrimaryKey("PK_BombExplosion", x => new { x.MatchId, x.Round });
                     table.ForeignKey(
-                        name: "FK_BombExplosion_MatchStats",
+                        name: "FK_BombExplosion_MatchStats_MatchId",
                         column: x => x.MatchId,
                         principalTable: "MatchStats",
                         principalColumn: "MatchId",
@@ -901,12 +277,6 @@ namespace Database.Migrations
                         principalColumn: "MatchId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_PlayerRoundStats_PlayerStats",
-                        column: x => x.PlayerId,
-                        principalTable: "PlayerStats",
-                        principalColumn: "SteamId",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
                         name: "FK_PlayerRoundStats_PlayerMatchStats",
                         columns: x => new { x.MatchId, x.PlayerId },
                         principalTable: "PlayerMatchStats",
@@ -935,29 +305,29 @@ namespace Database.Migrations
                 {
                     table.PrimaryKey("PK_BombDefused", x => new { x.MatchId, x.Round });
                     table.ForeignKey(
-                        name: "FK_BombExplosion_MatchStats",
+                        name: "FK_BombDefused_MatchStats_MatchId",
                         column: x => x.MatchId,
                         principalTable: "MatchStats",
                         principalColumn: "MatchId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_BombDefused_PlayerMatchStats",
+                        name: "FK_BombDefused_PlayerMatchStats_MatchId_PlayerId",
                         columns: x => new { x.MatchId, x.PlayerId },
                         principalTable: "PlayerMatchStats",
                         principalColumns: new[] { "MatchId", "SteamId" },
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_BombDefused_RoundStats",
+                        name: "FK_BombDefused_RoundStats_MatchId_Round",
                         columns: x => new { x.MatchId, x.Round },
                         principalTable: "RoundStats",
                         principalColumns: new[] { "MatchId", "Round" },
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_BombDefused_PlayerRoundStats",
+                        name: "FK_BombDefused_PlayerRoundStats_MatchId_Round_PlayerId",
                         columns: x => new { x.MatchId, x.Round, x.PlayerId },
                         principalTable: "PlayerRoundStats",
                         principalColumns: new[] { "MatchId", "Round", "PlayerId" },
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -1759,48 +1129,6 @@ namespace Database.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "_StutterStep",
-                columns: table => new
-                {
-                    MatchId = table.Column<long>(nullable: false),
-                    StutterStepId = table.Column<long>(nullable: false),
-                    PlayerId = table.Column<long>(nullable: false),
-                    Round = table.Column<short>(nullable: false),
-                    WeaponFiredId = table.Column<long>(nullable: false),
-                    StutterStartTime = table.Column<int>(nullable: false),
-                    Under34Time = table.Column<int>(nullable: false),
-                    Lag = table.Column<short>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK__StutterStep", x => new { x.MatchId, x.PlayerId, x.StutterStepId });
-                    table.ForeignKey(
-                        name: "FK__StutterStep_MatchStats",
-                        column: x => x.MatchId,
-                        principalTable: "MatchStats",
-                        principalColumn: "MatchId",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK__StutterStep_PlayerMatchStats",
-                        columns: x => new { x.MatchId, x.PlayerId },
-                        principalTable: "PlayerMatchStats",
-                        principalColumns: new[] { "MatchId", "SteamId" },
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK__StutterStep_RoundStats",
-                        columns: x => new { x.MatchId, x.Round },
-                        principalTable: "RoundStats",
-                        principalColumns: new[] { "MatchId", "Round" },
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK__StutterStep_WeaponFired",
-                        columns: x => new { x.MatchId, x.WeaponFiredId },
-                        principalTable: "WeaponFired",
-                        principalColumns: new[] { "MatchId", "WeaponFiredId" },
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Damage",
                 columns: table => new
                 {
@@ -2071,41 +1399,6 @@ namespace Database.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_FK__BombPolygonPoint__BombZone",
-                table: "_BombPolygonPoint",
-                column: "ZoneId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_FK__FireNadePolygonPoint__FireNadeZone",
-                table: "_FireNadePolygonPoint",
-                column: "ZoneId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_FK__FlashPolygonPoint__FlashZone",
-                table: "_FlashPolygonPoint",
-                column: "ZoneId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_FK__HEPolygonPoint__HEZone",
-                table: "_HEPolygonPoint",
-                column: "ZoneId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_FK__PlayerMatchSmokeStats_MatchStats",
-                table: "_PlayerMatchSmokeStats",
-                column: "MatchId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_FK__PlayerMatchSmokeStats_PlayerMatchStats",
-                table: "_PlayerMatchSmokeStats",
-                columns: new[] { "MatchId", "PlayerId" });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_FK__PositionPolygonPoint__PositionZone",
-                table: "_PositionPolygonPoint",
-                column: "ZoneId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_FK__Refrag_MatchStats",
                 table: "_Refrag",
                 column: "MatchId");
@@ -2121,58 +1414,33 @@ namespace Database.Migrations
                 columns: new[] { "MatchId", "RefraggedKillId" });
 
             migrationBuilder.CreateIndex(
-                name: "IX_FK__SmokeCategory__SmokeTarget",
-                table: "_SmokeCategory",
-                column: "TargetId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_FK__StutterStep_MatchStats",
-                table: "_StutterStep",
-                column: "MatchId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_FK__StutterStep_PlayerMatchStats",
-                table: "_StutterStep",
-                columns: new[] { "MatchId", "PlayerId" });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_FK__StutterStep_RoundStats",
-                table: "_StutterStep",
-                columns: new[] { "MatchId", "Round" });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_FK__StutterStep_WeaponFired",
-                table: "_StutterStep",
-                columns: new[] { "MatchId", "WeaponFiredId" });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_FK_BombDefused_MatchStats",
+                name: "IX_BombDefused_MatchId",
                 table: "BombDefused",
                 column: "MatchId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_FK_BombDefused_PlayerMatchStats",
+                name: "IX_BombDefused_MatchId_PlayerId",
                 table: "BombDefused",
                 columns: new[] { "MatchId", "PlayerId" });
 
             migrationBuilder.CreateIndex(
-                name: "IX_FK_BombDefused_RoundStats",
+                name: "IX_BombDefused_MatchId_Round",
                 table: "BombDefused",
                 columns: new[] { "MatchId", "Round" },
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_FK_BombDefused_PlayerRoundStats",
+                name: "IX_BombDefused_MatchId_Round_PlayerId",
                 table: "BombDefused",
                 columns: new[] { "MatchId", "Round", "PlayerId" });
 
             migrationBuilder.CreateIndex(
-                name: "IX_FK_BombExplosion_MatchStats",
+                name: "IX_BombExplosion_MatchId",
                 table: "BombExplosion",
                 column: "MatchId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_FK_BombExplosion_RoundStats",
+                name: "IX_BombExplosion_MatchId_Round",
                 table: "BombExplosion",
                 columns: new[] { "MatchId", "Round" },
                 unique: true);
@@ -2367,11 +1635,6 @@ namespace Database.Migrations
                 name: "IX_FK_Flashed_PlayerRoundStats",
                 table: "Flashed",
                 columns: new[] { "MatchId", "Round", "VictimId" });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Friends_FriendSteamId",
-                table: "Friends",
-                column: "FriendSteamId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_FK_HE_MatchStats",
@@ -2702,52 +1965,7 @@ namespace Database.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "_BombPolygonPoint");
-
-            migrationBuilder.DropTable(
-                name: "_FireNadePolygonPoint");
-
-            migrationBuilder.DropTable(
-                name: "_FlashPolygonPoint");
-
-            migrationBuilder.DropTable(
-                name: "_HEPolygonPoint");
-
-            migrationBuilder.DropTable(
-                name: "_MapSettings");
-
-            migrationBuilder.DropTable(
-                name: "_OpposingZones");
-
-            migrationBuilder.DropTable(
-                name: "_PlayerMatchSmokeStats");
-
-            migrationBuilder.DropTable(
-                name: "_PolygonPoint");
-
-            migrationBuilder.DropTable(
-                name: "_PositionOpposingZones");
-
-            migrationBuilder.DropTable(
-                name: "_PositionPolygonPoint");
-
-            migrationBuilder.DropTable(
                 name: "_Refrag");
-
-            migrationBuilder.DropTable(
-                name: "_SinglePath");
-
-            migrationBuilder.DropTable(
-                name: "_SmokeCategory");
-
-            migrationBuilder.DropTable(
-                name: "_StutterStep");
-
-            migrationBuilder.DropTable(
-                name: "_TeamStrategy");
-
-            migrationBuilder.DropTable(
-                name: "_Zone");
 
             migrationBuilder.DropTable(
                 name: "BombDefused");
@@ -2765,13 +1983,7 @@ namespace Database.Migrations
                 name: "ConnectDisconnect");
 
             migrationBuilder.DropTable(
-                name: "Equipment");
-
-            migrationBuilder.DropTable(
                 name: "Flashed");
-
-            migrationBuilder.DropTable(
-                name: "Friends");
 
             migrationBuilder.DropTable(
                 name: "HostageDrop");
@@ -2802,24 +2014,6 @@ namespace Database.Migrations
 
             migrationBuilder.DropTable(
                 name: "WeaponReload");
-
-            migrationBuilder.DropTable(
-                name: "_BombZone");
-
-            migrationBuilder.DropTable(
-                name: "_FireNadeZone");
-
-            migrationBuilder.DropTable(
-                name: "_FlashZone");
-
-            migrationBuilder.DropTable(
-                name: "_HEZone");
-
-            migrationBuilder.DropTable(
-                name: "_PositionZone");
-
-            migrationBuilder.DropTable(
-                name: "_SmokeTarget");
 
             migrationBuilder.DropTable(
                 name: "Kills");
@@ -2855,13 +2049,7 @@ namespace Database.Migrations
                 name: "RoundStats");
 
             migrationBuilder.DropTable(
-                name: "PlayerStats");
-
-            migrationBuilder.DropTable(
                 name: "MatchStats");
-
-            migrationBuilder.DropTable(
-                name: "DemoStats");
         }
     }
 }

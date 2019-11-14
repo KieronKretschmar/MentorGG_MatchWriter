@@ -44,7 +44,7 @@ namespace Entities
         public Damage Damage { get; set; }
         public MatchStats Match { get; set; }
         public PlayerMatchStats PlayerMatchStats { get; set; }
-        public PlayerMatchStats PlayerMatchStatsNavigation { get; set; }
+        public PlayerMatchStats VictimMatchStats { get; set; }
         public PlayerRoundStats PlayerRoundStats { get; set; }
         public PlayerRoundStats PlayerRoundStatsNavigation { get; set; }
         public RoundStats RoundStats { get; set; }

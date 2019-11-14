@@ -8,7 +8,6 @@ namespace Entities
         public WeaponFired()
         {
             Damage = new HashSet<Damage>();
-            StutterStep = new HashSet<StutterStep>();
         }
 
         public long MatchId { get; set; }
@@ -36,6 +35,5 @@ namespace Entities
         public PlayerRoundStats PlayerRoundStats { get; set; }
         public RoundStats RoundStats { get; set; }
         public ICollection<Damage> Damage { get; set; }
-        public ICollection<StutterStep> StutterStep { get; set; }
     }
 }

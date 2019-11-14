@@ -8,6 +8,8 @@ namespace TestEntities
         public MatchStats()
         {
             BombDefused = new HashSet<BombDefused>();
+            Kills = new HashSet<Kills>();
+            PlayerMatchStats = new HashSet<PlayerMatchStats>();
         }
 
         public long MatchId { get; set; }
@@ -45,5 +47,7 @@ namespace TestEntities
         public string Event { get; set; }
 
         public ICollection<BombDefused> BombDefused { get; set; }
+        public ICollection<Kills> Kills { get; set; }
+        public ICollection<PlayerMatchStats> PlayerMatchStats { get; set; }
     }
 }

@@ -17,7 +17,9 @@ namespace TestDatabase
         }
 
         public virtual DbSet<BombDefused> BombDefused { get; set; }
+        public virtual DbSet<Kills> Kills { get; set; }
         public virtual DbSet<MatchStats> MatchStats { get; set; }
+        public virtual DbSet<PlayerMatchStats> PlayerMatchStats { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -54,7 +56,68 @@ namespace TestDatabase
                     .WithMany(p => p.BombDefused);
                     //.HasForeignKey(d => d.MatchId)
                     //.HasConstraintName("FK_BombExplosion_MatchStats");
+
+                entity.HasOne(d => d.PlayerMatchStats)
+                    .WithMany(p => p.BombDefused)
+                    .HasForeignKey(d => new { d.MatchId, d.PlayerId })
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_BombDefused_PlayerMatchStats");
             });
+
+            modelBuilder.Entity<Kills>((Action<Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder<Kills>>)(entity =>
+            {
+                entity.HasKey(e => (new { e.MatchId, e.KillId }));
+
+                entity.HasIndex(e => e.MatchId)
+                    .HasName("IX_FK_Kills_MatchStats"); // Remove these lines as we don't care about customizing the Indexes names
+
+                entity.HasIndex(e => (new { e.MatchId, e.DamageId }))
+                    .HasName("IX_FK_Kills_Damage");
+
+                entity.HasIndex(e => (new { e.MatchId, e.PlayerId }))
+                    .HasName("IX_FK_Kills_PlayerMatchStats");
+
+                entity.HasIndex(e => (new { e.MatchId, e.Round }))
+                    .HasName("IX_FK_Kills_RoundStats");
+
+                entity.HasIndex(e => (new { e.MatchId, e.Round, e.PlayerId }))
+                    .HasName("IX_FK_Kills_PlayerRoundStats");
+
+                // We want to have an Index for each ForeignKey. We are missing those Indexes referencing VictimId
+
+
+                // We don't need to specify different names in DB vs Model, so remove these lines
+                entity.Property(e => e.IsCt).HasColumnName("IsCT"); 
+
+                entity.HasOne(d => d.MatchStats)
+                    .WithMany(p => p.Kills)
+                    .HasForeignKey(d => d.MatchId);
+
+
+                entity.HasOne(d => d.PlayerMatchStats) // This was originally KillsPlayerMatchStats, but I already renamed it to PlayerMatchStats
+                    .WithMany(p => p.Kills)
+                    .HasForeignKey(d => (new { d.MatchId, d.PlayerId }))
+                    .OnDelete(DeleteBehavior.ClientSetNull); // Not sure what exactly this does. Cascading could be better => Research
+
+                entity.HasOne(d => d.VictimMatchStats) // Same rename as above, but with Victim
+                    .WithMany(p => p.Deaths)
+                    .HasForeignKey(d => (new { d.MatchId, d.VictimId }))
+                    .OnDelete(DeleteBehavior.ClientSetNull);
+
+                // FYI: This is how the above lines looked right after scaffold. 
+                //entity.HasOne(d => d.PlayerMatchStats)
+                //    .WithMany(p => p.KillsPlayerMatchStats)
+                //    .HasForeignKey(d => new { d.MatchId, d.PlayerId })
+                //    .OnDelete(DeleteBehavior.ClientSetNull)
+                //    .HasConstraintName("FK_Kills_PlayerMatchStats");
+
+
+                //entity.HasOne(d => d.PlayerMatchStatsNavigation)
+                //    .WithMany(p => p.KillsPlayerMatchStatsNavigation)
+                //    .HasForeignKey(d => new { d.MatchId, d.VictimId })
+                //    .OnDelete(DeleteBehavior.ClientSetNull)
+                //    .HasConstraintName("FK_Kills_PlayerMatchStats_Victim");
+            }));
 
             modelBuilder.Entity<MatchStats>(entity =>
             {

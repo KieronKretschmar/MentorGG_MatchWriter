@@ -54,7 +54,6 @@ namespace Entities
         public short RoundStartDamage { get; set; }
 
         public MatchStats Match { get; set; }
-        public PlayerStats Player { get; set; }
         public PlayerMatchStats PlayerMatchStats { get; set; }
         public RoundStats RoundStats { get; set; }
         public ICollection<BombDefused> BombDefused { get; set; }

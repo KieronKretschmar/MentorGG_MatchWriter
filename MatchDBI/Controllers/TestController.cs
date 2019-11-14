@@ -30,12 +30,13 @@ namespace MatchDBI.Controllers
                 var match = testContext.MatchStats.First();
 
 
-                //testContext.BombDefused.Add(new TestEntities.BombDefused
-                //{
-                //    MatchId = match.MatchId
-                //});
+                testContext.BombDefused.Add(new TestEntities.BombDefused
+                {
+                    MatchId = match.MatchId
+                });
                 testContext.SaveChanges();
-
+                var a = testContext.Kills.First().VictimMatchStats;
+                var b = testContext.PlayerMatchStats.First().Kills;
                 var gay = testContext.BombDefused.First().Match.Avgrank;
 
             }

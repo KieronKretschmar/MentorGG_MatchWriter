@@ -25,7 +25,6 @@ namespace Entities
             ItemPickedUp = new HashSet<ItemPickedUp>();
             ItemSaved = new HashSet<ItemSaved>();
             Kills = new HashSet<Kills>();
-            PlayerMatchSmokeStats = new HashSet<PlayerMatchSmokeStats>();
             PlayerMatchStats = new HashSet<PlayerMatchStats>();
             PlayerPosition = new HashSet<PlayerPosition>();
             PlayerRoundStats = new HashSet<PlayerRoundStats>();
@@ -33,7 +32,6 @@ namespace Entities
             RoundItem = new HashSet<RoundItem>();
             RoundStats = new HashSet<RoundStats>();
             Smoke = new HashSet<Smoke>();
-            StutterStep = new HashSet<StutterStep>();
             WeaponFired = new HashSet<WeaponFired>();
             WeaponReload = new HashSet<WeaponReload>();
         }
@@ -71,8 +69,6 @@ namespace Entities
         public short RealScore1 { get; set; }
         public short RealScore2 { get; set; }
         public string Event { get; set; }
-
-        public DemoStats Demo { get; set; }
         public OverTimeStats OverTimeStats { get; set; }
         public ICollection<BombDefused> BombDefused { get; set; }
         public ICollection<BombExplosion> BombExplosion { get; set; }
@@ -92,7 +88,6 @@ namespace Entities
         public ICollection<ItemPickedUp> ItemPickedUp { get; set; }
         public ICollection<ItemSaved> ItemSaved { get; set; }
         public ICollection<Kills> Kills { get; set; }
-        public ICollection<PlayerMatchSmokeStats> PlayerMatchSmokeStats { get; set; }
         public ICollection<PlayerMatchStats> PlayerMatchStats { get; set; }
         public ICollection<PlayerPosition> PlayerPosition { get; set; }
         public ICollection<PlayerRoundStats> PlayerRoundStats { get; set; }
@@ -100,7 +95,6 @@ namespace Entities
         public ICollection<RoundItem> RoundItem { get; set; }
         public ICollection<RoundStats> RoundStats { get; set; }
         public ICollection<Smoke> Smoke { get; set; }
-        public ICollection<StutterStep> StutterStep { get; set; }
         public ICollection<WeaponFired> WeaponFired { get; set; }
         public ICollection<WeaponReload> WeaponReload { get; set; }
     }

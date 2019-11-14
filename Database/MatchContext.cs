@@ -19,25 +19,14 @@ namespace Database
         public virtual DbSet<BombDefused> BombDefused { get; set; }
         public virtual DbSet<BombExplosion> BombExplosion { get; set; }
         public virtual DbSet<BombPlant> BombPlant { get; set; }
-        public virtual DbSet<BombPolygonPoint> BombPolygonPoint { get; set; }
-        public virtual DbSet<BombZone> BombZone { get; set; }
         public virtual DbSet<BotTakeOver> BotTakeOver { get; set; }
         public virtual DbSet<ConnectDisconnect> ConnectDisconnect { get; set; }
         public virtual DbSet<Damage> Damage { get; set; }
         public virtual DbSet<Decoy> Decoy { get; set; }
-        public virtual DbSet<DemoStats> DemoStats { get; set; }
-        public virtual DbSet<Equipment> Equipment { get; set; }
         public virtual DbSet<FireNade> FireNade { get; set; }
-        public virtual DbSet<FireNadePolygonPoint> FireNadePolygonPoint { get; set; }
-        public virtual DbSet<FireNadeZone> FireNadeZone { get; set; }
         public virtual DbSet<Flash> Flash { get; set; }
         public virtual DbSet<Flashed> Flashed { get; set; }
-        public virtual DbSet<FlashPolygonPoint> FlashPolygonPoint { get; set; }
-        public virtual DbSet<FlashZone> FlashZone { get; set; }
-        public virtual DbSet<Friends> Friends { get; set; }
         public virtual DbSet<He> He { get; set; }
-        public virtual DbSet<HepolygonPoint> HepolygonPoint { get; set; }
-        public virtual DbSet<Hezone> Hezone { get; set; }
         public virtual DbSet<HostageDrop> HostageDrop { get; set; }
         public virtual DbSet<HostagePickUp> HostagePickUp { get; set; }
         public virtual DbSet<HostageRescue> HostageRescue { get; set; }
@@ -45,31 +34,17 @@ namespace Database
         public virtual DbSet<ItemPickedUp> ItemPickedUp { get; set; }
         public virtual DbSet<ItemSaved> ItemSaved { get; set; }
         public virtual DbSet<Kills> Kills { get; set; }
-        public virtual DbSet<MapSettings> MapSettings { get; set; }
         public virtual DbSet<MatchStats> MatchStats { get; set; }
-        public virtual DbSet<OpposingZones> OpposingZones { get; set; }
         public virtual DbSet<OverTimeStats> OverTimeStats { get; set; }
-        public virtual DbSet<PlayerMatchSmokeStats> PlayerMatchSmokeStats { get; set; }
         public virtual DbSet<PlayerMatchStats> PlayerMatchStats { get; set; }
         public virtual DbSet<PlayerPosition> PlayerPosition { get; set; }
         public virtual DbSet<PlayerRoundStats> PlayerRoundStats { get; set; }
-        public virtual DbSet<PlayerStats> PlayerStats { get; set; }
-        public virtual DbSet<PolygonPoint> PolygonPoint { get; set; }
-        public virtual DbSet<PositionOpposingZones> PositionOpposingZones { get; set; }
-        public virtual DbSet<PositionPolygonPoint> PositionPolygonPoint { get; set; }
-        public virtual DbSet<PositionZone> PositionZone { get; set; }
         public virtual DbSet<Refrag> Refrag { get; set; }
         public virtual DbSet<RoundItem> RoundItem { get; set; }
         public virtual DbSet<RoundStats> RoundStats { get; set; }
-        public virtual DbSet<SinglePath> SinglePath { get; set; }
         public virtual DbSet<Smoke> Smoke { get; set; }
-        public virtual DbSet<SmokeCategory> SmokeCategory { get; set; }
-        public virtual DbSet<SmokeTarget> SmokeTarget { get; set; }
-        public virtual DbSet<StutterStep> StutterStep { get; set; }
-        public virtual DbSet<TeamStrategy> TeamStrategy { get; set; }
         public virtual DbSet<WeaponFired> WeaponFired { get; set; }
         public virtual DbSet<WeaponReload> WeaponReload { get; set; }
-        public virtual DbSet<Zone> Zone { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -79,7 +54,7 @@ namespace Database
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
                 optionsBuilder.UseMySql("server=localhost;userid=matchdbuser;password=passwort;database=matchdb;persistsecurityinfo=True");
 
-                //We could use an InMemoryDB
+                //We could use an InMemoryDB or other DB providers here
                 //optionsBuilder.UseInMemoryDatabase("InMemoryDb");
             }
         }
@@ -90,59 +65,47 @@ namespace Database
             {
                 entity.HasKey(e => new { e.MatchId, e.Round });
 
-                entity.HasIndex(e => e.MatchId)
-                    .HasName("IX_FK_BombDefused_MatchStats");
+                entity.HasIndex(e => e.MatchId);
 
-                entity.HasIndex(e => new { e.MatchId, e.PlayerId })
-                    .HasName("IX_FK_BombDefused_PlayerMatchStats");
+                entity.HasIndex(e => new { e.MatchId, e.PlayerId });
 
-                entity.HasIndex(e => new { e.MatchId, e.Round })
-                    .HasName("IX_FK_BombDefused_RoundStats");
+                entity.HasIndex(e => new { e.MatchId, e.Round });
 
-                entity.HasIndex(e => new { e.MatchId, e.Round, e.PlayerId })
-                    .HasName("IX_FK_BombDefused_PlayerRoundStats");
+                entity.HasIndex(e => new { e.MatchId, e.Round, e.PlayerId });
 
-                //entity.HasOne("Match")
-                //    .WithMany("BombDefused")
-                //    .HasForeignKey(new string[] { "MatchId" });
-                entity.HasOne(d => d.Match)
+                entity.HasOne(d => d.MatchStats)
                     .WithMany(p => p.BombDefused)
                     .HasForeignKey(d => d.MatchId)
-                    .HasConstraintName("FK_BombExplosion_MatchStats");
+                    .IsRequired();
 
                 entity.HasOne(d => d.PlayerMatchStats)
                     .WithMany(p => p.BombDefused)
                     .HasForeignKey(d => new { d.MatchId, d.PlayerId })
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_BombDefused_PlayerMatchStats");
+                    .IsRequired();
 
                 entity.HasOne(d => d.RoundStats)
                     .WithOne(p => p.BombDefused)
                     .HasForeignKey<BombDefused>(d => new { d.MatchId, d.Round })
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_BombDefused_RoundStats");
+                    .IsRequired();
 
                 entity.HasOne(d => d.PlayerRoundStats)
                     .WithMany(p => p.BombDefused)
                     .HasForeignKey(d => new { d.MatchId, d.Round, d.PlayerId })
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_BombDefused_PlayerRoundStats");
+                    .IsRequired();
             });
 
             modelBuilder.Entity<BombExplosion>(entity =>
             {
                 entity.HasKey(e => new { e.MatchId, e.Round });
 
-                entity.HasIndex(e => e.MatchId)
-                    .HasName("IX_FK_BombExplosion_MatchStats");
+                entity.HasIndex(e => e.MatchId);
 
-                entity.HasIndex(e => new { e.MatchId, e.Round })
-                    .HasName("IX_FK_BombExplosion_RoundStats");
+                entity.HasIndex(e => new { e.MatchId, e.Round });
 
                 entity.HasOne(d => d.Match)
                     .WithMany(p => p.BombExplosion)
                     .HasForeignKey(d => d.MatchId)
-                    .HasConstraintName("FK_BombExplosion_MatchStats");
+                    .IsRequired();
 
                 entity.HasOne(d => d.RoundStats)
                     .WithOne(p => p.BombExplosion)
@@ -193,50 +156,6 @@ namespace Database
                     .HasConstraintName("FK_BombPlant_PlayerRoundStats");
             });
 
-            modelBuilder.Entity<BombPolygonPoint>(entity =>
-            {
-                entity.HasKey(e => new { e.ZoneId, e.PointId });
-
-                entity.ToTable("_BombPolygonPoint");
-
-                entity.HasIndex(e => e.ZoneId)
-                    .HasName("IX_FK__BombPolygonPoint__BombZone");
-
-                entity.Property(e => e.Xingame).HasColumnName("XIngame");
-
-                entity.Property(e => e.Xpixel).HasColumnName("XPixel");
-
-                entity.Property(e => e.Yingame).HasColumnName("YIngame");
-
-                entity.Property(e => e.Ypixel).HasColumnName("YPixel");
-
-                entity.HasOne(d => d.Zone)
-                    .WithMany(p => p.BombPolygonPoint)
-                    .HasForeignKey(d => d.ZoneId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__BombPolygonPoint__BombZone");
-            });
-
-            modelBuilder.Entity<BombZone>(entity =>
-            {
-                entity.HasKey(e => e.ZoneId);
-
-                entity.ToTable("_BombZone");
-
-                entity.Property(e => e.ZoneId).ValueGeneratedNever();
-
-                entity.Property(e => e.CenterXingame).HasColumnName("CenterXIngame");
-
-                entity.Property(e => e.CenterXpixel).HasColumnName("CenterXPixel");
-
-                entity.Property(e => e.CenterYingame).HasColumnName("CenterYIngame");
-
-                entity.Property(e => e.CenterYpixel).HasColumnName("CenterYPixel");
-
-                entity.Property(e => e.Zmax).HasColumnName("ZMax");
-
-                entity.Property(e => e.Zmin).HasColumnName("ZMin");
-            });
 
             modelBuilder.Entity<BotTakeOver>(entity =>
             {
@@ -441,73 +360,6 @@ namespace Database
                     .HasConstraintName("FK_Decoy_PlayerRoundStats");
             });
 
-            modelBuilder.Entity<DemoStats>(entity =>
-            {
-                entity.HasKey(e => e.DemoId);
-
-                entity.Property(e => e.DemoAnalyzerVersion)
-                    .HasColumnType("datetime")
-                    .HasDefaultValueSql("('1900-01-01 00:00:00')");
-
-                entity.Property(e => e.DemoFileHashMd5)
-                    .IsRequired()
-                    .HasColumnName("DemoFileHashMD5")
-                    .HasDefaultValueSql("('')");
-
-                entity.Property(e => e.DemoFileName)
-                    .IsRequired()
-                    .HasDefaultValueSql("('')");
-
-                entity.Property(e => e.DemoFilePath)
-                    .IsRequired()
-                    .HasDefaultValueSql("('')");
-
-                entity.Property(e => e.DemoUrl)
-                    .IsRequired()
-                    .HasDefaultValueSql("('')");
-
-                entity.Property(e => e.FaceItMatchId)
-                    .IsRequired()
-                    .HasDefaultValueSql("('')");
-
-                entity.Property(e => e.MatchDate)
-                    .HasColumnType("datetime")
-                    .HasDefaultValueSql("(getdate())");
-
-                entity.Property(e => e.PyAnalyzerVersion)
-                    .HasColumnType("datetime")
-                    .HasDefaultValueSql("('1900-01-01 00:00:00')");
-
-                entity.Property(e => e.UploadType).HasDefaultValueSql("((-1))");
-
-                entity.Property(e => e.UploadedBy).HasDefaultValueSql("((-1))");
-            });
-
-            modelBuilder.Entity<Equipment>(entity =>
-            {
-                entity.Property(e => e.Id).HasColumnName("ID");
-
-                entity.Property(e => e.DisplayName)
-                    .IsRequired()
-                    .HasDefaultValueSql("('')");
-
-                entity.Property(e => e.InGameName)
-                    .IsRequired()
-                    .HasDefaultValueSql("('')");
-
-                entity.Property(e => e.Source)
-                    .IsRequired()
-                    .HasDefaultValueSql("('')");
-
-                entity.Property(e => e.StartDate)
-                    .HasColumnType("datetime")
-                    .HasDefaultValueSql("(getdate())");
-
-                entity.Property(e => e.WeaponClass)
-                    .IsRequired()
-                    .HasDefaultValueSql("('')");
-            });
-
             modelBuilder.Entity<FireNade>(entity =>
             {
                 entity.HasKey(e => new { e.MatchId, e.GrenadeId });
@@ -550,51 +402,6 @@ namespace Database
                     .HasForeignKey(d => new { d.MatchId, d.Round, d.PlayerId })
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_FireNade_PlayerRoundStats");
-            });
-
-            modelBuilder.Entity<FireNadePolygonPoint>(entity =>
-            {
-                entity.HasKey(e => new { e.ZoneId, e.PointId });
-
-                entity.ToTable("_FireNadePolygonPoint");
-
-                entity.HasIndex(e => e.ZoneId)
-                    .HasName("IX_FK__FireNadePolygonPoint__FireNadeZone");
-
-                entity.Property(e => e.Xingame).HasColumnName("XIngame");
-
-                entity.Property(e => e.Xpixel).HasColumnName("XPixel");
-
-                entity.Property(e => e.Yingame).HasColumnName("YIngame");
-
-                entity.Property(e => e.Ypixel).HasColumnName("YPixel");
-
-                entity.HasOne(d => d.Zone)
-                    .WithMany(p => p.FireNadePolygonPoint)
-                    .HasForeignKey(d => d.ZoneId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__FireNadePolygonPoint__FireNadeZone");
-            });
-
-            modelBuilder.Entity<FireNadeZone>(entity =>
-            {
-                entity.HasKey(e => e.ZoneId);
-
-                entity.ToTable("_FireNadeZone");
-
-                entity.Property(e => e.ZoneId).ValueGeneratedNever();
-
-                entity.Property(e => e.CenterXingame).HasColumnName("CenterXIngame");
-
-                entity.Property(e => e.CenterXpixel).HasColumnName("CenterXPixel");
-
-                entity.Property(e => e.CenterYingame).HasColumnName("CenterYIngame");
-
-                entity.Property(e => e.CenterYpixel).HasColumnName("CenterYPixel");
-
-                entity.Property(e => e.Zmax).HasColumnName("ZMax");
-
-                entity.Property(e => e.Zmin).HasColumnName("ZMin");
             });
 
             modelBuilder.Entity<Flash>(entity =>
@@ -697,60 +504,6 @@ namespace Database
                     .HasConstraintName("FK_Flashed_PlayerRoundStats");
             });
 
-            modelBuilder.Entity<FlashPolygonPoint>(entity =>
-            {
-                entity.HasKey(e => new { e.ZoneId, e.PointId });
-
-                entity.ToTable("_FlashPolygonPoint");
-
-                entity.HasIndex(e => e.ZoneId)
-                    .HasName("IX_FK__FlashPolygonPoint__FlashZone");
-
-                entity.Property(e => e.Xingame).HasColumnName("XIngame");
-
-                entity.Property(e => e.Xpixel).HasColumnName("XPixel");
-
-                entity.Property(e => e.Yingame).HasColumnName("YIngame");
-
-                entity.Property(e => e.Ypixel).HasColumnName("YPixel");
-
-                entity.HasOne(d => d.Zone)
-                    .WithMany(p => p.FlashPolygonPoint)
-                    .HasForeignKey(d => d.ZoneId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__FlashPolygonPoint__FlashZone");
-            });
-
-            modelBuilder.Entity<FlashZone>(entity =>
-            {
-                entity.HasKey(e => e.ZoneId);
-
-                entity.ToTable("_FlashZone");
-
-                entity.Property(e => e.ZoneId).ValueGeneratedNever();
-
-                entity.Property(e => e.CenterXingame).HasColumnName("CenterXIngame");
-
-                entity.Property(e => e.CenterXpixel).HasColumnName("CenterXPixel");
-
-                entity.Property(e => e.CenterYingame).HasColumnName("CenterYIngame");
-
-                entity.Property(e => e.CenterYpixel).HasColumnName("CenterYPixel");
-
-                entity.Property(e => e.Zmax).HasColumnName("ZMax");
-
-                entity.Property(e => e.Zmin).HasColumnName("ZMin");
-            });
-
-            modelBuilder.Entity<Friends>(entity =>
-            {
-                entity.HasKey(e => new { e.SteamId, e.FriendSteamId });
-
-                entity.HasIndex(e => e.FriendSteamId);
-
-                entity.Property(e => e.FriendsSince).HasColumnType("datetime");
-            });
-
             modelBuilder.Entity<He>(entity =>
             {
                 entity.HasKey(e => new { e.MatchId, e.GrenadeId });
@@ -795,51 +548,6 @@ namespace Database
                     .HasForeignKey(d => new { d.MatchId, d.Round, d.PlayerId })
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_HE_PlayerRoundStats");
-            });
-
-            modelBuilder.Entity<HepolygonPoint>(entity =>
-            {
-                entity.HasKey(e => new { e.ZoneId, e.PointId });
-
-                entity.ToTable("_HEPolygonPoint");
-
-                entity.HasIndex(e => e.ZoneId)
-                    .HasName("IX_FK__HEPolygonPoint__HEZone");
-
-                entity.Property(e => e.Xingame).HasColumnName("XIngame");
-
-                entity.Property(e => e.Xpixel).HasColumnName("XPixel");
-
-                entity.Property(e => e.Yingame).HasColumnName("YIngame");
-
-                entity.Property(e => e.Ypixel).HasColumnName("YPixel");
-
-                entity.HasOne(d => d.Zone)
-                    .WithMany(p => p.HepolygonPoint)
-                    .HasForeignKey(d => d.ZoneId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__HEPolygonPoint__HEZone");
-            });
-
-            modelBuilder.Entity<Hezone>(entity =>
-            {
-                entity.HasKey(e => e.ZoneId);
-
-                entity.ToTable("_HEZone");
-
-                entity.Property(e => e.ZoneId).ValueGeneratedNever();
-
-                entity.Property(e => e.CenterXingame).HasColumnName("CenterXIngame");
-
-                entity.Property(e => e.CenterXpixel).HasColumnName("CenterXPixel");
-
-                entity.Property(e => e.CenterYingame).HasColumnName("CenterYIngame");
-
-                entity.Property(e => e.CenterYpixel).HasColumnName("CenterYPixel");
-
-                entity.Property(e => e.Zmax).HasColumnName("ZMax");
-
-                entity.Property(e => e.Zmin).HasColumnName("ZMin");
             });
 
             modelBuilder.Entity<HostageDrop>(entity =>
@@ -1101,7 +809,7 @@ namespace Database
                 entity.HasKey(e => new { e.MatchId, e.KillId });
 
                 entity.HasIndex(e => e.MatchId)
-                    .HasName("IX_FK_Kills_MatchStats");
+                    .HasName("IX_FK_Kills_MatchStats"); // Remove these lines as we don't care about customizing the Indexes names
 
                 entity.HasIndex(e => new { e.MatchId, e.DamageId })
                     .HasName("IX_FK_Kills_Damage");
@@ -1115,6 +823,11 @@ namespace Database
                 entity.HasIndex(e => new { e.MatchId, e.Round, e.PlayerId })
                     .HasName("IX_FK_Kills_PlayerRoundStats");
 
+                // We want to have an Index for each ForeignKey. We are missing those Indexes referencing VictimId
+
+
+                // We don't need to specify different names in DB vs Model, so remove these lines
+
                 entity.Property(e => e.IsCt).HasColumnName("IsCT");
 
                 entity.HasOne(d => d.Match)
@@ -1127,10 +840,10 @@ namespace Database
                     .HasForeignKey(d => new { d.MatchId, d.DamageId })
                     .HasConstraintName("FK_Kills_Damage");
 
-                entity.HasOne(d => d.PlayerMatchStats)
-                    .WithMany(p => p.KillsPlayerMatchStats)
+                entity.HasOne(d => d.PlayerMatchStats)// This was originally KillsPlayerMatchStats, but it should be identical to the name of the table it references.
+                    .WithMany(p => p.Kills)
                     .HasForeignKey(d => new { d.MatchId, d.PlayerId })
-                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .OnDelete(DeleteBehavior.ClientSetNull) // Not sure what exactly this does. Cascading could be better => Research
                     .HasConstraintName("FK_Kills_PlayerMatchStats");
 
                 entity.HasOne(d => d.RoundStats)
@@ -1139,8 +852,8 @@ namespace Database
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Kills_RoundStats");
 
-                entity.HasOne(d => d.PlayerMatchStatsNavigation)
-                    .WithMany(p => p.KillsPlayerMatchStatsNavigation)
+                entity.HasOne(d => d.VictimMatchStats) // When a victim is involved, change PlayerXXX to VictimXXX. Otherwise same as above
+                    .WithMany(p => p.Deaths)
                     .HasForeignKey(d => new { d.MatchId, d.VictimId })
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Kills_PlayerMatchStats_Victim");
@@ -1156,21 +869,6 @@ namespace Database
                     .HasForeignKey(d => new { d.MatchId, d.Round, d.VictimId })
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Kills_PlayerRoundStats_Victim");
-            });
-
-            modelBuilder.Entity<MapSettings>(entity =>
-            {
-                entity.ToTable("_MapSettings");
-
-                entity.Property(e => e.Id).ValueGeneratedNever();
-
-                entity.Property(e => e.CropXmax).HasColumnName("CropXMax");
-
-                entity.Property(e => e.CropXmin).HasColumnName("CropXMin");
-
-                entity.Property(e => e.CropYmax).HasColumnName("CropYMax");
-
-                entity.Property(e => e.CropYmin).HasColumnName("CropYMin");
             });
 
             modelBuilder.Entity<MatchStats>(entity =>
@@ -1201,21 +899,6 @@ namespace Database
                 entity.Property(e => e.Source)
                     .IsRequired()
                     .HasDefaultValueSql("('')");
-
-                entity.HasOne(d => d.Demo)
-                    .WithMany(p => p.MatchStats)
-                    .HasForeignKey(d => d.DemoId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_MatchStats_DemoStats");
-            });
-
-            modelBuilder.Entity<OpposingZones>(entity =>
-            {
-                entity.HasKey(e => new { e.TzoneId, e.CtZoneId });
-
-                entity.ToTable("_OpposingZones");
-
-                entity.Property(e => e.TzoneId).HasColumnName("TZoneId");
             });
 
             modelBuilder.Entity<OverTimeStats>(entity =>
@@ -1233,40 +916,6 @@ namespace Database
                     .WithOne(p => p.OverTimeStats)
                     .HasForeignKey<OverTimeStats>(d => d.MatchId)
                     .HasConstraintName("FK_OverTimeStats_MatchStats");
-            });
-
-            modelBuilder.Entity<PlayerMatchSmokeStats>(entity =>
-            {
-                entity.HasKey(e => new { e.MatchId, e.PlayerId, e.Category });
-
-                entity.ToTable("_PlayerMatchSmokeStats");
-
-                entity.HasIndex(e => e.MatchId)
-                    .HasName("IX_FK__PlayerMatchSmokeStats_MatchStats");
-
-                entity.HasIndex(e => new { e.MatchId, e.PlayerId })
-                    .HasName("IX_FK__PlayerMatchSmokeStats_PlayerMatchStats");
-
-                entity.Property(e => e.Category).HasColumnName("_Category");
-
-                entity.Property(e => e.Attempts).HasColumnName("_Attempts");
-
-                entity.Property(e => e.Gapfrees).HasColumnName("_Gapfrees");
-
-                entity.Property(e => e.Insides).HasColumnName("_Insides");
-
-                entity.Property(e => e.Misses).HasColumnName("_Misses");
-
-                entity.HasOne(d => d.Match)
-                    .WithMany(p => p.PlayerMatchSmokeStats)
-                    .HasForeignKey(d => d.MatchId)
-                    .HasConstraintName("FK__PlayerMatchSmokeStats_MatchStats");
-
-                entity.HasOne(d => d.PlayerMatchStats)
-                    .WithMany(p => p.PlayerMatchSmokeStats)
-                    .HasForeignKey(d => new { d.MatchId, d.PlayerId })
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__PlayerMatchSmokeStats_PlayerMatchStats");
             });
 
             modelBuilder.Entity<PlayerMatchStats>(entity =>
@@ -1307,12 +956,6 @@ namespace Database
                     .WithMany(p => p.PlayerMatchStats)
                     .HasForeignKey(d => d.MatchId)
                     .HasConstraintName("FK_PlayerMatchStats_MatchStats");
-
-                entity.HasOne(d => d.Steam)
-                    .WithMany(p => p.PlayerMatchStats)
-                    .HasForeignKey(d => d.SteamId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_PlayerMatchStats_PlayerStats");
             });
 
             modelBuilder.Entity<PlayerPosition>(entity =>
@@ -1380,12 +1023,6 @@ namespace Database
                     .HasForeignKey(d => d.MatchId)
                     .HasConstraintName("FK_PlayerRoundStats_MatchStats");
 
-                entity.HasOne(d => d.Player)
-                    .WithMany(p => p.PlayerRoundStats)
-                    .HasForeignKey(d => d.PlayerId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_PlayerRoundStats_PlayerStats");
-
                 entity.HasOne(d => d.PlayerMatchStats)
                     .WithMany(p => p.PlayerRoundStats)
                     .HasForeignKey(d => new { d.MatchId, d.PlayerId })
@@ -1397,118 +1034,6 @@ namespace Database
                     .HasForeignKey(d => new { d.MatchId, d.Round })
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_PlayerRoundStats_RoundStats");
-            });
-
-            modelBuilder.Entity<PlayerStats>(entity =>
-            {
-                entity.HasKey(e => e.SteamId);
-
-                entity.Property(e => e.SteamId).ValueGeneratedNever();
-
-                entity.Property(e => e.AvatarIcon)
-                    .IsRequired()
-                    .HasDefaultValueSql("('')");
-
-                entity.Property(e => e.AvgtimeAlive).HasColumnName("AVGTimeAlive");
-
-                entity.Property(e => e.HesDamage).HasColumnName("HEsDamage");
-
-                entity.Property(e => e.HesDamageVictim).HasColumnName("HEsDamageVictim");
-
-                entity.Property(e => e.HesUsed).HasColumnName("HEsUsed");
-
-                entity.Property(e => e.Hltvrating1).HasColumnName("HLTVRating1");
-
-                entity.Property(e => e.Hltvrating2).HasColumnName("HLTVRating2");
-
-                entity.Property(e => e.Hs).HasColumnName("HS");
-
-                entity.Property(e => e.Hsdeaths).HasColumnName("HSDeaths");
-
-                entity.Property(e => e.Hskills).HasColumnName("HSKills");
-
-                entity.Property(e => e.Hsvictim).HasColumnName("HSVictim");
-
-                entity.Property(e => e.LastRankUpdate)
-                    .HasColumnType("datetime")
-                    .HasDefaultValueSql("('1900-01-01 00:00:00')");
-
-                entity.Property(e => e.Mvps).HasColumnName("MVPs");
-
-                entity.Property(e => e.NumOfVacbans).HasColumnName("NumOfVACBans");
-
-                entity.Property(e => e.SteamName)
-                    .IsRequired()
-                    .HasDefaultValueSql("('')");
-            });
-
-            modelBuilder.Entity<PolygonPoint>(entity =>
-            {
-                entity.HasKey(e => new { e.ZoneId, e.PointId });
-
-                entity.ToTable("_PolygonPoint");
-
-                entity.Property(e => e.Xingame).HasColumnName("XIngame");
-
-                entity.Property(e => e.Xpixel).HasColumnName("XPixel");
-
-                entity.Property(e => e.Yingame).HasColumnName("YIngame");
-
-                entity.Property(e => e.Ypixel).HasColumnName("YPixel");
-            });
-
-            modelBuilder.Entity<PositionOpposingZones>(entity =>
-            {
-                entity.HasKey(e => new { e.TzoneId, e.CtZoneId });
-
-                entity.ToTable("_PositionOpposingZones");
-
-                entity.Property(e => e.TzoneId).HasColumnName("TZoneId");
-            });
-
-            modelBuilder.Entity<PositionPolygonPoint>(entity =>
-            {
-                entity.HasKey(e => new { e.ZoneId, e.PointId });
-
-                entity.ToTable("_PositionPolygonPoint");
-
-                entity.HasIndex(e => e.ZoneId)
-                    .HasName("IX_FK__PositionPolygonPoint__PositionZone");
-
-                entity.Property(e => e.Xingame).HasColumnName("XIngame");
-
-                entity.Property(e => e.Xpixel).HasColumnName("XPixel");
-
-                entity.Property(e => e.Yingame).HasColumnName("YIngame");
-
-                entity.Property(e => e.Ypixel).HasColumnName("YPixel");
-
-                entity.HasOne(d => d.Zone)
-                    .WithMany(p => p.PositionPolygonPoint)
-                    .HasForeignKey(d => d.ZoneId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__PositionPolygonPoint__PositionZone");
-            });
-
-            modelBuilder.Entity<PositionZone>(entity =>
-            {
-                entity.HasKey(e => e.ZoneId);
-
-                entity.ToTable("_PositionZone");
-
-                entity.Property(e => e.ZoneId).ValueGeneratedNever();
-
-                entity.Property(e => e.CenterXingame).HasColumnName("CenterXIngame");
-
-                entity.Property(e => e.CenterXpixel).HasColumnName("CenterXPixel");
-
-                entity.Property(e => e.CenterYingame).HasColumnName("CenterYIngame");
-
-                entity.Property(e => e.CenterYpixel).HasColumnName("CenterYPixel");
-
-                entity.Property(e => e.Zmax).HasColumnName("ZMax");
-
-                entity.Property(e => e.Zmin).HasColumnName("ZMin");
             });
 
             modelBuilder.Entity<Refrag>(entity =>
@@ -1605,15 +1130,6 @@ namespace Database
                     .HasConstraintName("FK_RoundStats_MatchStats");
             });
 
-            modelBuilder.Entity<SinglePath>(entity =>
-            {
-                entity.HasKey(e => e.PathId);
-
-                entity.ToTable("_SinglePath");
-
-                entity.Property(e => e.PathId).ValueGeneratedNever();
-            });
-
             modelBuilder.Entity<Smoke>(entity =>
             {
                 entity.HasKey(e => new { e.MatchId, e.GrenadeId });
@@ -1662,126 +1178,6 @@ namespace Database
                     .HasForeignKey(d => new { d.MatchId, d.Round, d.PlayerId })
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Smoke_PlayerRoundStats");
-            });
-
-            modelBuilder.Entity<SmokeCategory>(entity =>
-            {
-                entity.HasKey(e => e.CategoryId);
-
-                entity.ToTable("_SmokeCategory");
-
-                entity.HasIndex(e => e.TargetId)
-                    .HasName("IX_FK__SmokeCategory__SmokeTarget");
-
-                entity.Property(e => e.CategoryId).ValueGeneratedNever();
-
-                entity.Property(e => e.PlayerPosXmax).HasColumnName("PlayerPosXMax");
-
-                entity.Property(e => e.PlayerPosXmin).HasColumnName("PlayerPosXMin");
-
-                entity.Property(e => e.PlayerPosXpixel).HasColumnName("PlayerPosXPixel");
-
-                entity.Property(e => e.PlayerPosYmax).HasColumnName("PlayerPosYMax");
-
-                entity.Property(e => e.PlayerPosYmin).HasColumnName("PlayerPosYMin");
-
-                entity.Property(e => e.PlayerPosYpixel).HasColumnName("PlayerPosYPixel");
-
-                entity.Property(e => e.PlayerPosZmax).HasColumnName("PlayerPosZMax");
-
-                entity.Property(e => e.PlayerPosZmin).HasColumnName("PlayerPosZMin");
-
-                entity.Property(e => e.PlayerViewXmax).HasColumnName("PlayerViewXMax");
-
-                entity.Property(e => e.PlayerViewXmin).HasColumnName("PlayerViewXMin");
-
-                entity.Property(e => e.PlayerViewYmax).HasColumnName("PlayerViewYMax");
-
-                entity.Property(e => e.PlayerViewYmin).HasColumnName("PlayerViewYMin");
-
-                entity.Property(e => e.ViewXcontainsPole).HasColumnName("ViewXContainsPole");
-
-                entity.HasOne(d => d.Target)
-                    .WithMany(p => p.SmokeCategory)
-                    .HasForeignKey(d => d.TargetId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__SmokeCategory__SmokeTarget");
-            });
-
-            modelBuilder.Entity<SmokeTarget>(entity =>
-            {
-                entity.HasKey(e => e.TargetId);
-
-                entity.ToTable("_SmokeTarget");
-
-                entity.Property(e => e.TargetId).ValueGeneratedNever();
-
-                entity.Property(e => e.GrenadePosXmax).HasColumnName("GrenadePosXMax");
-
-                entity.Property(e => e.GrenadePosXmin).HasColumnName("GrenadePosXMin");
-
-                entity.Property(e => e.GrenadePosXpixel).HasColumnName("GrenadePosXPixel");
-
-                entity.Property(e => e.GrenadePosYmax).HasColumnName("GrenadePosYMax");
-
-                entity.Property(e => e.GrenadePosYmin).HasColumnName("GrenadePosYMin");
-
-                entity.Property(e => e.GrenadePosYpixel).HasColumnName("GrenadePosYPixel");
-
-                entity.Property(e => e.GrenadePosZmax).HasColumnName("GrenadePosZMax");
-
-                entity.Property(e => e.GrenadePosZmin).HasColumnName("GrenadePosZMin");
-            });
-
-            modelBuilder.Entity<StutterStep>(entity =>
-            {
-                entity.HasKey(e => new { e.MatchId, e.PlayerId, e.StutterStepId });
-
-                entity.ToTable("_StutterStep");
-
-                entity.HasIndex(e => e.MatchId)
-                    .HasName("IX_FK__StutterStep_MatchStats");
-
-                entity.HasIndex(e => new { e.MatchId, e.PlayerId })
-                    .HasName("IX_FK__StutterStep_PlayerMatchStats");
-
-                entity.HasIndex(e => new { e.MatchId, e.Round })
-                    .HasName("IX_FK__StutterStep_RoundStats");
-
-                entity.HasIndex(e => new { e.MatchId, e.WeaponFiredId })
-                    .HasName("IX_FK__StutterStep_WeaponFired");
-
-                entity.HasOne(d => d.Match)
-                    .WithMany(p => p.StutterStep)
-                    .HasForeignKey(d => d.MatchId)
-                    .HasConstraintName("FK__StutterStep_MatchStats");
-
-                entity.HasOne(d => d.PlayerMatchStats)
-                    .WithMany(p => p.StutterStep)
-                    .HasForeignKey(d => new { d.MatchId, d.PlayerId })
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__StutterStep_PlayerMatchStats");
-
-                entity.HasOne(d => d.RoundStats)
-                    .WithMany(p => p.StutterStep)
-                    .HasForeignKey(d => new { d.MatchId, d.Round })
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__StutterStep_RoundStats");
-
-                entity.HasOne(d => d.WeaponFired)
-                    .WithMany(p => p.StutterStep)
-                    .HasForeignKey(d => new { d.MatchId, d.WeaponFiredId })
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__StutterStep_WeaponFired");
-            });
-
-            modelBuilder.Entity<TeamStrategy>(entity =>
-            {
-                entity.HasKey(e => e.StrategyId);
-
-                entity.ToTable("_TeamStrategy");
-
-                entity.Property(e => e.StrategyId).ValueGeneratedNever();
             });
 
             modelBuilder.Entity<WeaponFired>(entity =>
@@ -1866,25 +1262,6 @@ namespace Database
                     .HasForeignKey(d => new { d.MatchId, d.Round, d.PlayerId })
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_WeaponReload_PlayerRoundStats");
-            });
-
-            modelBuilder.Entity<Zone>(entity =>
-            {
-                entity.ToTable("_Zone");
-
-                entity.Property(e => e.ZoneId).ValueGeneratedNever();
-
-                entity.Property(e => e.CenterXingame).HasColumnName("CenterXIngame");
-
-                entity.Property(e => e.CenterXpixel).HasColumnName("CenterXPixel");
-
-                entity.Property(e => e.CenterYingame).HasColumnName("CenterYIngame");
-
-                entity.Property(e => e.CenterYpixel).HasColumnName("CenterYPixel");
-
-                entity.Property(e => e.Zmax).HasColumnName("ZMax");
-
-                entity.Property(e => e.Zmin).HasColumnName("ZMin");
             });
         }
     }
