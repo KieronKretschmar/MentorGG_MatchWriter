@@ -3,12 +3,11 @@ using System.Collections.Generic;
 
 namespace Entities
 {
-    public partial class Kills
+    public partial class Kill
     {
-        public Kills()
+        public Kill()
         {
-            Flashed = new HashSet<Flashed>();
-            RefragKillsNavigation = new HashSet<Refrag>();
+            RefraggedBy = new HashSet<Refrag>();
         }
 
         public long MatchId { get; set; }
@@ -29,7 +28,7 @@ namespace Entities
         public double VictimPosZ { get; set; }
         public short VictimPrimary { get; set; }
         public short VictimSecondary { get; set; }
-        public bool AssistedFlash { get; set; }
+        public bool AssistByFlash { get; set; }
         public long? AssisterId { get; set; }
         public double? AssisterPosX { get; set; }
         public double? AssisterPosY { get; set; }
@@ -42,14 +41,14 @@ namespace Entities
         public int? VictimZoneByTeam { get; set; }
 
         public Damage Damage { get; set; }
-        public MatchStats Match { get; set; }
+        public MatchStats MatchStats { get; set; }
         public PlayerMatchStats PlayerMatchStats { get; set; }
         public PlayerMatchStats VictimMatchStats { get; set; }
         public PlayerRoundStats PlayerRoundStats { get; set; }
-        public PlayerRoundStats PlayerRoundStatsNavigation { get; set; }
+        public PlayerRoundStats VictimRoundStats { get; set; }
         public RoundStats RoundStats { get; set; }
-        public Refrag RefragKills { get; set; }
-        public ICollection<Flashed> Flashed { get; set; }
-        public ICollection<Refrag> RefragKillsNavigation { get; set; }
+        public Refrag Refrag { get; set; }
+        public Flashed AssistingFlash { get; set; }
+        public ICollection<Refrag> RefraggedBy { get; set; }
     }
 }

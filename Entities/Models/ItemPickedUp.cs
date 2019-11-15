@@ -19,7 +19,7 @@ namespace Entities
         public bool Buy { get; set; }
 
         public ItemDropped ItemDropped { get; set; }
-        public MatchStats Match { get; set; }
+        public MatchStats MatchStats { get; set; }
         public PlayerMatchStats PlayerMatchStats { get; set; }
         public PlayerRoundStats PlayerRoundStats { get; set; }
         public RoundStats RoundStats { get; set; }

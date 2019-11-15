@@ -11,8 +11,8 @@ namespace Entities
             BombPlant = new HashSet<BombPlant>();
             BotTakeOver = new HashSet<BotTakeOver>();
             ConnectDisconnect = new HashSet<ConnectDisconnect>();
-            DamagePlayerMatchStats = new HashSet<Damage>();
-            DamagePlayerMatchStatsNavigation = new HashSet<Damage>();
+            Damages = new HashSet<Damage>();
+            DamagesReceived = new HashSet<Damage>();
             Decoy = new HashSet<Decoy>();
             FireNade = new HashSet<FireNade>();
             Flash = new HashSet<Flash>();
@@ -24,8 +24,8 @@ namespace Entities
             ItemDropped = new HashSet<ItemDropped>();
             ItemPickedUp = new HashSet<ItemPickedUp>();
             ItemSaved = new HashSet<ItemSaved>();
-            Kills = new HashSet<Kills>();
-            Deaths = new HashSet<Kills>();
+            Kills = new HashSet<Kill>();
+            Deaths = new HashSet<Kill>();
             PlayerPosition = new HashSet<PlayerPosition>();
             PlayerRoundStats = new HashSet<PlayerRoundStats>();
             RoundItem = new HashSet<RoundItem>();
@@ -43,11 +43,11 @@ namespace Entities
         public short Score { get; set; }
         public short Mvps { get; set; }
         public short Hs { get; set; }
-        public short Hskills { get; set; }
+        public short HsKills { get; set; }
         public short Shots { get; set; }
         public short Hits { get; set; }
-        public short Hsvictim { get; set; }
-        public short Hsdeaths { get; set; }
+        public short HsVictim { get; set; }
+        public short HsDeaths { get; set; }
         public short Enemy2K { get; set; }
         public short Enemy3K { get; set; }
         public short Enemy4K { get; set; }
@@ -76,15 +76,15 @@ namespace Entities
         public short SmokesUsed { get; set; }
         public short FirstBloods { get; set; }
         public short FirstBloodVictim { get; set; }
-        public double AvgtimeAlive { get; set; }
+        public double AvgTimeAlive { get; set; }
         public int TeamDamage { get; set; }
         public int TeamKills { get; set; }
         public int EntryKills { get; set; }
         public int EntryKillVictim { get; set; }
         public short Suicides { get; set; }
         public short BombVictim { get; set; }
-        public double Hltvrating1 { get; set; }
-        public double Hltvrating2 { get; set; }
+        public double HltvRating1 { get; set; }
+        public double HltvRating2 { get; set; }
         public byte RankBeforeMatch { get; set; }
         public byte RankAfterMatch { get; set; }
         public short RealKills { get; set; }
@@ -93,13 +93,13 @@ namespace Entities
         public short RealScore { get; set; }
         public short RealMvps { get; set; }
 
-        public MatchStats Match { get; set; }
+        public MatchStats MatchStats { get; set; }
         public ICollection<BombDefused> BombDefused { get; set; }
         public ICollection<BombPlant> BombPlant { get; set; }
         public ICollection<BotTakeOver> BotTakeOver { get; set; }
         public ICollection<ConnectDisconnect> ConnectDisconnect { get; set; }
-        public ICollection<Damage> DamagePlayerMatchStats { get; set; }
-        public ICollection<Damage> DamagePlayerMatchStatsNavigation { get; set; }
+        public ICollection<Damage> Damages { get; set; }
+        public ICollection<Damage> DamagesReceived { get; set; }
         public ICollection<Decoy> Decoy { get; set; }
         public ICollection<FireNade> FireNade { get; set; }
         public ICollection<Flash> Flash { get; set; }
@@ -111,8 +111,8 @@ namespace Entities
         public ICollection<ItemDropped> ItemDropped { get; set; }
         public ICollection<ItemPickedUp> ItemPickedUp { get; set; }
         public ICollection<ItemSaved> ItemSaved { get; set; }
-        public ICollection<Kills> Kills { get; set; }
-        public ICollection<Kills> Deaths { get; set; }
+        public ICollection<Kill> Kills { get; set; }
+        public ICollection<Kill> Deaths { get; set; }
         public ICollection<PlayerPosition> PlayerPosition { get; set; }
         public ICollection<PlayerRoundStats> PlayerRoundStats { get; set; }
         public ICollection<RoundItem> RoundItem { get; set; }

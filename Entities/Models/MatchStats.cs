@@ -24,7 +24,7 @@ namespace Entities
             ItemDropped = new HashSet<ItemDropped>();
             ItemPickedUp = new HashSet<ItemPickedUp>();
             ItemSaved = new HashSet<ItemSaved>();
-            Kills = new HashSet<Kills>();
+            Kills = new HashSet<Kill>();
             PlayerMatchStats = new HashSet<PlayerMatchStats>();
             PlayerPosition = new HashSet<PlayerPosition>();
             PlayerRoundStats = new HashSet<PlayerRoundStats>();
@@ -65,7 +65,7 @@ namespace Entities
         public short SourceTickRate { get; set; }
         public string Source { get; set; }
         public byte GameType { get; set; }
-        public double? Avgrank { get; set; }
+        public double? AvgRank { get; set; }
         public short RealScore1 { get; set; }
         public short RealScore2 { get; set; }
         public string Event { get; set; }
@@ -87,7 +87,7 @@ namespace Entities
         public ICollection<ItemDropped> ItemDropped { get; set; }
         public ICollection<ItemPickedUp> ItemPickedUp { get; set; }
         public ICollection<ItemSaved> ItemSaved { get; set; }
-        public ICollection<Kills> Kills { get; set; }
+        public ICollection<Kill> Kills { get; set; }
         public ICollection<PlayerMatchStats> PlayerMatchStats { get; set; }
         public ICollection<PlayerPosition> PlayerPosition { get; set; }
         public ICollection<PlayerRoundStats> PlayerRoundStats { get; set; }

@@ -9,8 +9,8 @@ namespace Entities
         public long KillId { get; set; }
         public long RefraggedKillId { get; set; }
 
-        public Kills Kills { get; set; }
-        public Kills KillsNavigation { get; set; }
-        public MatchStats Match { get; set; }
+        public Kill Kill { get; set; }
+        public Kill RefraggedKill { get; set; }
+        public MatchStats MatchStats { get; set; }
     }
 }

@@ -25,7 +25,7 @@ namespace Entities
         public byte Result { get; set; }
         public string Trajectory { get; set; }
 
-        public MatchStats Match { get; set; }
+        public MatchStats MatchStats { get; set; }
         public PlayerMatchStats PlayerMatchStats { get; set; }
         public PlayerRoundStats PlayerRoundStats { get; set; }
         public RoundStats RoundStats { get; set; }

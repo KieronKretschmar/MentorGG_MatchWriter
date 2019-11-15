@@ -19,6 +19,28 @@
     <Compile Remove="Migrations\20191114160427_temp.Designer.cs" />
     <Compile Remove="Migrations\20191114160750_InitialCreat.cs" />
     <Compile Remove="Migrations\20191114160750_InitialCreat.Designer.cs" />
+    <Compile Remove="Migrations\20191114160910_InitialCreate.cs" />
+    <Compile Remove="Migrations\20191114160910_InitialCreate.Designer.cs" />
+    <Compile Remove="Migrations\20191114162614_temp.cs" />
+    <Compile Remove="Migrations\20191114162614_temp.Designer.cs" />
+    <Compile Remove="Migrations\20191115103839_CascadingDeleteAndCleanup.cs" />
+    <Compile Remove="Migrations\20191115103839_CascadingDeleteAndCleanup.Designer.cs" />
+    <Compile Remove="Migrations\20191115104034_temp.cs" />
+    <Compile Remove="Migrations\20191115104034_temp.Designer.cs" />
+    <Compile Remove="Migrations\20191115104215_temp2.cs" />
+    <Compile Remove="Migrations\20191115104215_temp2.Designer.cs" />
+    <Compile Remove="Migrations\20191115110548_temp2.cs" />
+    <Compile Remove="Migrations\20191115110548_temp2.Designer.cs" />
+    <Compile Remove="Migrations\20191115113303_temp2.cs" />
+    <Compile Remove="Migrations\20191115113303_temp2.Designer.cs" />
+    <Compile Remove="Migrations\20191115113539_temp3.cs" />
+    <Compile Remove="Migrations\20191115113539_temp3.Designer.cs" />
+    <Compile Remove="Migrations\20191115114710_b.cs" />
+    <Compile Remove="Migrations\20191115114710_b.Designer.cs" />
+    <Compile Remove="Migrations\20191115114751_CascadingDeleteAndCleanup.cs" />
+    <Compile Remove="Migrations\20191115114751_CascadingDeleteAndCleanup.Designer.cs" />
+    <Compile Remove="Migrations\20191115115937_temp.cs" />
+    <Compile Remove="Migrations\20191115115937_temp.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

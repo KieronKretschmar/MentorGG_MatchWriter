@@ -21,7 +21,7 @@ namespace Entities
             ItemDropped = new HashSet<ItemDropped>();
             ItemPickedUp = new HashSet<ItemPickedUp>();
             ItemSaved = new HashSet<ItemSaved>();
-            Kills = new HashSet<Kills>();
+            Kills = new HashSet<Kill>();
             PlayerPosition = new HashSet<PlayerPosition>();
             PlayerRoundStats = new HashSet<PlayerRoundStats>();
             RoundItem = new HashSet<RoundItem>();
@@ -46,11 +46,11 @@ namespace Entities
         public int TerrorStrategyId { get; set; }
         public int CtStrategyId { get; set; }
         public int CtPlayedValue { get; set; }
-        public int TplayedValue { get; set; }
+        public int TPlayedValue { get; set; }
         public int CtBuyStrat { get; set; }
-        public int TbuyStrat { get; set; }
+        public int TBuyStrat { get; set; }
 
-        public MatchStats Match { get; set; }
+        public MatchStats MatchStats { get; set; }
         public BombDefused BombDefused { get; set; }
         public BombExplosion BombExplosion { get; set; }
         public BombPlant BombPlant { get; set; }
@@ -68,7 +68,7 @@ namespace Entities
         public ICollection<ItemDropped> ItemDropped { get; set; }
         public ICollection<ItemPickedUp> ItemPickedUp { get; set; }
         public ICollection<ItemSaved> ItemSaved { get; set; }
-        public ICollection<Kills> Kills { get; set; }
+        public ICollection<Kill> Kills { get; set; }
         public ICollection<PlayerPosition> PlayerPosition { get; set; }
         public ICollection<PlayerRoundStats> PlayerRoundStats { get; set; }
         public ICollection<RoundItem> RoundItem { get; set; }

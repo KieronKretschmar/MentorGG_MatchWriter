@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using TestDatabase;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Database;
 
 namespace MatchDBI.Controllers
 {
@@ -22,7 +23,35 @@ namespace MatchDBI.Controllers
         [HttpGet]
         public string Get()
         {
-            using(testContext testContext = new testContext())
+            using (MatchContext dbContext = new MatchContext())
+            {
+                var newMatch = new Entities.MatchStats
+                {
+                };
+                dbContext.MatchStats.Add(newMatch);
+
+                dbContext.SaveChanges();
+
+                dbContext.RoundStats.Add(new Entities.RoundStats
+                {
+                    MatchId = dbContext.MatchStats.First().MatchId
+                });
+
+                dbContext.SaveChanges();
+
+                var debug = dbContext.RoundStats.FirstOrDefault();
+
+                dbContext.MatchStats.Remove(newMatch);
+                dbContext.SaveChanges();
+
+
+
+                dbContext.SaveChanges();
+
+
+            }
+
+            using (testContext testContext = new testContext())
             {
                 //testContext.MatchStats.Add(new TestEntities.MatchStats
                 //{

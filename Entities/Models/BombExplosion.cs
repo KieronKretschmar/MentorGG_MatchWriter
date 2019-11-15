@@ -10,7 +10,7 @@ namespace Entities
         public int Time { get; set; }
         public int Tick { get; set; }
 
-        public MatchStats Match { get; set; }
+        public MatchStats MatchStats { get; set; }
         public RoundStats RoundStats { get; set; }
     }
 }

@@ -12,7 +12,7 @@ namespace Entities
         public int Time { get; set; }
         public bool Connect { get; set; }
 
-        public MatchStats Match { get; set; }
+        public MatchStats MatchStats { get; set; }
         public PlayerMatchStats PlayerMatchStats { get; set; }
         public RoundStats RoundStats { get; set; }
     }

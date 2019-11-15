@@ -10,8 +10,8 @@ namespace Entities
             BombDefused = new HashSet<BombDefused>();
             BombPlant = new HashSet<BombPlant>();
             BotTakeOver = new HashSet<BotTakeOver>();
-            DamagePlayerRoundStats = new HashSet<Damage>();
-            DamagePlayerRoundStatsNavigation = new HashSet<Damage>();
+            Damages = new HashSet<Damage>();
+            DamagesReceived = new HashSet<Damage>();
             Decoy = new HashSet<Decoy>();
             FireNade = new HashSet<FireNade>();
             Flash = new HashSet<Flash>();
@@ -23,8 +23,8 @@ namespace Entities
             ItemDropped = new HashSet<ItemDropped>();
             ItemPickedUp = new HashSet<ItemPickedUp>();
             ItemSaved = new HashSet<ItemSaved>();
-            KillsPlayerRoundStats = new HashSet<Kills>();
-            KillsPlayerRoundStatsNavigation = new HashSet<Kills>();
+            Kills = new HashSet<Kill>();
+            Deaths = new HashSet<Kill>();
             PlayerPosition = new HashSet<PlayerPosition>();
             RoundItem = new HashSet<RoundItem>();
             Smoke = new HashSet<Smoke>();
@@ -53,14 +53,14 @@ namespace Entities
         public short RoundStartMvps { get; set; }
         public short RoundStartDamage { get; set; }
 
-        public MatchStats Match { get; set; }
+        public MatchStats MatchStats { get; set; }
         public PlayerMatchStats PlayerMatchStats { get; set; }
         public RoundStats RoundStats { get; set; }
         public ICollection<BombDefused> BombDefused { get; set; }
         public ICollection<BombPlant> BombPlant { get; set; }
         public ICollection<BotTakeOver> BotTakeOver { get; set; }
-        public ICollection<Damage> DamagePlayerRoundStats { get; set; }
-        public ICollection<Damage> DamagePlayerRoundStatsNavigation { get; set; }
+        public ICollection<Damage> Damages { get; set; }
+        public ICollection<Damage> DamagesReceived { get; set; }
         public ICollection<Decoy> Decoy { get; set; }
         public ICollection<FireNade> FireNade { get; set; }
         public ICollection<Flash> Flash { get; set; }
@@ -72,8 +72,8 @@ namespace Entities
         public ICollection<ItemDropped> ItemDropped { get; set; }
         public ICollection<ItemPickedUp> ItemPickedUp { get; set; }
         public ICollection<ItemSaved> ItemSaved { get; set; }
-        public ICollection<Kills> KillsPlayerRoundStats { get; set; }
-        public ICollection<Kills> KillsPlayerRoundStatsNavigation { get; set; }
+        public ICollection<Kill> Kills { get; set; }
+        public ICollection<Kill> Deaths { get; set; }
         public ICollection<PlayerPosition> PlayerPosition { get; set; }
         public ICollection<RoundItem> RoundItem { get; set; }
         public ICollection<Smoke> Smoke { get; set; }

@@ -11,6 +11,6 @@ namespace Entities
         public int StartMoney { get; set; }
         public short NumRounds { get; set; }
 
-        public MatchStats Match { get; set; }
+        public MatchStats MatchStats { get; set; }
     }
 }
