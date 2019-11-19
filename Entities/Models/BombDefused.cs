@@ -3,7 +3,8 @@ using System.Collections.Generic;
 
 namespace Entities
 {
-    public partial class BombDefused
+    [Newtonsoft.Json.JsonObject]
+    public partial class BombDefused : IMatchDataEntity
     {
         public long MatchId { get; set; }
         public short Round { get; set; }

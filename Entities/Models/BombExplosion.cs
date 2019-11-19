@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Entities
 {
-    public partial class BombExplosion
+    public partial class BombExplosion : IMatchDataEntity
     {
         public long MatchId { get; set; }
         public short Round { get; set; }
