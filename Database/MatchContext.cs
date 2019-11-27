@@ -1,5 +1,5 @@
 ﻿using System;
-using Entities;
+using MatchEntities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
