@@ -43,6 +43,8 @@
     <Compile Remove="Migrations\20191115115937_temp.Designer.cs" />
     <Compile Remove="Migrations\20191115131700_temp.cs" />
     <Compile Remove="Migrations\20191115131700_temp.Designer.cs" />
+    <Compile Remove="Migrations\20191129133645_optionalRelationshipOnDeleteFix.cs" />
+    <Compile Remove="Migrations\20191129133645_optionalRelationshipOnDeleteFix.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

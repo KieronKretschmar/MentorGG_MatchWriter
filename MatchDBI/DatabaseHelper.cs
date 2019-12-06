@@ -18,31 +18,21 @@ namespace MatchDBI
         //    _logger = GetServices();
         //}
 
-        public static bool TryPutMatch(string json)
+        public static void PutMatch(string json)
         {
             var matchDataSet = MatchDataSetConverter.FromJson(json);
-            var success = TryPutMatch(matchDataSet);
-            return success;
+            PutMatch(matchDataSet);
         }
 
-        public static bool TryPutMatch(MatchDataSet data)
+        public static void PutMatch(MatchDataSet data)
         {
-            try
+            using MatchContext dbContext = new MatchContext();
+            RemoveMatch(data.MatchStats.MatchId);
+            foreach (dynamic table in data.Tables())
             {
-                using MatchContext dbContext = new MatchContext();
-                foreach (dynamic table in data.Tables())
-                {
-                    dbContext.AddRange(table);
-                }
-                dbContext.SaveChanges();
+                dbContext.AddRange(table);
             }
-
-            catch (Exception)
-            {
-                return false;
-                throw;
-            }
-            throw new NotImplementedException();
+            dbContext.SaveChanges();
         }
 
 

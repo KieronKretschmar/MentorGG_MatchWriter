@@ -402,13 +402,14 @@ namespace Database
                     .WithMany(p => p.Flashed)
                     .HasForeignKey(d => d.MatchId)
                     .IsRequired();
-                
+
                 // optional relationship (zero/one to zero/one)
                 // a Kill may/may not have an AssistingFlash assist, and a Flashed may/may not have an AssistedKill
                 // optionality comes from AssistedKillId being nullable
                 entity.HasOne(d => d.AssistedKill)
                     .WithOne(p => p.AssistingFlash)
-                    .HasForeignKey<Flashed>(d => new { d.MatchId, d.AssistedKillId });
+                    .HasForeignKey<Flashed>(d => new { d.MatchId, d.AssistedKillId })
+                    .IsRequired(false);
 
                 entity.HasOne(d => d.Flash)
                     .WithMany(p => p.Flashed)

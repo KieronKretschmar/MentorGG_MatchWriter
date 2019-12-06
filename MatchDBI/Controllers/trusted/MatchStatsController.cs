@@ -88,12 +88,11 @@ namespace MatchDBI.Controllers.trusted
             using (var reader = new StreamReader(Request.Body))
             {
                 var body = reader.ReadToEnd();
-                var success = DatabaseHelper.TryPutMatch(body);
 
-                var response = new Dictionary<string, string>() {
-                    { "success", success.ToString() }
-                };
-                return new JsonResult(response);
+                // Upload match to db
+                DatabaseHelper.PutMatch(body);
+
+                return new OkResult();
             }
 
 

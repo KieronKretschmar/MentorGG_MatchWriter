@@ -17,21 +17,27 @@ namespace MatchDBITestProject
             using var dbContext = new Database.MatchContext();
             var msController = new MatchDBI.Controllers.trusted.MatchStatsController(dbContext);
 
-
-
             // Put match stats
             var testFilePath = TestHelper.GetTestFilePath(jsonFileName);
             var json = File.ReadAllText(testFilePath);
-            DatabaseHelper.TryPutMatch(json);
-
+            DatabaseHelper.PutMatch(json);
 
             // Check if MatchStats was entered
             var matchId = GetMatchIdFromJson(json);
-            var isInDatabase = dbContext.MatchStats.Any(x => x.MatchId == matchId);
+            var isInDatabase = DatabaseHelper.MatchStatsExists(matchId);
             Assert.IsTrue(isInDatabase);
 
 
+            // Put match stats again to test idempotency
+            DatabaseHelper.PutMatch(json);
+            isInDatabase = DatabaseHelper.MatchStatsExists(matchId);
+            Assert.IsTrue(isInDatabase);
 
+
+            // Delete match and check if it was successfully deleted
+            DatabaseHelper.RemoveMatch(matchId);
+            isInDatabase = DatabaseHelper.MatchStatsExists(matchId);
+            Assert.IsFalse(isInDatabase);
         }
 
         public long GetMatchIdFromJson(string json)
