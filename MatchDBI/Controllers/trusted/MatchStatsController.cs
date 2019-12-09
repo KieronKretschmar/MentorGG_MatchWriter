@@ -19,10 +19,9 @@ namespace MatchDBI.Controllers.trusted
         private readonly MatchContext _context;
         private readonly ILogger<MatchStatsController> _logger;
 
-        public MatchStatsController(MatchContext context)
-        //public MatchStatsController(MatchContext context, ILogger<MatchStatsController> logger)
+        public MatchStatsController(MatchContext context, ILogger<MatchStatsController> logger)
         {
-            //_logger = logger;
+            _logger = logger;
             _context = context;
         }
 
@@ -45,38 +44,6 @@ namespace MatchDBI.Controllers.trusted
             }
 
             return matchStats;
-        }
-
-        // PUT: api/MatchStats/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for
-        // more details see https://aka.ms/RazorPagesCRUD.
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutMatchStats(long id, MatchStats matchStats)
-        {
-            if (id != matchStats.MatchId)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(matchStats).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!DatabaseHelper.MatchStatsExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
         }
 
         // POST: api/MatchStats

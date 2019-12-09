@@ -1,5 +1,9 @@
+using Database;
 using MatchDBI;
+using MatchDBI.Controllers.trusted;
 using MatchEntities;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
 using System.IO;
@@ -8,15 +12,13 @@ using System.Linq;
 namespace MatchDBITestProject
 {
     [TestClass]
-    public class UnitTest1
+    public class DatabaseHelperTests
     {
         [DataRow("valve_match1.json")]
         [DataTestMethod]
         public void TestUploadDeletion(string jsonFileName)
         {
-            using var dbContext = new Database.MatchContext();
-            var msController = new MatchDBI.Controllers.trusted.MatchStatsController(dbContext);
-
+            //var msController = new MatchStatsController(_context, _matchStatsLogger);
             // Put match stats
             var testFilePath = TestHelper.GetTestFilePath(jsonFileName);
             var json = File.ReadAllText(testFilePath);
