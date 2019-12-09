@@ -46,19 +46,6 @@ namespace Database
         public virtual DbSet<WeaponFired> WeaponFired { get; set; }
         public virtual DbSet<WeaponReload> WeaponReload { get; set; }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            if (!optionsBuilder.IsConfigured)
-            {
-
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseMySql("server=localhost;userid=matchdbuser;password=passwort;database=matchdb;persistsecurityinfo=True");
-
-                //We could use an InMemoryDB or other DB providers here
-                //optionsBuilder.UseInMemoryDatabase("InMemoryDb");
-            }
-        }
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<BombDefused>(entity =>

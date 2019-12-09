@@ -2,6 +2,7 @@
 using MatchDBI.Controllers.trusted;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -11,7 +12,8 @@ namespace MatchDBITestProject
     /// <summary>
     /// TODO: Write tests
     /// </summary>
-    class MatchStatsControllerTests
+    [TestClass]
+    public class MatchStatsControllerTests
     {
         private readonly MatchContext _context;
         private readonly ILogger<MatchStatsController> _matchStatsLogger;
@@ -32,6 +34,13 @@ namespace MatchDBITestProject
             var serviceProvider = services.BuildServiceProvider();
             _context = serviceProvider.GetService<MatchContext>();
             _matchStatsLogger = serviceProvider.GetService<ILogger<MatchStatsController>>();
+        }
+
+        [TestMethod]
+        public void TestMethod()
+        {
+            var matchStatsController = new MatchStatsController(_context, _matchStatsLogger);
+            Assert.IsTrue(true);
         }
     }
 }

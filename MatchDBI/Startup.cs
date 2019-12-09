@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -17,7 +18,10 @@ namespace MatchDBI
     {
         public Startup(IConfiguration configuration)
         {
-            Configuration = configuration;
+            Configuration = new ConfigurationBuilder()
+                .AddConfiguration(configuration)
+                .AddEnvironmentVariables()
+                .Build();
         }
 
         public IConfiguration Configuration { get; }
@@ -26,8 +30,25 @@ namespace MatchDBI
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
-            services.AddDbContext<Database.MatchContext>();
             services.AddLogging(x => x.AddConsole().AddDebug());
+
+            // if a connectionString is set use mysql, else use InMemory
+            var connString = Configuration.GetValue<string>("ConnectionString");
+            if (connString != null)
+            {
+                services.AddDbContext<Database.MatchContext>(o => { o.UseMySql(connString); });
+            }
+            else
+            {
+                // TODO: Add InMemoryDatabase (below don't work due to problems with dependencies)
+
+                //services.AddDbContext<Database.MatchContext>(o => { o.UseInMemoryDatabase("MyDatabase"); });
+                //services.AddEntityFrameworkInMemoryDatabase()
+                //    .AddDbContext<Database.MatchContext>((sp, options) =>
+                //    {
+                //        options.UseInMemoryDatabase().UseInternalServiceProvider(sp);
+                //    });
+            }
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
