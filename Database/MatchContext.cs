@@ -348,7 +348,6 @@ namespace Database
 
                 entity.HasIndex(e => new { e.MatchId, e.Round, e.PlayerId });
 
-                // TODO: What happens when I remove this?
                 entity.Property(e => e.Trajectory).IsRequired();
 
                 entity.HasOne(d => d.MatchStats)
@@ -391,13 +390,15 @@ namespace Database
                     .HasForeignKey(d => d.MatchId)
                     .IsRequired();
 
-                // optional relationship (zero/one to zero/one)
-                // a Kill may/may not have an AssistingFlash assist, and a Flashed may/may not have an AssistedKill
-                // optionality comes from AssistedKillId being nullable
-                entity.HasOne(d => d.AssistedKill)
-                    .WithOne(p => p.AssistingFlash)
-                    .HasForeignKey<Flashed>(d => new { d.MatchId, d.AssistedKillId })
-                    .IsRequired(false);
+                //// WARNING: This relationship caused trouble, throwing bad error messages upon removal of matches
+                //// optional relationship (zero/one to zero/one)
+                //// a Kill may/may not have an AssistingFlash assist, and a Flashed may/may not have an AssistedKill
+                //// optionality comes from AssistedKillId being nullable
+                //entity.HasOne(d => d.AssistedKill)
+                //    .WithOne(p => p.AssistingFlash)
+                //    .HasForeignKey<Flashed>(d => new { d.MatchId, d.AssistedKillId })
+                //    .IsRequired(false)
+                //    .OnDelete(DeleteBehavior.Cascade);
 
                 entity.HasOne(d => d.Flash)
                     .WithMany(p => p.Flashed)

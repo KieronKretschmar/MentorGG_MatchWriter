@@ -33,7 +33,6 @@ namespace MatchDBITestProject
         }
 
         [DataRow("valve_match1.json")]
-        //[DataRow("valve_match1_noflashed.json")]
         [DataTestMethod]
         public async Task TestUploadDeletion(string jsonFileName)
         {

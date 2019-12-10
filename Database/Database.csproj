@@ -64,6 +64,14 @@
     <Compile Remove="Migrations\20191210133344_teststs.Designer.cs" />
     <Compile Remove="Migrations\20191210133849_test.cs" />
     <Compile Remove="Migrations\20191210133849_test.Designer.cs" />
+    <Compile Remove="Migrations\20191210135418_test.cs" />
+    <Compile Remove="Migrations\20191210135418_test.Designer.cs" />
+    <Compile Remove="Migrations\20191210142049_remove_flashed_kill_relation.cs" />
+    <Compile Remove="Migrations\20191210142049_remove_flashed_kill_relation.Designer.cs" />
+    <Compile Remove="Migrations\20191210142115_remove_flashed_kill_relation2.cs" />
+    <Compile Remove="Migrations\20191210142115_remove_flashed_kill_relation2.Designer.cs" />
+    <Compile Remove="Migrations\20191210142200_remove_flashed_kill_relation2.cs" />
+    <Compile Remove="Migrations\20191210142200_remove_flashed_kill_relation2.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>
