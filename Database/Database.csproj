@@ -2,6 +2,9 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
+    <ApplicationIcon />
+    <OutputType>Library</OutputType>
+    <StartupObject />
   </PropertyGroup>
 
   <ItemGroup>
@@ -45,16 +48,32 @@
     <Compile Remove="Migrations\20191115131700_temp.Designer.cs" />
     <Compile Remove="Migrations\20191129133645_optionalRelationshipOnDeleteFix.cs" />
     <Compile Remove="Migrations\20191129133645_optionalRelationshipOnDeleteFix.Designer.cs" />
+    <Compile Remove="Migrations\20191129135555_optionalRelationshipOnDeleteFix.cs" />
+    <Compile Remove="Migrations\20191129135555_optionalRelationshipOnDeleteFix.Designer.cs" />
+    <Compile Remove="Migrations\20191210104749_test.cs" />
+    <Compile Remove="Migrations\20191210104749_test.Designer.cs" />
+    <Compile Remove="Migrations\20191210111101_Testst.cs" />
+    <Compile Remove="Migrations\20191210111101_Testst.Designer.cs" />
+    <Compile Remove="Migrations\20191210112419_Testst.cs" />
+    <Compile Remove="Migrations\20191210112419_Testst.Designer.cs" />
+    <Compile Remove="Migrations\20191210124746_CascadeFlashed.cs" />
+    <Compile Remove="Migrations\20191210124746_CascadeFlashed.Designer.cs" />
+    <Compile Remove="Migrations\20191210131236_test.cs" />
+    <Compile Remove="Migrations\20191210131236_test.Designer.cs" />
+    <Compile Remove="Migrations\20191210133344_teststs.cs" />
+    <Compile Remove="Migrations\20191210133344_teststs.Designer.cs" />
+    <Compile Remove="Migrations\20191210133849_test.cs" />
+    <Compile Remove="Migrations\20191210133849_test.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.0.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="2.2.6" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.0.0">
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="3.1.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="3.0.0-rc3.final" />
+    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="3.0.1" />
   </ItemGroup>
 
   <ItemGroup>

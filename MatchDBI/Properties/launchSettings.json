@@ -14,7 +14,7 @@
       "launchBrowser": true,
       "launchUrl": "test",
       "environmentVariables": {
-        "ConnectionString": "server=localhost;userid=matchdbuser;password=passwort;database=matchdb;persistsecurityinfo=True",
+        "MYSQL_CONNECTION_STRING": "server=localhost;userid=matchdbuser;password=passwort;database=matchdb;persistsecurityinfo=True",
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },

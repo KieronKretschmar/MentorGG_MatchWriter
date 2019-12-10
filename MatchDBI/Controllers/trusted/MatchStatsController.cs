@@ -16,27 +16,20 @@ namespace MatchDBI.Controllers.trusted
     [ApiController]
     public class MatchStatsController : ControllerBase
     {
-        private readonly MatchContext _context;
+        private readonly IDatabaseHelper _dbHelper;
         private readonly ILogger<MatchStatsController> _logger;
 
-        public MatchStatsController(MatchContext context, ILogger<MatchStatsController> logger)
+        public MatchStatsController(ILogger<MatchStatsController> logger, IDatabaseHelper dbHelper)
         {
             _logger = logger;
-            _context = context;
-        }
-
-        // GET: api/MatchStats
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<MatchStats>>> GetMatchStats()
-        {
-            return await _context.MatchStats.ToListAsync();
+            _dbHelper = dbHelper;
         }
 
         // GET: api/MatchStats?version=0.1.1
         [HttpGet("{id}")]
         public async Task<ActionResult<MatchStats>> GetMatchStats(long id)
         {
-            var matchStats = await _context.MatchStats.FindAsync(id);
+            var matchStats = await _dbHelper.GetMatchStatsAsync(id);
 
             if (matchStats == null)
             {
@@ -57,32 +50,18 @@ namespace MatchDBI.Controllers.trusted
                 var body = reader.ReadToEnd();
 
                 // Upload match to db
-                DatabaseHelper.PutMatch(body);
+                _dbHelper.PutMatchAsync(body);
 
                 return new OkResult();
             }
-
-
-            //_context.MatchStats.Add(matchStats);
-            //await _context.SaveChangesAsync();
-
-            //return CreatedAtAction("GetMatchStats", new { id = matchStats.MatchId }, matchStats);
         }
 
         // DELETE: api/MatchStats/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<MatchStats>> DeleteMatchStats(long id)
+        public async Task<ActionResult> DeleteMatchStats(long id)
         {
-            var matchStats = await _context.MatchStats.FindAsync(id);
-            if (matchStats == null)
-            {
-                return NotFound();
-            }
-
-            _context.MatchStats.Remove(matchStats);
-            await _context.SaveChangesAsync();
-
-            return matchStats;
+            await _dbHelper.RemoveMatchAsync(id);
+            return Ok();
         }
     }
 }

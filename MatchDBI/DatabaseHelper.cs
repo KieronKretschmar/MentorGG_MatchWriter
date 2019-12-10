@@ -9,49 +9,63 @@ using System.Threading.Tasks;
 
 namespace MatchDBI
 {
-    public static class DatabaseHelper
+    public interface IDatabaseHelper
     {
-        private static readonly ILogger logger;
-        //public DatabaseHelper()
-        //{
-        //    // TODO: MAKE HELPER AS SERVICE INSTEAD OF STATIC, WITH _logger COMING IN AS DI
-        //    _logger = GetServices();
-        //}
+        Task<MatchStats> GetMatchStatsAsync(long id);
+        bool MatchStatsExists(long id);
+        Task PutMatchAsync(MatchDataSet data);
+        Task PutMatchAsync(string json);
+        Task RemoveMatchAsync(long id);
+    }
 
-        public static void PutMatch(string json)
+    public class DatabaseHelper : IDatabaseHelper
+    {
+        private readonly ILogger<DatabaseHelper> _logger;
+        private readonly MatchContext _context;
+
+        public DatabaseHelper(ILogger<DatabaseHelper> logger, MatchContext dbContext)
+        {
+            _logger = logger;
+            _context = dbContext;
+        }
+
+        public async Task<MatchStats> GetMatchStatsAsync(long id)
+        {
+            var matchStats = await _context.MatchStats.FindAsync(id);
+            return matchStats;
+        }
+
+        public async Task PutMatchAsync(string json)
         {
             var matchDataSet = MatchDataSetConverter.FromJson(json);
-            PutMatch(matchDataSet);
+            await PutMatchAsync(matchDataSet);
         }
 
-        public static void PutMatch(MatchDataSet data)
+        public async Task PutMatchAsync(MatchDataSet data)
         {
-            using MatchContext dbContext = new MatchContext();
-            RemoveMatch(data.MatchStats.MatchId);
+            await RemoveMatchAsync(data.MatchStats.MatchId);
             foreach (dynamic table in data.Tables())
             {
-                dbContext.AddRange(table);
+                _context.AddRange(table);
             }
-            dbContext.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
 
-        public static void RemoveMatch(long id)
+        public async Task RemoveMatchAsync(long id)
         {
-            using MatchContext dbContext = new MatchContext();
-            var match = dbContext.MatchStats.SingleOrDefault(x => x.MatchId == id);
+            var match = _context.MatchStats.SingleOrDefault(x => x.MatchId == id);
             if (match != null)
             {
-                dbContext.MatchStats.Remove(match);
-                dbContext.SaveChanges();
+                _context.MatchStats.Remove(match);
+                await _context.SaveChangesAsync();
             }
         }
 
 
-        public static bool MatchStatsExists(long id)
+        public bool MatchStatsExists(long id)
         {
-            using MatchContext dbContext = new MatchContext();
-            return dbContext.MatchStats.Any(e => e.MatchId == id);
+            return _context.MatchStats.Any(e => e.MatchId == id);
         }
     }
 }

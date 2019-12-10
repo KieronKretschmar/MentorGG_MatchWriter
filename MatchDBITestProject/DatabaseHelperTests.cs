@@ -2,44 +2,90 @@ using Database;
 using MatchDBI;
 using MatchDBI.Controllers.trusted;
 using MatchEntities;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace MatchDBITestProject
 {
     [TestClass]
     public class DatabaseHelperTests
     {
-        [DataRow("valve_match1.json")]
-        [DataTestMethod]
-        public void TestUploadDeletion(string jsonFileName)
+        private readonly ILogger<DatabaseHelper> _dbHelperLogger;
+
+        public DatabaseHelperTests()
         {
-            //var msController = new MatchStatsController(_context, _matchStatsLogger);
-            // Put match stats
-            var testFilePath = TestHelper.GetTestFilePath(jsonFileName);
-            var json = File.ReadAllText(testFilePath);
-            DatabaseHelper.PutMatch(json);
+            var services = new ServiceCollection();
 
-            // Check if MatchStats was entered
-            var matchId = GetMatchIdFromJson(json);
-            var isInDatabase = DatabaseHelper.MatchStatsExists(matchId);
-            Assert.IsTrue(isInDatabase);
+            services.AddLogging(o =>
+            {
+                o.AddConsole();
+                o.AddDebug();
+            });
+
+            var serviceProvider = services.BuildServiceProvider();
+            _dbHelperLogger = serviceProvider.GetService<ILogger<DatabaseHelper>>();
+        }
+
+        [DataRow("valve_match1.json")]
+        //[DataRow("valve_match1_noflashed.json")]
+        [DataTestMethod]
+        public async Task TestUploadDeletion(string jsonFileName)
+        {
+            var options = new DbContextOptionsBuilder<MatchContext>()
+                .UseInMemoryDatabase(databaseName: "TestUploadDeletion")
+                //.UseMySql("server=localhost;userid=matchdbuser;password=passwort;database=matchdb;persistsecurityinfo=True")
+                .Options;
+
+            // Run each section of the test against seperate InMemory instances of the context
+            // See https://docs.microsoft.com/en-us/ef/core/miscellaneous/testing/in-memory#writing-tests
+            // Enter matchstats
+            long matchId;
+            using (var context = new MatchContext(options))
+            {
+                DatabaseHelper databaseHelper = new DatabaseHelper(_dbHelperLogger, context);
+
+                // Put match stats
+                var testFilePath = TestHelper.GetTestFilePath(jsonFileName);
+                var json = File.ReadAllText(testFilePath);
+                matchId = GetMatchIdFromJson(json);
+                await databaseHelper.PutMatchAsync(json);
+
+                // Put match stats again to test idempotency
+                await databaseHelper.PutMatchAsync(json);
+            }
+
+            // Check if MatchStats was entered, using a seperate instance of the context
+            using (var context = new MatchContext(options))
+            {
+                DatabaseHelper databaseHelper = new DatabaseHelper(_dbHelperLogger, context);
+
+                var isInDatabase = databaseHelper.MatchStatsExists(matchId);
+                Assert.IsTrue(isInDatabase);
+            }
 
 
-            // Put match stats again to test idempotency
-            DatabaseHelper.PutMatch(json);
-            isInDatabase = DatabaseHelper.MatchStatsExists(matchId);
-            Assert.IsTrue(isInDatabase);
+            // Delete match
+            using (var context = new MatchContext(options))
+            {
+                DatabaseHelper databaseHelper = new DatabaseHelper(_dbHelperLogger, context);
+                               
+                await databaseHelper.RemoveMatchAsync(matchId);
+            }
 
 
-            // Delete match and check if it was successfully deleted
-            DatabaseHelper.RemoveMatch(matchId);
-            isInDatabase = DatabaseHelper.MatchStatsExists(matchId);
-            Assert.IsFalse(isInDatabase);
+            // Check if it was successfully deleted
+            using (var context = new MatchContext(options))
+            {
+                DatabaseHelper databaseHelper = new DatabaseHelper(_dbHelperLogger, context);
+                var isInDatabase = databaseHelper.MatchStatsExists(matchId);
+                Assert.IsFalse(isInDatabase);
+            }
         }
 
         public long GetMatchIdFromJson(string json)

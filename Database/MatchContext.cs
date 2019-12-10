@@ -353,7 +353,8 @@ namespace Database
 
                 entity.HasOne(d => d.MatchStats)
                     .WithMany(p => p.Flash)
-                    .HasForeignKey(d => d.MatchId);
+                    .HasForeignKey(d => d.MatchId)
+                    .IsRequired();
 
                 entity.HasOne(d => d.PlayerMatchStats)
                     .WithMany(p => p.Flash)

@@ -1,4 +1,5 @@
 ﻿using Database;
+using MatchDBI;
 using MatchDBI.Controllers.trusted;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -15,7 +16,7 @@ namespace MatchDBITestProject
     [TestClass]
     public class MatchStatsControllerTests
     {
-        private readonly MatchContext _context;
+        private readonly IDatabaseHelper _dbHelper;
         private readonly ILogger<MatchStatsController> _matchStatsLogger;
 
         public MatchStatsControllerTests()
@@ -29,17 +30,17 @@ namespace MatchDBITestProject
             });
 
             services.AddControllers();
-            services.AddDbContext<MatchContext>();
+            services.AddSingleton<IDatabaseHelper, DatabaseHelper>();
 
             var serviceProvider = services.BuildServiceProvider();
-            _context = serviceProvider.GetService<MatchContext>();
+            _dbHelper = serviceProvider.GetService<IDatabaseHelper>();
             _matchStatsLogger = serviceProvider.GetService<ILogger<MatchStatsController>>();
         }
 
         [TestMethod]
         public void TestMethod()
         {
-            var matchStatsController = new MatchStatsController(_context, _matchStatsLogger);
+            var matchStatsController = new MatchStatsController(_matchStatsLogger, _dbHelper);
             Assert.IsTrue(true);
         }
     }

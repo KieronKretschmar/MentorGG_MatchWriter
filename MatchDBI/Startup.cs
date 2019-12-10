@@ -33,22 +33,21 @@ namespace MatchDBI
             services.AddLogging(x => x.AddConsole().AddDebug());
 
             // if a connectionString is set use mysql, else use InMemory
-            var connString = Configuration.GetValue<string>("ConnectionString");
+            var connString = Configuration.GetValue<string>("MYSQL_CONNECTION_STRING");
             if (connString != null)
             {
                 services.AddDbContext<Database.MatchContext>(o => { o.UseMySql(connString); });
             }
             else
             {
-                // TODO: Add InMemoryDatabase (below don't work due to problems with dependencies)
-
-                //services.AddDbContext<Database.MatchContext>(o => { o.UseInMemoryDatabase("MyDatabase"); });
-                //services.AddEntityFrameworkInMemoryDatabase()
-                //    .AddDbContext<Database.MatchContext>((sp, options) =>
-                //    {
-                //        options.UseInMemoryDatabase().UseInternalServiceProvider(sp);
-                //    });
+                services.AddEntityFrameworkInMemoryDatabase()
+                    .AddDbContext<Database.MatchContext>((sp, options) =>
+                    {
+                        options.UseInMemoryDatabase(databaseName: "MyInMemoryDatabase").UseInternalServiceProvider(sp);
+                    });
             }
+
+            services.AddScoped<IDatabaseHelper, DatabaseHelper>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
