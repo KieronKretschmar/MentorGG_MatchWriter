@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace MatchWriter
 {
-    public class DemoFileWorkerConsumer : Consumer<TaskCompletedTransferModel>
+    public class DemoFileWorkerConsumer : Consumer<RedisTaskCompletedTransferModel>
     {
         private readonly IDatabaseHelper _dbHelper;
         private readonly ILogger<DemoFileWorkerConsumer> _logger;
@@ -25,7 +25,7 @@ namespace MatchWriter
             _producer = producer;
         }
 
-        public override async Task HandleMessageAsync(IBasicProperties properties, TaskCompletedTransferModel model)
+        public override async Task HandleMessageAsync(IBasicProperties properties, RedisTaskCompletedTransferModel model)
         {
             long matchId = long.Parse(properties.CorrelationId);
 
