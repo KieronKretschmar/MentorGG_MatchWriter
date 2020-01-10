@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Database;
 
-namespace MatchDBI.Controllers
+namespace MatchWriter.Controllers
 {
     [ApiController]
     [Route("[controller]")]

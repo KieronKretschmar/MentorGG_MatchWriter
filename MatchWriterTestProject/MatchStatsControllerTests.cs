@@ -1,6 +1,6 @@
 ﻿using Database;
-using MatchDBI;
-using MatchDBI.Controllers.trusted;
+using MatchWriter;
+using MatchWriter.Controllers.trusted;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -8,7 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace MatchDBITestProject
+namespace MatchWriterTestProject
 {
     /// <summary>
     /// TODO: Write tests

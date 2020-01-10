@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.29503.13
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Database", "Database\Database.csproj", "{05E3C0BF-4978-4F23-B21A-9AFE107B2469}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MatchDBI", "MatchDBI\MatchDBI.csproj", "{3E5B91CD-23A5-44E7-98A4-63A0F4472A68}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MatchWriter", "MatchWriter\MatchWriter.csproj", "{3E5B91CD-23A5-44E7-98A4-63A0F4472A68}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{526E390B-CBE0-4A5B-BCD6-C271864BA5A6}"
 	ProjectSection(SolutionItems) = preProject
@@ -14,7 +14,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MatchEntities", "matchentities\MatchEntities\MatchEntities.csproj", "{547B8C22-0034-4713-A0DF-01F28E0F2C51}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MatchDBITestProject", "MatchDBITestProject\MatchDBITestProject.csproj", "{7A08B77A-8BD7-46B2-AECA-0891170F1DC6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MatchWriterTestProject", "MatchWriterTestProject\MatchWriterTestProject.csproj", "{7A08B77A-8BD7-46B2-AECA-0891170F1DC6}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataAccess", "DataAccess\DataAccess.csproj", "{7E8C514C-DC2E-48CF-8951-24D52DD2CE4D}"
 EndProject
