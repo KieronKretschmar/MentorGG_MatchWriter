@@ -15,14 +15,15 @@ namespace MatchWriter
         private readonly IDatabaseHelper _dbHelper;
         private readonly ILogger<DemoFileWorkerConsumer> _logger;
         private readonly IProducer<TaskCompletedTransferModel> _producer;
-
+        private readonly IMatchRedis _cache;
         private const string _versionString = "1";
 
-        public DemoFileWorkerConsumer(IQueueConnection queueConnection, ILogger<DemoFileWorkerConsumer> logger, IDatabaseHelper dbHelper, IProducer<TaskCompletedTransferModel> producer) : base(queueConnection)
+        public DemoFileWorkerConsumer(IQueueConnection queueConnection, ILogger<DemoFileWorkerConsumer> logger, IDatabaseHelper dbHelper, IProducer<TaskCompletedTransferModel> producer, IMatchRedis cache) : base(queueConnection)
         {
             _dbHelper = dbHelper;
             _logger = logger;
             _producer = producer;
+            _cache = cache;
         }
 
         public override async Task HandleMessageAsync(IBasicProperties properties, RedisTaskCompletedTransferModel model)
@@ -39,11 +40,15 @@ namespace MatchWriter
             try
             {
                 // Get matchDataSetJson from redis
-                throw new NotImplementedException();
-                var matchDataSetJson = "";
+                if(model.ExpiryDate >= DateTime.Now)
+                {
+                    msg.Success = false;
+                    throw new Exception($"ExpiryDate has already passed. Aborting. Incoming message: {model.ToString()}");
+                }
+                var matchDataSet = await _cache.GetMatch(model.RedisKey).ConfigureAwait(false);
 
                 // Upload match to db
-                await _dbHelper.PutMatchAsync(matchDataSetJson).ConfigureAwait(false);
+                await _dbHelper.PutMatchAsync(matchDataSet).ConfigureAwait(false);
 
                 msg.Success = true;
             }

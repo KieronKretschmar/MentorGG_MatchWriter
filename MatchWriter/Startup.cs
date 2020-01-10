@@ -40,6 +40,7 @@ namespace MatchWriter
             services.AddLogging(x => x.AddConsole().AddDebug());
 
             services.AddScoped<IDatabaseHelper, DatabaseHelper>();
+            services.AddScoped<IMatchRedis, MatchRedis>();
 
             // if a connectionString is set use mysql, else use InMemory
             var connString = Configuration.GetValue<string>("MYSQL_CONNECTION_STRING");
