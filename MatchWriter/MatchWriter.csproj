@@ -27,8 +27,4 @@
     <ProjectReference Include="..\rabbitcommunicationlib\RabbitTransfer.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Controllers\public\" />
-  </ItemGroup>
-
 </Project>
