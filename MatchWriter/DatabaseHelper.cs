@@ -37,7 +37,7 @@ namespace MatchWriter
 
         public async Task PutMatchAsync(string json)
         {
-            var matchDataSet = MatchDataSetConverter.FromJson(json);
+            var matchDataSet = MatchDataSet.FromJson(json);
             await PutMatchAsync(matchDataSet);
         }
 
