@@ -77,7 +77,8 @@ namespace MatchWriter
                     incomingQueue, 
                     services.GetRequiredService<ILogger<DemoFileWorkerConsumer>>(), 
                     services.GetRequiredService<IDatabaseHelper>(), 
-                    services.GetRequiredService<IProducer<TaskCompletedTransferModel>>());
+                    services.GetRequiredService<IProducer<TaskCompletedTransferModel>>(),
+                    services.GetRequiredService<IMatchRedis>());
             });
         }
 
