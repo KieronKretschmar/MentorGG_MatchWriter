@@ -7,7 +7,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace MatchDBI
+namespace MatchWriter
 {
     public interface IDatabaseHelper
     {
@@ -37,7 +37,7 @@ namespace MatchDBI
 
         public async Task PutMatchAsync(string json)
         {
-            var matchDataSet = MatchDataSetConverter.FromJson(json);
+            var matchDataSet = MatchDataSet.FromJson(json);
             await PutMatchAsync(matchDataSet);
         }
 

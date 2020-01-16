@@ -16,8 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Database\Database.csproj" />
-    <ProjectReference Include="..\MatchDBI\MatchDBI.csproj" />
+    <ProjectReference Include="..\MatchWriter\MatchWriter.csproj" />
   </ItemGroup>
 
 </Project>

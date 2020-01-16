@@ -10,7 +10,7 @@ using MatchEntities;
 using System.IO;
 using Microsoft.Extensions.Logging;
 
-namespace MatchDBI.Controllers.trusted
+namespace MatchWriter.Controllers.trusted
 {
     [Route("api/[controller]")]
     [ApiController]

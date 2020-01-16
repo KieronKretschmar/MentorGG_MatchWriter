@@ -1,6 +1,6 @@
 using Database;
-using MatchDBI;
-using MatchDBI.Controllers.trusted;
+using MatchWriter;
+using MatchWriter.Controllers.trusted;
 using MatchEntities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -11,7 +11,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace MatchDBITestProject
+namespace MatchWriterTestProject
 {
     [TestClass]
     public class DatabaseHelperTests
