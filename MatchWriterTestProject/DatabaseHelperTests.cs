@@ -146,6 +146,46 @@ namespace MatchWriterTestProject
             }
         }
 
+        /// <summary>
+        /// This test makes sure that writing and loading a serialized MatchDataSet to the database and loading 
+        /// it again does not change its contents, thereby guaranteeing no information to be lost when writing to the database.
+        /// </summary>
+        /// <param name="jsonFileName"></param>
+        /// <returns></returns>
+        [DataRow("TestDemo_Valve1.json")]
+        [DataTestMethod]
+        public async Task PutAndLoadInvariance(string jsonFileName)
+        {
+            var options = new DbContextOptionsBuilder<MatchContext>()
+                .UseInMemoryDatabase(databaseName: "PutAndLoadInvariance")
+                .Options;
+
+            // Put match stats
+            var testFilePath = TestHelper.GetTestFilePath(jsonFileName);
+            var jsonOriginal = File.ReadAllText(testFilePath);
+
+            // Run each section of the test against seperate InMemory instances of the context
+            // See https://docs.microsoft.com/en-us/ef/core/miscellaneous/testing/in-memory#writing-tests
+            // Enter match
+            long matchId;
+            using (var context = new MatchContext(options))
+            {
+                DatabaseHelper databaseHelper = new DatabaseHelper(_dbHelperLogger, context);
+
+                matchId = GetMatchIdFromJson(jsonOriginal);
+                await databaseHelper.PutMatchAsync(jsonOriginal);
+            }
+
+            // Load match from database and serialize it
+            using (var context = new MatchContext(options))
+            {
+                DatabaseHelper databaseHelper = new DatabaseHelper(_dbHelperLogger, context);
+                var matchDataSet = await databaseHelper.GetMatchDataSetAsync(matchId);
+                var jsonFromDb = matchDataSet.ToJson();
+                Assert.AreEqual(jsonOriginal, jsonFromDb);
+            }
+        }
+
         public long GetMatchIdFromJson(string json)
         {
             var data = JsonConvert.DeserializeObject<MatchDataSet>(json);
