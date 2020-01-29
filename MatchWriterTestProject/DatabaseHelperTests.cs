@@ -91,6 +91,14 @@ namespace MatchWriterTestProject
                 var testFilePath = TestHelper.GetTestFilePath(jsonFileName);
                 var json = File.ReadAllText(testFilePath);
                 matchId = GetMatchIdFromJson(json);
+                if(matchId == 0)
+                {
+                    // When inserting a MatchDataSet with MatchId=0, the database auto generates a new MatchId, 
+                    // even when we call entity.Property(p => p.MatchId).ValueGeneratedNever();
+                    // Therefore always use test jsons with matchId!=0
+                    Assert.Inconclusive();
+                }
+
                 await databaseHelper.PutMatchAsync(json);
             }
 
