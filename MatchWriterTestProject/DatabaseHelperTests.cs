@@ -32,7 +32,7 @@ namespace MatchWriterTestProject
             _dbHelperLogger = serviceProvider.GetService<ILogger<DatabaseHelper>>();
         }
 
-        [DataRow("valve_match1.json")]
+        [DataRow("TestDemo_Valve1.json")]
         [DataTestMethod]
         public async Task TestIdempotency(string jsonFileName)
         {
@@ -71,7 +71,7 @@ namespace MatchWriterTestProject
             }
         }
 
-        [DataRow("valve_match1.json")]
+        [DataRow("TestDemo_Valve1.json")]
         [DataTestMethod]
         public async Task TestPutMatch(string jsonFileName)
         {
@@ -105,7 +105,7 @@ namespace MatchWriterTestProject
         }
 
 
-        [DataRow("valve_match1.json")]
+        [DataRow("TestDemo_Valve1.json")]
         [DataTestMethod]
         public async Task TestDeleteMatch(string jsonFileName)
         {
