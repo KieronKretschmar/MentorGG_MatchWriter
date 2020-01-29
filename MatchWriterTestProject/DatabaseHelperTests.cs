@@ -34,11 +34,10 @@ namespace MatchWriterTestProject
 
         [DataRow("valve_match1.json")]
         [DataTestMethod]
-        public async Task TestUploadDeletion(string jsonFileName)
+        public async Task TestIdempotency(string jsonFileName)
         {
             var options = new DbContextOptionsBuilder<MatchContext>()
-                .UseInMemoryDatabase(databaseName: "TestUploadDeletion")
-                //.UseMySql("server=localhost;userid=matchdbuser;password=passwort;database=matchdb;persistsecurityinfo=True")
+                .UseInMemoryDatabase(databaseName: "TestIdempotency")
                 .Options;
 
             // Run each section of the test against seperate InMemory instances of the context
@@ -59,6 +58,42 @@ namespace MatchWriterTestProject
                 await databaseHelper.PutMatchAsync(json);
             }
 
+            // Check if one, and only one MatchStats was entered, using a seperate instance of the context
+            using (var context = new MatchContext(options))
+            {
+                DatabaseHelper databaseHelper = new DatabaseHelper(_dbHelperLogger, context);
+
+                var isInDatabase = databaseHelper.MatchStatsExists(matchId);
+                Assert.IsTrue(isInDatabase);
+
+                var onlyOneMatchInDatabase = context.MatchStats.Count() == 1;
+                Assert.IsTrue(onlyOneMatchInDatabase);
+            }
+        }
+
+        [DataRow("valve_match1.json")]
+        [DataTestMethod]
+        public async Task TestPutMatch(string jsonFileName)
+        {
+            var options = new DbContextOptionsBuilder<MatchContext>()
+                .UseInMemoryDatabase(databaseName: "TestPutMatch")
+                .Options;
+
+            // Run each section of the test against seperate InMemory instances of the context
+            // See https://docs.microsoft.com/en-us/ef/core/miscellaneous/testing/in-memory#writing-tests
+            // Enter matchstats
+            long matchId;
+            using (var context = new MatchContext(options))
+            {
+                DatabaseHelper databaseHelper = new DatabaseHelper(_dbHelperLogger, context);
+
+                // Put match stats
+                var testFilePath = TestHelper.GetTestFilePath(jsonFileName);
+                var json = File.ReadAllText(testFilePath);
+                matchId = GetMatchIdFromJson(json);
+                await databaseHelper.PutMatchAsync(json);
+            }
+
             // Check if MatchStats was entered, using a seperate instance of the context
             using (var context = new MatchContext(options))
             {
@@ -67,13 +102,37 @@ namespace MatchWriterTestProject
                 var isInDatabase = databaseHelper.MatchStatsExists(matchId);
                 Assert.IsTrue(isInDatabase);
             }
+        }
 
+
+        [DataRow("valve_match1.json")]
+        [DataTestMethod]
+        public async Task TestDeleteMatch(string jsonFileName)
+        {
+            var options = new DbContextOptionsBuilder<MatchContext>()
+                .UseInMemoryDatabase(databaseName: "TestDeleteMatch")
+                .Options;
+
+            // Run each section of the test against seperate InMemory instances of the context
+            // See https://docs.microsoft.com/en-us/ef/core/miscellaneous/testing/in-memory#writing-tests
+            // Enter matchstats
+            long matchId;
+            using (var context = new MatchContext(options))
+            {
+                DatabaseHelper databaseHelper = new DatabaseHelper(_dbHelperLogger, context);
+
+                // Put match stats
+                var testFilePath = TestHelper.GetTestFilePath(jsonFileName);
+                var json = File.ReadAllText(testFilePath);
+                matchId = GetMatchIdFromJson(json);
+                await databaseHelper.PutMatchAsync(json);
+            }
 
             // Delete match
             using (var context = new MatchContext(options))
             {
                 DatabaseHelper databaseHelper = new DatabaseHelper(_dbHelperLogger, context);
-                               
+
                 await databaseHelper.RemoveMatchAsync(matchId);
             }
 
