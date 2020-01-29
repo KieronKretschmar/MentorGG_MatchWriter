@@ -82,8 +82,8 @@ namespace MatchWriterTestProject
             using (var context = new MatchContext(options))
             {
                 DatabaseHelper databaseHelper = new DatabaseHelper(_dbHelperLogger, context);
-                var isInDatabase = databaseHelper.MatchStatsExists(matchId);
-                Assert.IsFalse(isInDatabase);
+                var dbIsEmpty = databaseHelper.DatabaseIsEmpty();
+                Assert.IsTrue(dbIsEmpty);
             }
         }
 
