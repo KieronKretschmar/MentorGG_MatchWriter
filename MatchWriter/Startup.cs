@@ -44,6 +44,7 @@ namespace MatchWriter
 
             // if a connectionString is set use mysql, else use InMemory
             var connString = Configuration.GetValue<string>("MYSQL_CONNECTION_STRING");
+            Console.WriteLine($"connString {connString}");
             if (connString != null)
             {
                 services.AddDbContext<Database.MatchContext>(o => { o.UseMySql(connString); });
@@ -55,6 +56,12 @@ namespace MatchWriter
                     {
                         options.UseInMemoryDatabase(databaseName: "MyInMemoryDatabase").UseInternalServiceProvider(sp);
                     });
+            }
+
+            if (Configuration.GetValue<bool>("IS_MIGRATING"))
+            {
+                Console.WriteLine("WARNING: IS_MIGRATING is true. This should not happen in production.");
+                return;
             }
 
             // Setup rabbit
