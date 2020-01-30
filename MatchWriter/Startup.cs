@@ -60,7 +60,7 @@ namespace MatchWriter
 
             if (Configuration.GetValue<bool>("IS_MIGRATING"))
             {
-                Console.WriteLine("IS_MIGRATING is true. This should not happen in production.");
+                Console.WriteLine("WARNING: IS_MIGRATING is true. This should not happen in production.");
                 return;
             }
 
