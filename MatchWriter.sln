@@ -14,9 +14,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MatchWriterTestProject", "M
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RabbitCommunicationLib", "RabbitCommunicationLib\RabbitCommunicationLib.csproj", "{A849E5DF-EEE5-402F-9563-FF11C8BB67FB}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Database", "matchdb\Database\Database.csproj", "{C78F87F5-1A87-47A7-9956-99D2706B2C91}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Database", "MatchDb\Database\Database.csproj", "{C78F87F5-1A87-47A7-9956-99D2706B2C91}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MatchEntities", "matchdb\matchentities\MatchEntities\MatchEntities.csproj", "{8AF14990-2C1A-4CA9-9703-E541E64A2D41}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MatchEntities", "MatchDb\MatchEntities\MatchEntities\MatchEntities.csproj", "{8AF14990-2C1A-4CA9-9703-E541E64A2D41}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
