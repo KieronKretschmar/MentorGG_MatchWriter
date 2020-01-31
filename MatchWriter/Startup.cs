@@ -43,11 +43,13 @@ namespace MatchWriter
             services.AddScoped<IMatchRedis, MatchRedis>();
 
             // if a connectionString is set use mysql, else use InMemory
-            var connString = Configuration.GetValue<string>("MYSQL_CONNECTION_STRING");
-            Console.WriteLine($"connString {connString}");
-            if (connString != null)
+            var MYSQL_CONNECTION_STRING = Configuration.GetValue<string>("MYSQL_CONNECTION_STRING");
+            if (MYSQL_CONNECTION_STRING == null)
+                throw new ArgumentException("MYSQL_CONNECTION_STRING is missing, configure the `MYSQL_CONNECTION_STRING` enviroment variable. Defaulting to InMemory database.");
+
+            if (MYSQL_CONNECTION_STRING != null)
             {
-                services.AddDbContext<Database.MatchContext>(o => { o.UseMySql(connString); });
+                services.AddDbContext<Database.MatchContext>(o => { o.UseMySql(MYSQL_CONNECTION_STRING); });
             }
             else
             {
@@ -66,9 +68,14 @@ namespace MatchWriter
 
             // Setup rabbit
             var AMQP_URI = Configuration.GetValue<string>("AMQP_URI");
+            if (AMQP_URI == null)
+                throw new ArgumentException("AMQP_URI is missing, configure the `AMQP_URI` enviroment variable.");
 
             // Setup rabbit - Create producer
             var AMQP_CALLBACK_QUEUE = Configuration.GetValue<string>("AMQP_CALLBACK_QUEUE");
+            if (AMQP_CALLBACK_QUEUE == null)
+                throw new ArgumentException("AMQP_CALLBACK_QUEUE is missing, configure the `AMQP_CALLBACK_QUEUE` enviroment variable.");
+
             var callbackQueue = new QueueConnection(AMQP_URI, AMQP_CALLBACK_QUEUE);
             services.AddSingleton<IProducer<TaskCompletedTransferModel>>(sp =>
             {
@@ -77,6 +84,9 @@ namespace MatchWriter
 
             // Setup rabbit - Create consumer
             var AMQP_DEMOFILEWORKER_QUEUE = Configuration.GetValue<string>("AMQP_DEMOFILEWORKER_QUEUE");
+            if (AMQP_DEMOFILEWORKER_QUEUE == null)
+                throw new ArgumentException("AMQP_DEMOFILEWORKER_QUEUE is missing, configure the `AMQP_DEMOFILEWORKER_QUEUE` enviroment variable.");
+
             var incomingQueue = new QueueConnection(AMQP_URI, AMQP_DEMOFILEWORKER_QUEUE);
             services.AddHostedService<DemoFileWorkerConsumer>(services =>
             {
