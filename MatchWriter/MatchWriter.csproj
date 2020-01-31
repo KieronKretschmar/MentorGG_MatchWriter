@@ -24,9 +24,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\matchdb\Database\Database.csproj" />
-    <ProjectReference Include="..\matchdb\matchentities\MatchEntities\MatchEntities.csproj" />
-    <ProjectReference Include="..\rabbitcommunicationlib\RabbitTransfer.csproj" />
+    <ProjectReference Include="..\MatchDb\Database\Database.csproj" />
+    <ProjectReference Include="..\MatchDb\MatchEntities\MatchEntities\MatchEntities.csproj" />
+    <ProjectReference Include="..\RabbitCommunicationLib\RabbitCommunicationLib.csproj" />
   </ItemGroup>
 
 </Project>

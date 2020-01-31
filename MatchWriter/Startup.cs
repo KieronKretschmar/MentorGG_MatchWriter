@@ -11,10 +11,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using RabbitTransfer.Interfaces;
-using RabbitTransfer.Producer;
-using RabbitTransfer.Queues;
-using RabbitTransfer.TransferModels;
+using RabbitCommunicationLib.Interfaces;
+using RabbitCommunicationLib.Producer;
+using RabbitCommunicationLib.Queues;
+using RabbitCommunicationLib.TransferModels;
 
 namespace MatchWriter
 {

@@ -1,8 +1,8 @@
 ﻿using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
-using RabbitTransfer.Consumer;
-using RabbitTransfer.Interfaces;
-using RabbitTransfer.TransferModels;
+using RabbitCommunicationLib.Consumer;
+using RabbitCommunicationLib.Interfaces;
+using RabbitCommunicationLib.TransferModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
