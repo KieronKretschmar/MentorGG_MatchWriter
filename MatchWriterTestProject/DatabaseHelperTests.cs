@@ -51,7 +51,7 @@ namespace MatchWriterTestProject
                 // Put match stats
                 var testFilePath = TestHelper.GetTestFilePath(jsonFileName);
                 var json = File.ReadAllText(testFilePath);
-                matchId = GetMatchIdFromJson(json);
+                matchId = TestHelper.GetMatchIdFromJson(json);
                 await databaseHelper.PutMatchAsync(json);
 
                 // Put match stats again to test idempotency
@@ -90,7 +90,7 @@ namespace MatchWriterTestProject
                 // Put match stats
                 var testFilePath = TestHelper.GetTestFilePath(jsonFileName);
                 var json = File.ReadAllText(testFilePath);
-                matchId = GetMatchIdFromJson(json);
+                matchId = TestHelper.GetMatchIdFromJson(json);
                 if(matchId == 0)
                 {
                     // When inserting a MatchDataSet with MatchId=0, the database auto generates a new MatchId, 
@@ -132,7 +132,7 @@ namespace MatchWriterTestProject
                 // Put match stats
                 var testFilePath = TestHelper.GetTestFilePath(jsonFileName);
                 var json = File.ReadAllText(testFilePath);
-                matchId = GetMatchIdFromJson(json);
+                matchId = TestHelper.GetMatchIdFromJson(json);
                 await databaseHelper.PutMatchAsync(json);
             }
 
@@ -180,7 +180,7 @@ namespace MatchWriterTestProject
             {
                 DatabaseHelper databaseHelper = new DatabaseHelper(_dbHelperLogger, context);
 
-                matchId = GetMatchIdFromJson(jsonOriginal);
+                matchId = TestHelper.GetMatchIdFromJson(jsonOriginal);
                 await databaseHelper.PutMatchAsync(jsonOriginal);
             }
 
@@ -192,12 +192,6 @@ namespace MatchWriterTestProject
                 var jsonFromDb = matchDataSet.ToJson();
                 Assert.AreEqual(jsonOriginal, jsonFromDb);
             }
-        }
-
-        public long GetMatchIdFromJson(string json)
-        {
-            var data = JsonConvert.DeserializeObject<MatchDataSet>(json);
-            return data.MatchStats.MatchId;
         }
     }
 }
