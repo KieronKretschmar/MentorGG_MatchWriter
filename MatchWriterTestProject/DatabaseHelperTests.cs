@@ -160,6 +160,8 @@ namespace MatchWriterTestProject
         /// </summary>
         /// <param name="jsonFileName"></param>
         /// <returns></returns>
+        [DataRow("TestDemo_Valve4.json")]
+        [DataRow("TestDemo_Valve3.json")]
         [DataRow("TestDemo_Valve1.json")]
         [DataTestMethod]
         public async Task PutAndLoadInvariance(string jsonFileName)
