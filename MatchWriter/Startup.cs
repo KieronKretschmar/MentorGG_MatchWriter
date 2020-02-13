@@ -19,7 +19,7 @@ using RabbitCommunicationLib.TransferModels;
 namespace MatchWriter
 {
     /// <summary>
-    /// Requires env variables ["AMQP_URI","AMQP_DEMOFILEWORKER_QUEUE", "AMQP_CALLBACK_QUEUE"]
+    /// Requires env variables ["MYSQL_CONNECTION_STRING", "AMQP_URI","AMQP_DEMOFILEWORKER_QUEUE", "AMQP_CALLBACK_QUEUE"]
     /// </summary>
     public class Startup
     {
