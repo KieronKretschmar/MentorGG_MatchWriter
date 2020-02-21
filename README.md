@@ -1,7 +1,7 @@
 # MatchWriter
 Inserts and manages MatchDataSets in MatchDb.
 
-## Enviromnent Variables
+## Environment Variables
 - `MYSQL_CONNECTION_STRING` : Connection string for Match Database. [*]
 - `AMQP_URI` : URI to the rabbit cluster [*]
 - `AMQP_DEMOFILEWORKER_QUEUE` : Rabbit queue's name for consuming messages from DemoFileWorker [*]
