@@ -39,7 +39,7 @@ namespace MatchWriter
             services.AddControllers();
             services.AddLogging(x => x.AddConsole().AddDebug());
 
-            services.AddSingleton<IDatabaseHelper, DatabaseHelper>();
+            services.AddScoped<IDatabaseHelper, DatabaseHelper>();
             services.AddSingleton<IMatchRedis, MatchRedis>();
 
             // if a connectionString is set use mysql, else use InMemory
