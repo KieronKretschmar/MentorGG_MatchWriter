@@ -29,8 +29,10 @@ namespace MatchWriterTestProject
         /// <param name="jsonFileName"></param>
         /// <returns></returns>
         [DataRow("TestDemo_Valve1.json")]
+        [DataRow("TestDemo_Valve2.json")]
         [DataRow("TestDemo_Valve3.json")]
         [DataRow("TestDemo_Valve4.json")]
+        [DataRow("Issue5.json")]
         //[Ignore]
         [DataTestMethod]
         public async Task UploadToDatabase(string jsonFileName)
