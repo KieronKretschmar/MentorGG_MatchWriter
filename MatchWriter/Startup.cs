@@ -37,7 +37,15 @@ namespace MatchWriter
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
-            services.AddLogging(x => x.AddConsole().AddDebug());
+
+            services.AddLogging(services =>
+            {
+                services.AddConsole(o =>
+                {
+                    o.TimestampFormat = "[yyyy-MM-dd HH:mm:ss zzz] ";
+                });
+                services.AddDebug();
+            });
 
             services.AddScoped<IDatabaseHelper, DatabaseHelper>();
             services.AddSingleton<IMatchRedis, MatchRedis>();
