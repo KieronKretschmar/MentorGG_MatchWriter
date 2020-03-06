@@ -1,6 +1,6 @@
 [submodule "rabbitcommunicationlib"]
 	path = rabbitcommunicationlib
-	url = git@gitlab.com:mentorgg/engine/RabbitCommunicationLib.git
+	url = ../../engine/RabbitCommunicationLib.git
 [submodule "matchdb"]
 	path = matchdb
-	url = git@gitlab.com:mentorgg/csgo/matchdb
+	url = ../../csgo/matchdb
