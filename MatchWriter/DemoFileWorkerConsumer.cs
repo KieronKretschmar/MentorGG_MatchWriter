@@ -7,18 +7,20 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using RabbitCommunicationLib.Enums;
+using RabbitMQ.Client.Events;
 
 namespace MatchWriter
 {
-    public class DemoFileWorkerConsumer : Consumer<RedisTaskCompletedTransferModel>
+    public class DemoFileWorkerConsumer : Consumer<RedisLocalizationInstruction>
     {
         private readonly IDatabaseHelper _dbHelper;
         private readonly ILogger<DemoFileWorkerConsumer> _logger;
-        private readonly IProducer<TaskCompletedTransferModel> _producer;
+        private readonly IProducer<TaskCompletedReport> _producer;
         private readonly IMatchRedis _cache;
         private const string _versionString = "1";
 
-        public DemoFileWorkerConsumer(IQueueConnection queueConnection, ILogger<DemoFileWorkerConsumer> logger, IDatabaseHelper dbHelper, IProducer<TaskCompletedTransferModel> producer, IMatchRedis cache) : base(queueConnection)
+        public DemoFileWorkerConsumer(IQueueConnection queueConnection, ILogger<DemoFileWorkerConsumer> logger, IDatabaseHelper dbHelper, IProducer<TaskCompletedReport> producer, IMatchRedis cache) : base(queueConnection)
         {
             _dbHelper = dbHelper;
             _logger = logger;
@@ -26,15 +28,16 @@ namespace MatchWriter
             _cache = cache;
         }
 
-        public override async Task HandleMessageAsync(IBasicProperties properties, RedisTaskCompletedTransferModel model)
+        public override async Task<ConsumedMessageHandling> HandleMessageAsync(BasicDeliverEventArgs ea, RedisLocalizationInstruction model)
         {
-            long matchId = long.Parse(properties.CorrelationId);
+            _logger.LogInformation($"Received message for Match#{model.MatchId}: [ {model.ToJson()} ]");
 
             // Initialize TaskCompleted message
-            var msg = new TaskCompletedTransferModel
+            var msg = new TaskCompletedReport
             {
                 Version = _versionString, 
-                Success = false
+                Success = false,
+                MatchId = model.MatchId,
             };
 
             try
@@ -42,24 +45,37 @@ namespace MatchWriter
                 // Get matchDataSetJson from redis
                 if(model.ExpiryDate >= DateTime.Now)
                 {
-                    msg.Success = false;
-                    throw new Exception($"ExpiryDate has already passed. Aborting. Incoming message: {model.ToString()}");
+                    _logger.LogError($"ExpiryDate has already passed. Aborting. Incoming message: {model.ToString()}");
+
+                    _producer.PublishMessage(msg);
+                    return ConsumedMessageHandling.ThrowAway;
                 }
                 var matchDataSet = await _cache.GetMatch(model.RedisKey).ConfigureAwait(false);
 
                 // Upload match to db
                 await _dbHelper.PutMatchAsync(matchDataSet).ConfigureAwait(false);
 
+                _logger.LogInformation($"Succesfully handled Match#{model.MatchId}.");
+
                 msg.Success = true;
+                _producer.PublishMessage(msg);
+                return ConsumedMessageHandling.Done;
             }
+            // If it seems like a temporary failure, resend message
+            catch (Exception e) when (e is TimeoutException)
+            {
+                _logger.LogError($"Match#{model.MatchId} could not be uploaded to database right now. Instructing the message to be resent, assuming this is a temporary failure.", e);
+
+                _producer.PublishMessage(msg);
+                return ConsumedMessageHandling.Resend;
+            }
+            // When in doubt or the message itself might be corrupt, throw away
             catch (Exception e)
             {
-                _logger.LogError($"Error uploading Match#{matchId} to database.", e);
-                msg.Success = false;
-            }
-            finally
-            {
-                _producer.PublishMessage(matchId.ToString(), msg);
+                _logger.LogError($"Match#{model.MatchId} could not be uploaded to database. Instructing the message to be thrown away, assuming the message is corrupt.", e);
+
+                _producer.PublishMessage(msg);
+                return ConsumedMessageHandling.ThrowAway;
             }
         }
     }

@@ -37,9 +37,17 @@ namespace MatchWriter
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
-            services.AddLogging(x => x.AddConsole().AddDebug());
 
-            services.AddScoped<IDatabaseHelper, DatabaseHelper>();
+            services.AddLogging(services =>
+            {
+                services.AddConsole(o =>
+                {
+                    o.TimestampFormat = "[yyyy-MM-dd HH:mm:ss zzz] ";
+                });
+                services.AddDebug();
+            });
+
+            services.AddTransient<IDatabaseHelper, DatabaseHelper>();
             services.AddSingleton<IMatchRedis, MatchRedis>();
 
             // if a connectionString is set use mysql, else use InMemory
