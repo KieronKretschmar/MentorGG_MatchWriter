@@ -85,9 +85,9 @@ namespace MatchWriter
                 throw new ArgumentException("AMQP_CALLBACK_QUEUE is missing, configure the `AMQP_CALLBACK_QUEUE` enviroment variable.");
 
             var callbackQueue = new QueueConnection(AMQP_URI, AMQP_CALLBACK_QUEUE);
-            services.AddSingleton<IProducer<TaskCompletedTransferModel>>(sp =>
+            services.AddSingleton<IProducer<TaskCompletedReport>>(sp =>
             {
-                return new Producer<TaskCompletedTransferModel>(callbackQueue);
+                return new Producer<TaskCompletedReport>(callbackQueue);
             });
 
             // Setup rabbit - Create consumer
@@ -102,7 +102,7 @@ namespace MatchWriter
                     incomingQueue, 
                     services.GetRequiredService<ILogger<DemoFileWorkerConsumer>>(), 
                     services.GetRequiredService<IDatabaseHelper>(), 
-                    services.GetRequiredService<IProducer<TaskCompletedTransferModel>>(),
+                    services.GetRequiredService<IProducer<TaskCompletedReport>>(),
                     services.GetRequiredService<IMatchRedis>());
             });
         }
