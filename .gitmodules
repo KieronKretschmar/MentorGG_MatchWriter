@@ -3,4 +3,4 @@
 	url = ../../engine/RabbitCommunicationLib.git
 [submodule "MatchDb"]
 	path = MatchDb
-	url = ../../csgo/MatchDb.git
+	url = ../../csgo/matchdb.git
