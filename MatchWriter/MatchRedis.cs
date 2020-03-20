@@ -21,13 +21,13 @@ namespace MatchWriter
     public class MatchRedis : IMatchRedis
     {
         private readonly ILogger<MatchRedis> _logger;
-        private static string redisUri;
+        private static string _redisUri;
         private IDatabase cache;
 
-        public MatchRedis(ILogger<MatchRedis> logger, IConfiguration configuration)
+        public MatchRedis(ILogger<MatchRedis> logger, string redisUri)
         {
             _logger = logger;
-            redisUri = configuration.GetValue<string>("REDIS_URI");
+            _redisUri = redisUri;
             cache = lazyConnection.Value.GetDatabase();
         }
 
@@ -54,7 +54,7 @@ namespace MatchWriter
         /// </summary>
         private static Lazy<ConnectionMultiplexer> lazyConnection = new Lazy<ConnectionMultiplexer>(() =>
         {
-            return ConnectionMultiplexer.Connect(redisUri);
+            return ConnectionMultiplexer.Connect(_redisUri);
         });
 
         /// <summary>
@@ -68,6 +68,14 @@ namespace MatchWriter
             {
                 return lazyConnection.Value;
             }
+        }
+    }
+
+    public class MockRedis : IMatchRedis
+    {
+        public async Task<MatchDataSet> GetMatch(string key)
+        {
+            return new MatchDataSet();
         }
     }
 }
