@@ -47,8 +47,16 @@ namespace MatchWriter
                 services.AddDebug();
             });
 
+            var REDIS_URI = Configuration.GetValue<string>("REDIS_URI");
+
             services.AddTransient<IDatabaseHelper, DatabaseHelper>();
-            services.AddSingleton<IMatchRedis, MatchRedis>();
+            services.AddTransient<IMatchRedis>(sp =>
+            {
+                if (REDIS_URI == "mock")
+                    return new MockRedis();
+                else
+                    return new MatchRedis(sp.GetRequiredService<ILogger<MatchRedis>>(),REDIS_URI);
+            });
 
             // if a connectionString is set use mysql, else use InMemory
             var MYSQL_CONNECTION_STRING = Configuration.GetValue<string>("MYSQL_CONNECTION_STRING");
@@ -65,7 +73,7 @@ namespace MatchWriter
                     .AddDbContext<Database.MatchContext>((sp, options) =>
                     {
                         options.UseInMemoryDatabase(databaseName: "MyInMemoryDatabase").UseInternalServiceProvider(sp);
-                    });
+                    }, ServiceLifetime.Singleton, ServiceLifetime.Singleton);
             }
 
             if (Configuration.GetValue<bool>("IS_MIGRATING"))
@@ -84,7 +92,7 @@ namespace MatchWriter
                 ?? throw new ArgumentException("AMQP_CALLBACK_QUEUE is missing, configure the `AMQP_CALLBACK_QUEUE` enviroment variable.");
 
             var callbackQueue = new QueueConnection(AMQP_URI, AMQP_CALLBACK_QUEUE);
-            services.AddSingleton<IProducer<TaskCompletedReport>>(sp =>
+            services.AddTransient<IProducer<TaskCompletedReport>>(sp =>
             {
                 return new Producer<TaskCompletedReport>(callbackQueue);
             });
@@ -93,12 +101,15 @@ namespace MatchWriter
             var AMQP_DEMOFILEWORKER_QUEUE = Configuration.GetValue<string>("AMQP_DEMOFILEWORKER_QUEUE") 
                 ?? throw new ArgumentException("AMQP_DEMOFILEWORKER_QUEUE is missing, configure the `AMQP_DEMOFILEWORKER_QUEUE` enviroment variable.");
 
-            var incomingQueue = new QueueConnection(AMQP_URI, AMQP_DEMOFILEWORKER_QUEUE);
-            services.AddHostedService<DemoFileWorkerConsumer>(services =>
+            var AMQP_EXCHANGE_NAME = Configuration.GetValue<string>("AMQP_EXCHANGE_NAME")
+               ?? throw new ArgumentException("AMQP_EXCHANGE_NAME is missing, configure the `AMQP_EXCHANGE_NAME` enviroment variable.");
+
+            var exchangeQueue = new ExchangeQueueConnection(AMQP_URI,AMQP_EXCHANGE_NAME, AMQP_DEMOFILEWORKER_QUEUE);
+            services.AddHostedService<MatchFanOutConsumer>(services =>
             {
-                return new DemoFileWorkerConsumer(
-                    incomingQueue, 
-                    services.GetRequiredService<ILogger<DemoFileWorkerConsumer>>(), 
+                return new MatchFanOutConsumer(
+                    exchangeQueue, 
+                    services.GetRequiredService<ILogger<MatchFanOutConsumer>>(), 
                     services.GetRequiredService<IDatabaseHelper>(), 
                     services.GetRequiredService<IProducer<TaskCompletedReport>>(),
                     services.GetRequiredService<IMatchRedis>());
