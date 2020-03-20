@@ -98,13 +98,18 @@ namespace MatchWriter
             });
 
             // Setup rabbit - Create consumer
-            var AMQP_DEMOFILEWORKER_QUEUE = Configuration.GetValue<string>("AMQP_DEMOFILEWORKER_QUEUE") 
-                ?? throw new ArgumentException("AMQP_DEMOFILEWORKER_QUEUE is missing, configure the `AMQP_DEMOFILEWORKER_QUEUE` enviroment variable.");
-
             var AMQP_EXCHANGE_NAME = Configuration.GetValue<string>("AMQP_EXCHANGE_NAME")
                ?? throw new ArgumentException("AMQP_EXCHANGE_NAME is missing, configure the `AMQP_EXCHANGE_NAME` enviroment variable.");
 
-            var exchangeQueue = new ExchangeQueueConnection(AMQP_URI,AMQP_EXCHANGE_NAME, AMQP_DEMOFILEWORKER_QUEUE);
+            var AMQP_EXCHANGE_CONSUME_QUEUE = Configuration.GetValue<string>("AMQP_EXCHANGE_CONSUME_QUEUE");
+            if (AMQP_EXCHANGE_CONSUME_QUEUE is null)
+            {
+                var defaultQueue = "MW_ConsumeQueue"; 
+                Console.WriteLine($"No name for AMQP_EXCHANGE_CONSUME_QUEUE has been set, defaulting to {defaultQueue}");
+                AMQP_EXCHANGE_CONSUME_QUEUE = defaultQueue;
+            }
+
+            var exchangeQueue = new ExchangeQueueConnection(AMQP_URI,AMQP_EXCHANGE_NAME, AMQP_EXCHANGE_CONSUME_QUEUE);
             services.AddHostedService<MatchFanOutConsumer>(services =>
             {
                 return new MatchFanOutConsumer(
