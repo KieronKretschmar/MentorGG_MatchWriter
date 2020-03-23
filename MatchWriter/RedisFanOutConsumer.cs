@@ -43,7 +43,7 @@ namespace MatchWriter
             try
             {
                 // Get matchDataSetJson from redis
-                if(model.ExpiryDate >= DateTime.Now)
+                if(model.ExpiryDate <= DateTime.Now)
                 {
                     _logger.LogError($"ExpiryDate has already passed. Aborting. Incoming message: {model.ToString()}");
 
