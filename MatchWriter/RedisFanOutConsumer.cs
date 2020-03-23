@@ -12,15 +12,15 @@ using RabbitMQ.Client.Events;
 
 namespace MatchWriter
 {
-    public class DemoFileWorkerConsumer : Consumer<RedisLocalizationInstruction>
+    public class MatchFanOutConsumer : FanOutConsumer<RedisLocalizationInstruction>
     {
         private readonly IDatabaseHelper _dbHelper;
-        private readonly ILogger<DemoFileWorkerConsumer> _logger;
+        private readonly ILogger<MatchFanOutConsumer> _logger;
         private readonly IProducer<TaskCompletedReport> _producer;
         private readonly IMatchRedis _cache;
         private const string _versionString = "1";
 
-        public DemoFileWorkerConsumer(IQueueConnection queueConnection, ILogger<DemoFileWorkerConsumer> logger, IDatabaseHelper dbHelper, IProducer<TaskCompletedReport> producer, IMatchRedis cache) : base(queueConnection)
+        public MatchFanOutConsumer(IExchangeQueueConnection exchangeQueueConnection, ILogger<MatchFanOutConsumer> logger, IDatabaseHelper dbHelper, IProducer<TaskCompletedReport> producer, IMatchRedis cache) : base(exchangeQueueConnection)
         {
             _dbHelper = dbHelper;
             _logger = logger;
