@@ -63,7 +63,7 @@ namespace MatchWriter
 
             if (MYSQL_CONNECTION_STRING != null)
             {
-                services.AddDbContext<Database.MatchContext>(o => { o.UseMySql(MYSQL_CONNECTION_STRING); });
+                services.AddDbContext<Database.MatchContext>(o => { o.UseMySql(MYSQL_CONNECTION_STRING); }, ServiceLifetime.Singleton, ServiceLifetime.Singleton);
             }
             else
             {
