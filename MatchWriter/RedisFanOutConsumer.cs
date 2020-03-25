@@ -64,7 +64,7 @@ namespace MatchWriter
             // If it seems like a temporary failure, resend message
             catch (Exception e) when (e is TimeoutException)
             {
-                _logger.LogError($"Match#{model.MatchId} could not be uploaded to database right now. Instructing the message to be resent, assuming this is a temporary failure.", e);
+                _logger.LogError(e, $"Match#{model.MatchId} could not be uploaded to database right now. Instructing the message to be resent, assuming this is a temporary failure.");
 
                 _producer.PublishMessage(msg);
                 return ConsumedMessageHandling.Resend;
@@ -72,7 +72,7 @@ namespace MatchWriter
             // When in doubt or the message itself might be corrupt, throw away
             catch (Exception e)
             {
-                _logger.LogError($"Match#{model.MatchId} could not be uploaded to database. Instructing the message to be thrown away, assuming the message is corrupt.", e);
+                _logger.LogError(e, $"Match#{model.MatchId} could not be uploaded to database. Instructing the message to be thrown away, assuming the message is corrupt.");
 
                 _producer.PublishMessage(msg);
                 return ConsumedMessageHandling.ThrowAway;
