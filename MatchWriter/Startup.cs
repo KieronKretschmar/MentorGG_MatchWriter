@@ -64,7 +64,7 @@ namespace MatchWriter
             if (MYSQL_CONNECTION_STRING != null)
             {
                 // Add context as Transient instead of Scoped, as Scoped lead to DI error and does not have advantages under non-http conditions
-                services.AddDbContext<Database.MatchContext>(o => { o.UseMySql(MYSQL_CONNECTION_STRING); }, ServiceLifetime.Transient);
+                services.AddDbContext<Database.MatchContext>(o => { o.UseMySql(MYSQL_CONNECTION_STRING); }, ServiceLifetime.Transient, ServiceLifetime.Transient);
             }
             else
             {
@@ -74,7 +74,7 @@ namespace MatchWriter
                     .AddDbContext<Database.MatchContext>((sp, options) =>
                     {
                         options.UseInMemoryDatabase(databaseName: "MyInMemoryDatabase").UseInternalServiceProvider(sp);
-                    }, ServiceLifetime.Transient);
+                    }, ServiceLifetime.Transient, ServiceLifetime.Transient);
             }
 
             if (Configuration.GetValue<bool>("IS_MIGRATING"))
