@@ -23,6 +23,8 @@ namespace MatchWriter
     /// </summary>
     public class Startup
     {
+        private const string AMQP_EXCHANGE_CONSUME_QUEUE_DEFAULT = "MW_ConsumeQueue";
+
         public Startup(IConfiguration configuration)
         {
             Configuration = new ConfigurationBuilder()
@@ -57,20 +59,9 @@ namespace MatchWriter
             });
             #endregion
 
-            var REDIS_URI = Configuration.GetValue<string>("REDIS_URI");
-
-            services.AddTransient<IDatabaseHelper, DatabaseHelper>();
-            services.AddTransient<IMatchRedis>(sp =>
-            {
-                if (REDIS_URI == "mock")
-                    return new MockRedis();
-                else
-                    return new MatchRedis(sp.GetRequiredService<ILogger<MatchRedis>>(),REDIS_URI);
-            });
-
-            // if a connectionString is set use mysql, else use InMemory
+            #region Mysql Database
             var MYSQL_CONNECTION_STRING = Configuration.GetValue<string>("MYSQL_CONNECTION_STRING");
-
+            // if a connectionString is set use mysql, else use InMemory
             if (MYSQL_CONNECTION_STRING != null)
             {
                 // Add context as Transient instead of Scoped, as Scoped lead to DI error and does not have advantages under non-http conditions
@@ -92,44 +83,49 @@ namespace MatchWriter
                 Console.WriteLine("WARNING: IS_MIGRATING is true. This should not happen in production.");
                 return;
             }
+            #endregion
 
-            // Setup rabbit
-            var AMQP_URI = Configuration.GetValue<string>("AMQP_URI");
-            if (AMQP_URI == null)
-                throw new ArgumentException("AMQP_URI is missing, configure the `AMQP_URI` enviroment variable.");
+            #region Rabbit
+            // Read environment variables
+            var AMQP_URI = GetRequiredEnvironmentVariable<string>(Configuration, "AMQP_URI");
+            var AMQP_CALLBACK_QUEUE = GetRequiredEnvironmentVariable<string>(Configuration, "AMQP_CALLBACK_QUEUE");
+            var AMQP_EXCHANGE_NAME = GetRequiredEnvironmentVariable<string>(Configuration, "AMQP_EXCHANGE_NAME");
+            var AMQP_EXCHANGE_CONSUME_QUEUE = GetOptionalEnvironmentVariable<string>(Configuration, "AMQP_EXCHANGE_CONSUME_QUEUE", AMQP_EXCHANGE_CONSUME_QUEUE_DEFAULT);
 
-            // Setup rabbit - Create producer
-            var AMQP_CALLBACK_QUEUE = Configuration.GetValue<string>("AMQP_CALLBACK_QUEUE") 
-                ?? throw new ArgumentException("AMQP_CALLBACK_QUEUE is missing, configure the `AMQP_CALLBACK_QUEUE` enviroment variable.");
-
+            // Setup Producer
             var callbackQueue = new QueueConnection(AMQP_URI, AMQP_CALLBACK_QUEUE);
             services.AddTransient<IProducer<TaskCompletedReport>>(sp =>
             {
                 return new Producer<TaskCompletedReport>(callbackQueue);
             });
 
-            // Setup rabbit - Create consumer
-            var AMQP_EXCHANGE_NAME = Configuration.GetValue<string>("AMQP_EXCHANGE_NAME")
-               ?? throw new ArgumentException("AMQP_EXCHANGE_NAME is missing, configure the `AMQP_EXCHANGE_NAME` enviroment variable.");
-
-            var AMQP_EXCHANGE_CONSUME_QUEUE = Configuration.GetValue<string>("AMQP_EXCHANGE_CONSUME_QUEUE");
-            if (AMQP_EXCHANGE_CONSUME_QUEUE is null)
-            {
-                var defaultQueue = "MW_ConsumeQueue"; 
-                Console.WriteLine($"No name for AMQP_EXCHANGE_CONSUME_QUEUE has been set, defaulting to {defaultQueue}");
-                AMQP_EXCHANGE_CONSUME_QUEUE = defaultQueue;
-            }
-
-            var exchangeQueue = new ExchangeQueueConnection(AMQP_URI,AMQP_EXCHANGE_NAME, AMQP_EXCHANGE_CONSUME_QUEUE);
+            // Setup Consumer
+            var exchangeQueue = new ExchangeQueueConnection(AMQP_URI, AMQP_EXCHANGE_NAME, AMQP_EXCHANGE_CONSUME_QUEUE);
             services.AddHostedService<MatchFanOutConsumer>(services =>
             {
                 return new MatchFanOutConsumer(
-                    exchangeQueue, 
-                    services.GetRequiredService<ILogger<MatchFanOutConsumer>>(), 
-                    services.GetRequiredService<IDatabaseHelper>(), 
+                    exchangeQueue,
+                    services.GetRequiredService<ILogger<MatchFanOutConsumer>>(),
+                    services.GetRequiredService<IDatabaseHelper>(),
                     services.GetRequiredService<IProducer<TaskCompletedReport>>(),
                     services.GetRequiredService<IMatchRedis>());
             });
+            #endregion
+
+            #region Redis
+            var REDIS_URI = Configuration.GetValue<string>("REDIS_URI");
+            services.AddTransient<IMatchRedis>(sp =>
+            {
+                if (REDIS_URI == "mock")
+                    return new MockRedis();
+                else
+                    return new MatchRedis(sp.GetRequiredService<ILogger<MatchRedis>>(), REDIS_URI);
+            });
+            #endregion
+
+            #region Helpers
+            services.AddTransient<IDatabaseHelper, DatabaseHelper>();
+            #endregion
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -150,6 +146,45 @@ namespace MatchWriter
             {
                 endpoints.MapControllers();
             });
+        }
+
+        /// <summary>
+        /// Attempt to retrieve an Environment Variable
+        /// Throws ArgumentNullException is not found.
+        /// </summary>
+        /// <typeparam name="T">Type to retreive</typeparam>
+        private static T GetRequiredEnvironmentVariable<T>(IConfiguration config, string key)
+        {
+            T value = config.GetValue<T>(key);
+            if (value == null)
+            {
+                throw new ArgumentNullException(
+                    $"{key} is missing, Configure the `{key}` environment variable.");
+            }
+            else
+            {
+                return value;
+            }
+        }
+
+        /// <summary>
+        /// Attempt to retrieve an Environment Variable
+        /// Returns default value if not found.
+        /// </summary>
+        /// <typeparam name="T">Type to retreive</typeparam>
+        private static T GetOptionalEnvironmentVariable<T>(IConfiguration config, string key, T defaultValue)
+        {
+            var stringValue = config.GetSection(key).Value;
+            try
+            {
+                T value = (T) Convert.ChangeType(stringValue, typeof(T), System.Globalization.CultureInfo.InvariantCulture);
+                return value;
+            }
+            catch (InvalidCastException e)
+            {
+                Console.WriteLine($"Env var [ {key} ] not specified. Defaulting to [ {defaultValue} ]");
+                return defaultValue;
+            }
         }
     }
 }
