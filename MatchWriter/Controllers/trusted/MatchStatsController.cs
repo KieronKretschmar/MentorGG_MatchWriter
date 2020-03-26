@@ -29,13 +29,16 @@ namespace MatchWriter.Controllers.trusted
         [HttpGet("{id}")]
         public async Task<ActionResult<MatchStats>> GetMatchStats(long id)
         {
+            _logger.LogInformation($"Received HTTP GET request for MatchId [ {id} ]");
             var matchStats = await _dbHelper.GetMatchStatsAsync(id);
 
             if (matchStats == null)
             {
+                _logger.LogInformation($"Could not find match with MatchId [ {id} ]");
                 return NotFound();
             }
 
+            _logger.LogInformation($"Returning match with MatchId [ {id} ]");
             return matchStats;
         }
 
@@ -60,6 +63,7 @@ namespace MatchWriter.Controllers.trusted
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteMatchStats(long id)
         {
+            _logger.LogInformation($"Received HTTP DELETE request for MatchId [ {id} ]");
             await _dbHelper.RemoveMatchAsync(id);
             return Ok();
         }

@@ -194,21 +194,31 @@ namespace MatchWriter
         public async Task PutMatchAsync(MatchDataSet data)
         {
             await RemoveMatchAsync(data.MatchStats.MatchId);
+
+            _logger.LogInformation($"Attempting to insert match with MatchId [ {data.MatchStats.MatchId} ]");
             foreach (dynamic table in data.Tables())
             {
                 _context.AddRange(table);
             }
             await _context.SaveChangesAsync();
+
+            _logger.LogInformation($"Inserted match with MatchId [ {data.MatchStats.MatchId} ]");
         }
 
 
         public async Task RemoveMatchAsync(long id)
         {
+            _logger.LogInformation($"Attempting to remove match with MatchId [ {id} ]");
             var match = _context.MatchStats.SingleOrDefault(x => x.MatchId == id);
             if (match != null)
             {
                 _context.MatchStats.Remove(match);
                 await _context.SaveChangesAsync();
+                _logger.LogInformation($"Removed match with MatchId [ {id} ]");
+            }
+            else
+            {
+                _logger.LogInformation($"No match found to be removed with MatchId [ {id} ]");
             }
         }
 
