@@ -38,14 +38,24 @@ namespace MatchWriter
         {
             services.AddControllers();
 
-            services.AddLogging(services =>
+            #region Logging
+            services.AddLogging(o =>
             {
-                services.AddConsole(o =>
+                o.AddConsole(options =>
                 {
-                    o.TimestampFormat = "[yyyy-MM-dd HH:mm:ss zzz] ";
+                    options.TimestampFormat = "[yyyy-MM-dd HH:mm:ss zzz] ";
                 });
-                services.AddDebug();
+                o.AddDebug();
+
+                //Filter out ASP.Net and EFCore logs of LogLevel lower than LogLevel.Warning
+                o.AddFilter("Microsoft.EntityFrameworkCore.Database.Command", LogLevel.Warning);
+                o.AddFilter("Microsoft.EntityFrameworkCore.Infrastructure", LogLevel.Warning);
+                o.AddFilter("Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker", LogLevel.Warning);
+                o.AddFilter("Microsoft.AspNetCore.Mvc.Infrastructure.ObjectResultExecutor", LogLevel.Warning);
+                o.AddFilter("Microsoft.AspNetCore.Hosting.Diagnostics", LogLevel.Warning);
+                o.AddFilter("Microsoft.AspNetCore.Routing.EndpointMiddleware", LogLevel.Warning);
             });
+            #endregion
 
             var REDIS_URI = Configuration.GetValue<string>("REDIS_URI");
 
