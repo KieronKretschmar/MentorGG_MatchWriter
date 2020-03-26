@@ -20,7 +20,13 @@ namespace MatchWriter
         private readonly IMatchRedis _cache;
         private const string _versionString = "1";
 
-        public MatchFanOutConsumer(IExchangeQueueConnection exchangeQueueConnection, ILogger<MatchFanOutConsumer> logger, IDatabaseHelper dbHelper, IProducer<TaskCompletedReport> producer, IMatchRedis cache) : base(exchangeQueueConnection)
+        public MatchFanOutConsumer(
+            IExchangeQueueConnection exchangeQueueConnection, 
+            ILogger<MatchFanOutConsumer> logger, 
+            IDatabaseHelper dbHelper, 
+            IProducer<TaskCompletedReport> producer, 
+            IMatchRedis cache, 
+            ushort prefetchCount = 1) : base(exchangeQueueConnection, prefetchCount)
         {
             _dbHelper = dbHelper;
             _logger = logger;

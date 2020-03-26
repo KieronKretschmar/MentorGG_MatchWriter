@@ -23,6 +23,7 @@ namespace MatchWriter
     /// </summary>
     public class Startup
     {
+        private const ushort AMQP_PREFETCH_LIMIT_DEFAULT = 0;
         private const string AMQP_EXCHANGE_CONSUME_QUEUE_DEFAULT = "MW_ConsumeQueue";
 
         public Startup(IConfiguration configuration)
@@ -90,6 +91,7 @@ namespace MatchWriter
             var AMQP_URI = GetRequiredEnvironmentVariable<string>(Configuration, "AMQP_URI");
             var AMQP_CALLBACK_QUEUE = GetRequiredEnvironmentVariable<string>(Configuration, "AMQP_CALLBACK_QUEUE");
             var AMQP_EXCHANGE_NAME = GetRequiredEnvironmentVariable<string>(Configuration, "AMQP_EXCHANGE_NAME");
+            var AMQP_PREFETCH_LIMIT = GetOptionalEnvironmentVariable<ushort>(Configuration, "AMQP_PREFETCH_LIMIT", AMQP_PREFETCH_LIMIT_DEFAULT);
             var AMQP_EXCHANGE_CONSUME_QUEUE = GetOptionalEnvironmentVariable<string>(Configuration, "AMQP_EXCHANGE_CONSUME_QUEUE", AMQP_EXCHANGE_CONSUME_QUEUE_DEFAULT);
 
             // Setup Producer
@@ -108,7 +110,8 @@ namespace MatchWriter
                     services.GetRequiredService<ILogger<MatchFanOutConsumer>>(),
                     services.GetRequiredService<IDatabaseHelper>(),
                     services.GetRequiredService<IProducer<TaskCompletedReport>>(),
-                    services.GetRequiredService<IMatchRedis>());
+                    services.GetRequiredService<IMatchRedis>(),
+                    AMQP_PREFETCH_LIMIT);
             });
             #endregion
 
