@@ -12,3 +12,11 @@ Inserts and manages MatchDataSets in MatchDb.
 - `IS_MIGRATING` : Boolean to indicate if migration is active
 
 [*] *Required*
+
+## Managing Matches
+Use the endpoints  
+ - `GET: /api/match/<matchId>`
+ To get metadata about a match in the MatchDb.
+
+- `GET: /api/match/<matchId>`
+To remove all data of this match from MatchDb.

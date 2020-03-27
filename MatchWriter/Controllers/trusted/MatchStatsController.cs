@@ -12,7 +12,7 @@ using Microsoft.Extensions.Logging;
 
 namespace MatchWriter.Controllers.trusted
 {
-    [Route("api/[controller]")]
+    [Route("api/match")]
     [ApiController]
     public class MatchStatsController : ControllerBase
     {
