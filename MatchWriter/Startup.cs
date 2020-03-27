@@ -116,13 +116,13 @@ namespace MatchWriter
             #endregion
 
             #region Redis
-            var REDIS_URI = Configuration.GetValue<string>("REDIS_URI");
+            var REDIS_CONFIGURATION_STRING = Configuration.GetValue<string>("REDIS_CONFIGURATION_STRING");
             services.AddTransient<IMatchRedis>(sp =>
             {
-                if (REDIS_URI == "mock")
+                if (REDIS_CONFIGURATION_STRING == "mock")
                     return new MockRedis();
                 else
-                    return new MatchRedis(sp.GetRequiredService<ILogger<MatchRedis>>(), REDIS_URI);
+                    return new MatchRedis(sp.GetRequiredService<ILogger<MatchRedis>>(), REDIS_CONFIGURATION_STRING);
             });
             #endregion
 

@@ -16,7 +16,6 @@ namespace MatchWriter
 
     /// <summary>
     /// Communicates with the redis cache that stores MatchDataSets
-    /// Requires env variables ["REDIS_URI"]
     /// </summary>
     public class MatchRedis : IMatchRedis
     {
