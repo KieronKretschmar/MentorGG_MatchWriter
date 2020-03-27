@@ -23,11 +23,10 @@ namespace MatchWriter
         private static string _redisUri;
         private IDatabase cache;
 
-        public MatchRedis(ILogger<MatchRedis> logger, string redisUri)
+        public MatchRedis(ILogger<MatchRedis> logger, IConnectionMultiplexer connectionMultiplexer)
         {
             _logger = logger;
-            _redisUri = redisUri;
-            cache = lazyConnection.Value.GetDatabase();
+            cache = connectionMultiplexer.GetDatabase();
         }
 
         /// <summary>
@@ -44,29 +43,6 @@ namespace MatchWriter
 
             _logger.LogInformation($"Succesfully loaded Match with key {key} from redis.");
             return match;
-        }
-
-        /// <summary>
-        /// Provides a lazy connection to redis.
-        /// 
-        /// For more info see https://docs.microsoft.com/en-us/azure/azure-cache-for-redis/cache-dotnet-core-quickstart.
-        /// </summary>
-        private static Lazy<ConnectionMultiplexer> lazyConnection = new Lazy<ConnectionMultiplexer>(() =>
-        {
-            return ConnectionMultiplexer.Connect(_redisUri);
-        });
-
-        /// <summary>
-        /// Provides a connection to redis.
-        /// 
-        /// For more info see https://docs.microsoft.com/en-us/azure/azure-cache-for-redis/cache-dotnet-core-quickstart.
-        /// </summary>
-        public static ConnectionMultiplexer Connection
-        {
-            get
-            {
-                return lazyConnection.Value;
-            }
         }
     }
 
