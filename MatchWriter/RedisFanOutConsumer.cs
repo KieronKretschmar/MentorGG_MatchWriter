@@ -9,23 +9,25 @@ using System.Linq;
 using System.Threading.Tasks;
 using RabbitCommunicationLib.Enums;
 using RabbitMQ.Client.Events;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace MatchWriter
 {
     public class MatchFanOutConsumer : FanOutConsumer<RedisLocalizationInstruction>
     {
-        private readonly IDatabaseHelper _dbHelper;
+        private readonly IServiceProvider _sp;
         private readonly ILogger<MatchFanOutConsumer> _logger;
-        private readonly IProducer<TaskCompletedReport> _producer;
         private readonly IMatchRedis _cache;
         private const string _versionString = "1";
 
-        public MatchFanOutConsumer(IExchangeQueueConnection exchangeQueueConnection, ILogger<MatchFanOutConsumer> logger, IDatabaseHelper dbHelper, IProducer<TaskCompletedReport> producer, IMatchRedis cache) : base(exchangeQueueConnection)
+        public MatchFanOutConsumer(
+            IServiceProvider sp,
+            IExchangeQueueConnection exchangeQueueConnection,
+            ushort prefetchCount = 1) : base(exchangeQueueConnection, prefetchCount)
         {
-            _dbHelper = dbHelper;
-            _logger = logger;
-            _producer = producer;
-            _cache = cache;
+            _sp = sp;
+            _logger = sp.GetRequiredService<ILogger<MatchFanOutConsumer>>();
+            _cache = sp.GetRequiredService<IMatchRedis>();
         }
 
         public override async Task<ConsumedMessageHandling> HandleMessageAsync(BasicDeliverEventArgs ea, RedisLocalizationInstruction model)
@@ -40,6 +42,7 @@ namespace MatchWriter
                 MatchId = model.MatchId,
             };
 
+            var producer = _sp.GetRequiredService<IProducer<TaskCompletedReport>>();
             try
             {
                 // Get matchDataSetJson from redis
@@ -47,18 +50,20 @@ namespace MatchWriter
                 {
                     _logger.LogError($"ExpiryDate has already passed. Aborting. Incoming message: {model.ToString()}");
 
-                    _producer.PublishMessage(msg);
+                    producer.PublishMessage(msg);
                     return ConsumedMessageHandling.ThrowAway;
                 }
                 var matchDataSet = await _cache.GetMatch(model.RedisKey).ConfigureAwait(false);
 
                 // Upload match to db
-                await _dbHelper.PutMatchAsync(matchDataSet).ConfigureAwait(false);
+                var dbHelper = _sp.GetRequiredService<IDatabaseHelper>();
+                await dbHelper.PutMatchAsync(matchDataSet).ConfigureAwait(false);
 
                 _logger.LogInformation($"Succesfully handled Match#{model.MatchId}.");
 
                 msg.Success = true;
-                _producer.PublishMessage(msg);
+
+                producer.PublishMessage(msg);
                 return ConsumedMessageHandling.Done;
             }
             // If it seems like a temporary failure, resend message
@@ -66,7 +71,7 @@ namespace MatchWriter
             {
                 _logger.LogError(e, $"Match#{model.MatchId} could not be uploaded to database right now. Instructing the message to be resent, assuming this is a temporary failure.");
 
-                _producer.PublishMessage(msg);
+                producer.PublishMessage(msg);
                 return ConsumedMessageHandling.Resend;
             }
             // When in doubt or the message itself might be corrupt, throw away
@@ -74,7 +79,7 @@ namespace MatchWriter
             {
                 _logger.LogError(e, $"Match#{model.MatchId} could not be uploaded to database. Instructing the message to be thrown away, assuming the message is corrupt.");
 
-                _producer.PublishMessage(msg);
+                producer.PublishMessage(msg);
                 return ConsumedMessageHandling.ThrowAway;
             }
         }

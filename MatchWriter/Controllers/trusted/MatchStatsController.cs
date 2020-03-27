@@ -12,7 +12,7 @@ using Microsoft.Extensions.Logging;
 
 namespace MatchWriter.Controllers.trusted
 {
-    [Route("api/[controller]")]
+    [Route("api/match")]
     [ApiController]
     public class MatchStatsController : ControllerBase
     {
@@ -25,23 +25,32 @@ namespace MatchWriter.Controllers.trusted
             _dbHelper = dbHelper;
         }
 
-        // GET: api/MatchStats?version=0.1.1
+        /// <summary>
+        /// Getter for Metadata of a stored match.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpGet("{id}")]
         public async Task<ActionResult<MatchStats>> GetMatchStats(long id)
         {
+            _logger.LogInformation($"Received HTTP GET request for MatchId [ {id} ]");
             var matchStats = await _dbHelper.GetMatchStatsAsync(id);
 
             if (matchStats == null)
             {
+                _logger.LogInformation($"Could not find match with MatchId [ {id} ]");
                 return NotFound();
             }
 
+            _logger.LogInformation($"Returning match with MatchId [ {id} ]");
             return matchStats;
         }
 
-        // POST: api/MatchStats
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for
-        // more details see https://aka.ms/RazorPagesCRUD.
+        /// <summary>
+        /// Writes the MatchDataSet from the body to the database. 
+        /// If another match already exists with the same MatchId, it will be replaced.
+        /// </summary>
+        /// <returns></returns>
         [HttpPut]
         public async Task<ActionResult> PutMatchStats()
         {
@@ -56,10 +65,15 @@ namespace MatchWriter.Controllers.trusted
             }
         }
 
-        // DELETE: api/MatchStats/5
+        /// <summary>
+        /// Deletes all data of the match with the given Id.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteMatchStats(long id)
         {
+            _logger.LogInformation($"Received HTTP DELETE request for MatchId [ {id} ]");
             await _dbHelper.RemoveMatchAsync(id);
             return Ok();
         }
