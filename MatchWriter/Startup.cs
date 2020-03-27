@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -11,6 +13,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.OpenApi.Models;
 using RabbitCommunicationLib.Interfaces;
 using RabbitCommunicationLib.Producer;
 using RabbitCommunicationLib.Queues;
@@ -129,6 +132,24 @@ namespace MatchWriter
             #region Helpers
             services.AddTransient<IDatabaseHelper, DatabaseHelper>();
             #endregion
+
+            
+            #region Swagger
+            services.AddSwaggerGen(options =>
+            {
+                OpenApiInfo interface_info = new OpenApiInfo { Title = "MatchRetriever", Version = "v1", };
+                options.SwaggerDoc("v1", interface_info);
+
+                // Generate documentation based on the XML Comments provided.
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                options.IncludeXmlComments(xmlPath);
+
+                // Optionally, if installed, enable annotations
+                options.EnableAnnotations();
+            });            
+            #endregion
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -149,6 +170,16 @@ namespace MatchWriter
             {
                 endpoints.MapControllers();
             });
+
+
+            #region Swagger
+            app.UseSwagger();
+            app.UseSwaggerUI(options =>
+            {
+                options.RoutePrefix = "swagger";
+                options.SwaggerEndpoint("/swagger/v1/swagger.json", "MatchRetriever");
+            });            
+            #endregion
         }
 
         /// <summary>
