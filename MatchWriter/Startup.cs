@@ -18,6 +18,7 @@ using RabbitCommunicationLib.Interfaces;
 using RabbitCommunicationLib.Producer;
 using RabbitCommunicationLib.Queues;
 using RabbitCommunicationLib.TransferModels;
+using StackExchange.Redis;
 
 namespace MatchWriter
 {
@@ -117,13 +118,18 @@ namespace MatchWriter
 
             #region Redis
             var REDIS_CONFIGURATION_STRING = Configuration.GetValue<string>("REDIS_CONFIGURATION_STRING");
-            services.AddTransient<IMatchRedis>(sp =>
+            if(REDIS_CONFIGURATION_STRING == "mock")
             {
-                if (REDIS_CONFIGURATION_STRING == "mock")
-                    return new MockRedis();
-                else
-                    return new MatchRedis(sp.GetRequiredService<ILogger<MatchRedis>>(), REDIS_CONFIGURATION_STRING);
-            });
+                // Add MockRedis, a local InMemory redis cache good for testing
+                services.AddTransient<IMatchRedis, MockRedis>();
+            }
+            else
+            {
+                // Add ConnectionMultiplexer as singleton as it is made to be reused
+                // see https://stackexchange.github.io/StackExchange.Redis/Basics.html
+                services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect(REDIS_CONFIGURATION_STRING));
+                services.AddTransient<IMatchRedis, MatchRedis>();
+            }
             #endregion
 
             #region Helpers
