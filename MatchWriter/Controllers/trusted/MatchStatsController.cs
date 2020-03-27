@@ -25,7 +25,11 @@ namespace MatchWriter.Controllers.trusted
             _dbHelper = dbHelper;
         }
 
-        // GET: api/MatchStats?version=0.1.1
+        /// <summary>
+        /// Getter for Metadata of a stored match.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpGet("{id}")]
         public async Task<ActionResult<MatchStats>> GetMatchStats(long id)
         {
@@ -42,9 +46,11 @@ namespace MatchWriter.Controllers.trusted
             return matchStats;
         }
 
-        // POST: api/MatchStats
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for
-        // more details see https://aka.ms/RazorPagesCRUD.
+        /// <summary>
+        /// Writes the MatchDataSet from the body to the database. 
+        /// If another match already exists with the same MatchId, it will be replaced.
+        /// </summary>
+        /// <returns></returns>
         [HttpPut]
         public async Task<ActionResult> PutMatchStats()
         {
@@ -59,7 +65,11 @@ namespace MatchWriter.Controllers.trusted
             }
         }
 
-        // DELETE: api/MatchStats/5
+        /// <summary>
+        /// Deletes all data of the match with the given Id.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteMatchStats(long id)
         {
