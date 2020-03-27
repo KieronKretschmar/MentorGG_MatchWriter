@@ -106,14 +106,11 @@ namespace MatchWriter
 
             // Setup Consumer
             var exchangeQueue = new ExchangeQueueConnection(AMQP_URI, AMQP_EXCHANGE_NAME, AMQP_EXCHANGE_CONSUME_QUEUE);
-            services.AddHostedService<MatchFanOutConsumer>(services =>
+            services.AddHostedService<MatchFanOutConsumer>(serviceProvider =>
             {
                 return new MatchFanOutConsumer(
+                    serviceProvider,
                     exchangeQueue,
-                    services.GetRequiredService<ILogger<MatchFanOutConsumer>>(),
-                    services.GetRequiredService<IDatabaseHelper>(),
-                    services.GetRequiredService<IProducer<TaskCompletedReport>>(),
-                    services.GetRequiredService<IMatchRedis>(),
                     AMQP_PREFETCH_LIMIT);
             });
             #endregion
