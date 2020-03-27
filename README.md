@@ -8,7 +8,7 @@ Inserts and manages MatchDataSets in MatchDb.
 - `AMQP_CALLBACK_QUEUE` : Rabbit queue's name for producing messages to DemoCentral [*]
 - `AMQP_EXCHANGE_NAME` : Rabbits exchange name for finding Fanout [*]
 - `AMQP_EXCHANGE_CONSUME_QUEUE` : Rabbit queue's name for consuming messages from Fanout 
-- `AMQP_PREFETCH_LIMIT` : Prefetch limit for rabbit, defaults to 0
+- `AMQP_PREFETCH_COUNT` : Prefetch limit for rabbit, defaults to 0
 - `IS_MIGRATING` : Boolean to indicate if migration is active
 
 [*] *Required*
