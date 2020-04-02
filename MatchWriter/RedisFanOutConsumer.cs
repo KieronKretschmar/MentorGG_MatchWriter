@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using RabbitCommunicationLib.Enums;
 using RabbitMQ.Client.Events;
 using Microsoft.Extensions.DependencyInjection;
+using StackExchange.Redis;
 
 namespace MatchWriter
 {
@@ -59,15 +60,19 @@ namespace MatchWriter
                 var dbHelper = _sp.GetRequiredService<IDatabaseHelper>();
                 await dbHelper.PutMatchAsync(matchDataSet).ConfigureAwait(false);
 
+                //Delete uploaded match from redis
+                await _cache.DeleteMatch(model.RedisKey).ConfigureAwait(false);
+
                 _logger.LogInformation($"Succesfully handled Match#{model.MatchId}.");
 
                 msg.Success = true;
+
 
                 producer.PublishMessage(msg);
                 return ConsumedMessageHandling.Done;
             }
             // If it seems like a temporary failure, resend message
-            catch (Exception e) when (e is TimeoutException)
+            catch (Exception e) when (e is TimeoutException || e is RedisConnectionException)
             {
                 _logger.LogError(e, $"Match#{model.MatchId} could not be uploaded to database right now. Instructing the message to be resent, assuming this is a temporary failure.");
 
