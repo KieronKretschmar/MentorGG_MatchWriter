@@ -60,9 +60,13 @@ namespace MatchWriter
                 var dbHelper = _sp.GetRequiredService<IDatabaseHelper>();
                 await dbHelper.PutMatchAsync(matchDataSet).ConfigureAwait(false);
 
+                //Delete uploaded match from redis
+                await _cache.DeleteMatch(model.RedisKey).ConfigureAwait(false);
+
                 _logger.LogInformation($"Succesfully handled Match#{model.MatchId}.");
 
                 msg.Success = true;
+
 
                 producer.PublishMessage(msg);
                 return ConsumedMessageHandling.Done;

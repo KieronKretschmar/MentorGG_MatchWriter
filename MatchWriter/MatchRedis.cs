@@ -12,6 +12,7 @@ namespace MatchWriter
     public interface IMatchRedis
     {
         Task<MatchDataSet> GetMatch(string key);
+        Task DeleteMatch(string redisKey);
     }
 
     /// <summary>
@@ -20,7 +21,6 @@ namespace MatchWriter
     public class MatchRedis : IMatchRedis
     {
         private readonly ILogger<MatchRedis> _logger;
-        private static string _redisUri;
         private IDatabase cache;
 
         public MatchRedis(ILogger<MatchRedis> logger, IConnectionMultiplexer connectionMultiplexer)
@@ -44,10 +44,27 @@ namespace MatchWriter
             _logger.LogInformation($"Succesfully loaded Match with key {key} from redis.");
             return match;
         }
+
+        public async Task DeleteMatch(string redisKey)
+        {
+            _logger.LogInformation($"Attempting to delete key [ {redisKey} ]");
+            await cache.KeyDeleteAsync(redisKey).ConfigureAwait(false);
+            _logger.LogInformation($"Deleted key [ {redisKey} ] from RedisCache");
+        }
     }
 
     public class MockRedis : IMatchRedis
     {
+        /// <summary>
+        /// Do nothing
+        /// </summary>
+        /// <param name="redisKey"></param>
+        /// <returns></returns>
+        public Task DeleteMatch(string redisKey)
+        {
+            return Task.CompletedTask;
+        }
+
         public async Task<MatchDataSet> GetMatch(string key)
         {
             return new MatchDataSet();
