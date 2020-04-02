@@ -122,7 +122,7 @@ namespace MatchWriter
             var demoCentralRPCqueues = new RPCQueueConnections(AMQP_URI, AMQP_DEMOCENTRAL_DEMO_REMOVAL, AMQP_DEMOCENTRAL_DEMO__REMOVAL_REPLY);
             services.AddHostedService<IDemoCentral>(services =>
             {
-                return new DemoCentral(demoCentralRPCqueues, services.GetRequiredService<IDatabaseHelper>());
+                return new DemoCentral(demoCentralRPCqueues, services.GetRequiredService<IDatabaseHelper>(), services.GetRequiredService<ILogger<DemoCentral>>());
             });
 
             #endregion
