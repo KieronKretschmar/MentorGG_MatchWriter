@@ -98,8 +98,8 @@ namespace MatchWriter
             var AMQP_EXCHANGE_NAME = GetRequiredEnvironmentVariable<string>(Configuration, "AMQP_EXCHANGE_NAME");
             var AMQP_PREFETCH_COUNT = GetOptionalEnvironmentVariable<ushort>(Configuration, "AMQP_PREFETCH_COUNT", AMQP_PREFETCH_COUNT_DEFAULT);
             var AMQP_EXCHANGE_CONSUME_QUEUE = GetOptionalEnvironmentVariable<string>(Configuration, "AMQP_EXCHANGE_CONSUME_QUEUE", AMQP_EXCHANGE_CONSUME_QUEUE_DEFAULT);
-            var AMQP_DEMOCENTRAL_QUEUE = GetRequiredEnvironmentVariable<string>(Configuration, "AMQP_DEMOCENTRAL_QUEUE");
-            var AMQP_DEMOCENTRAL_REPLY = GetRequiredEnvironmentVariable<string>(Configuration, "AMQP_DEMOCENTRAL_REPLY");
+            var AMQP_DEMOCENTRAL_DEMO_REMOVAL = GetRequiredEnvironmentVariable<string>(Configuration, "AMQP_DEMOCENTRAL_DEMO_REMOVAL");
+            var AMQP_DEMOCENTRAL_DEMO__REMOVAL_REPLY = GetRequiredEnvironmentVariable<string>(Configuration, "AMQP_DEMOCENTRAL_DEMO__REMOVAL_REPLY");
 
             // Setup Producer
             var callbackQueue = new QueueConnection(AMQP_URI, AMQP_CALLBACK_QUEUE);
@@ -119,7 +119,7 @@ namespace MatchWriter
             });
 
 
-            var demoCentralRPCqueues = new RPCQueueConnections(AMQP_URI, AMQP_DEMOCENTRAL_QUEUE, AMQP_DEMOCENTRAL_REPLY);
+            var demoCentralRPCqueues = new RPCQueueConnections(AMQP_URI, AMQP_DEMOCENTRAL_DEMO_REMOVAL, AMQP_DEMOCENTRAL_DEMO__REMOVAL_REPLY);
             services.AddHostedService<IDemoCentral>(services =>
             {
                 return new DemoCentral(demoCentralRPCqueues, services.GetRequiredService<IDatabaseHelper>());
