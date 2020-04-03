@@ -10,9 +10,10 @@ using System.Threading.Tasks;
 
 namespace MatchWriter
 {
-    public interface IDatabaseHelper
+    public interface IDatabaseHelper : IDisposable
     {
         bool DatabaseIsEmpty();
+        void Dispose();
         Task<MatchStats> GetMatchStatsAsync(long id);
         Task<bool> MatchStatsExistsAsync(long id);
         Task PutMatchAsync(MatchDataSet data);
@@ -20,7 +21,7 @@ namespace MatchWriter
         Task RemoveMatchAsync(long id);
     }
 
-    public class DatabaseHelper : IDatabaseHelper
+    public class DatabaseHelper : IDatabaseHelper, IDisposable
     {
         private readonly ILogger<DatabaseHelper> _logger;
         private readonly MatchContext _context;
@@ -29,6 +30,14 @@ namespace MatchWriter
         {
             _logger = logger;
             _context = dbContext;
+        }
+
+        /// <summary>
+        /// Disposes resources.
+        /// </summary>
+        public void Dispose()
+        {
+            _context.Dispose();
         }
 
         public async Task<MatchStats> GetMatchStatsAsync(long id)

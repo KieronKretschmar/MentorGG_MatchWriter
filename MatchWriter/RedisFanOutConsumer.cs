@@ -57,7 +57,7 @@ namespace MatchWriter
                 var matchDataSet = await _cache.GetMatch(model.RedisKey).ConfigureAwait(false);
 
                 // Upload match to db
-                var dbHelper = _sp.GetRequiredService<IDatabaseHelper>();
+                using var dbHelper = _sp.GetRequiredService<IDatabaseHelper>();
                 await dbHelper.PutMatchAsync(matchDataSet).ConfigureAwait(false);
 
                 //Delete uploaded match from redis
