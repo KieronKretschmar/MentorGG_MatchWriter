@@ -14,7 +14,7 @@ namespace MatchWriter
     {
         bool DatabaseIsEmpty();
         Task<MatchStats> GetMatchStatsAsync(long id);
-        bool MatchStatsExists(long id);
+        Task<bool> MatchStatsExistsAsync(long id);
         Task PutMatchAsync(MatchDataSet data);
         Task PutMatchAsync(string json);
         Task RemoveMatchAsync(long id);
@@ -188,19 +188,19 @@ namespace MatchWriter
         public async Task PutMatchAsync(string json)
         {
             var matchDataSet = MatchDataSet.FromJson(json);
-            await PutMatchAsync(matchDataSet);
+            await PutMatchAsync(matchDataSet).ConfigureAwait(false);
         }
 
         public async Task PutMatchAsync(MatchDataSet data)
         {
-            await RemoveMatchAsync(data.MatchStats.MatchId);
+            await RemoveMatchAsync(data.MatchStats.MatchId).ConfigureAwait(false);
 
             _logger.LogInformation($"Attempting to insert match with MatchId [ {data.MatchStats.MatchId} ]");
             foreach (dynamic table in data.Tables())
             {
                 _context.AddRange(table);
             }
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync().ConfigureAwait(false);
 
             _logger.LogInformation($"Inserted match with MatchId [ {data.MatchStats.MatchId} ]");
         }
@@ -209,11 +209,11 @@ namespace MatchWriter
         public async Task RemoveMatchAsync(long id)
         {
             _logger.LogInformation($"Attempting to remove match with MatchId [ {id} ]");
-            var match = _context.MatchStats.SingleOrDefault(x => x.MatchId == id);
+            var match = await _context.MatchStats.SingleOrDefaultAsync(x => x.MatchId == id).ConfigureAwait(false);
             if (match != null)
             {
                 _context.MatchStats.Remove(match);
-                await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync().ConfigureAwait(false);
                 _logger.LogInformation($"Removed match with MatchId [ {id} ]");
             }
             else
@@ -223,9 +223,9 @@ namespace MatchWriter
         }
 
 
-        public bool MatchStatsExists(long id)
+        public async Task<bool> MatchStatsExistsAsync(long id)
         {
-            return _context.MatchStats.Any(e => e.MatchId == id);
+            return await _context.MatchStats.AnyAsync(e => e.MatchId == id).ConfigureAwait(false);
         }
 
         public bool DatabaseIsEmpty()
