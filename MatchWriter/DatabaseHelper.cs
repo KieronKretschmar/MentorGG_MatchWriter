@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
@@ -205,11 +206,23 @@ namespace MatchWriter
             await RemoveMatchAsync(data.MatchStats.MatchId).ConfigureAwait(false);
 
             _logger.LogInformation($"Attempting to insert match with MatchId [ {data.MatchStats.MatchId} ]");
-            foreach (dynamic table in data.Tables())
+
+            // Insert all tables but positions
+            foreach (IEnumerable<IMatchDataEntity> table in data.Tables())
             {
+                // Skip positions, it will be inserted later
+                var type = table.FirstOrDefault()?.GetType() ?? null; 
+                if (type == typeof(PlayerPosition))
+                {
+                    continue;
+                }
+
                 _context.AddRange(table);
             }
             await _context.SaveChangesAsync().ConfigureAwait(false);
+
+            // Insert positions this way as its much more efficient
+            _context.BulkInsert(data.PlayerPositionList);
 
             _logger.LogInformation($"Inserted match with MatchId [ {data.MatchStats.MatchId} ]");
         }
