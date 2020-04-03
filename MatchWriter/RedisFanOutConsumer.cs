@@ -85,7 +85,7 @@ namespace MatchWriter
                 _logger.LogError(e, $"Match#{model.MatchId} could not be uploaded to database. Instructing the message to be thrown away, assuming the message is corrupt.");
 
                 producer.PublishMessage(msg);
-                return ConsumedMessageHandling.ThrowAway;
+                return ConsumedMessageHandling.Done;
             }
         }
     }
