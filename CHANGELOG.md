@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Upcoming
 
+## [1.0.3] 2020-04-03
+### Changed
+- Bulkinsert PlayerPositions to improve performance and reduce memory usage
+
+
 ## [0.4.8] 2020-03-26
 ### Added
 - Optional Environment variable AMQP_PREFETCH_COUNT
