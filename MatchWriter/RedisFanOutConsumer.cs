@@ -57,7 +57,7 @@ namespace MatchWriter
                 var matchDataSet = await _cache.GetMatch(model.RedisKey).ConfigureAwait(false);
 
                 // Upload match to db
-                var dbHelper = _sp.GetRequiredService<IDatabaseHelper>();
+                using var dbHelper = _sp.GetRequiredService<IDatabaseHelper>();
                 await dbHelper.PutMatchAsync(matchDataSet).ConfigureAwait(false);
 
                 //Delete uploaded match from redis
@@ -85,7 +85,7 @@ namespace MatchWriter
                 _logger.LogError(e, $"Match#{model.MatchId} could not be uploaded to database. Instructing the message to be thrown away, assuming the message is corrupt.");
 
                 producer.PublishMessage(msg);
-                return ConsumedMessageHandling.ThrowAway;
+                return ConsumedMessageHandling.Done;
             }
         }
     }

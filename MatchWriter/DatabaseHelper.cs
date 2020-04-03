@@ -4,23 +4,25 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace MatchWriter
 {
-    public interface IDatabaseHelper
+    public interface IDatabaseHelper : IDisposable
     {
         bool DatabaseIsEmpty();
+        void Dispose();
         Task<MatchStats> GetMatchStatsAsync(long id);
-        bool MatchStatsExists(long id);
+        Task<bool> MatchStatsExistsAsync(long id);
         Task PutMatchAsync(MatchDataSet data);
         Task PutMatchAsync(string json);
         Task RemoveMatchAsync(long id);
     }
 
-    public class DatabaseHelper : IDatabaseHelper
+    public class DatabaseHelper : IDatabaseHelper, IDisposable
     {
         private readonly ILogger<DatabaseHelper> _logger;
         private readonly MatchContext _context;
@@ -29,6 +31,14 @@ namespace MatchWriter
         {
             _logger = logger;
             _context = dbContext;
+        }
+
+        /// <summary>
+        /// Disposes resources.
+        /// </summary>
+        public void Dispose()
+        {
+            _context.Dispose();
         }
 
         public async Task<MatchStats> GetMatchStatsAsync(long id)
@@ -188,19 +198,31 @@ namespace MatchWriter
         public async Task PutMatchAsync(string json)
         {
             var matchDataSet = MatchDataSet.FromJson(json);
-            await PutMatchAsync(matchDataSet);
+            await PutMatchAsync(matchDataSet).ConfigureAwait(false);
         }
 
         public async Task PutMatchAsync(MatchDataSet data)
         {
-            await RemoveMatchAsync(data.MatchStats.MatchId);
+            await RemoveMatchAsync(data.MatchStats.MatchId).ConfigureAwait(false);
 
             _logger.LogInformation($"Attempting to insert match with MatchId [ {data.MatchStats.MatchId} ]");
-            foreach (dynamic table in data.Tables())
+
+            // Insert all tables but positions
+            foreach (IEnumerable<IMatchDataEntity> table in data.Tables())
             {
+                // Skip positions, it will be inserted later
+                var type = table.FirstOrDefault()?.GetType() ?? null; 
+                if (type == typeof(PlayerPosition))
+                {
+                    continue;
+                }
+
                 _context.AddRange(table);
             }
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync().ConfigureAwait(false);
+
+            // Insert positions this way as its much more efficient
+            _context.BulkInsert(data.PlayerPositionList);
 
             _logger.LogInformation($"Inserted match with MatchId [ {data.MatchStats.MatchId} ]");
         }
@@ -209,11 +231,11 @@ namespace MatchWriter
         public async Task RemoveMatchAsync(long id)
         {
             _logger.LogInformation($"Attempting to remove match with MatchId [ {id} ]");
-            var match = _context.MatchStats.SingleOrDefault(x => x.MatchId == id);
+            var match = await _context.MatchStats.SingleOrDefaultAsync(x => x.MatchId == id).ConfigureAwait(false);
             if (match != null)
             {
                 _context.MatchStats.Remove(match);
-                await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync().ConfigureAwait(false);
                 _logger.LogInformation($"Removed match with MatchId [ {id} ]");
             }
             else
@@ -223,9 +245,9 @@ namespace MatchWriter
         }
 
 
-        public bool MatchStatsExists(long id)
+        public async Task<bool> MatchStatsExistsAsync(long id)
         {
-            return _context.MatchStats.Any(e => e.MatchId == id);
+            return await _context.MatchStats.AnyAsync(e => e.MatchId == id).ConfigureAwait(false);
         }
 
         public bool DatabaseIsEmpty()

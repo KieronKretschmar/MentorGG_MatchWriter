@@ -63,7 +63,7 @@ namespace MatchWriterTestProject
             {
                 DatabaseHelper databaseHelper = new DatabaseHelper(_dbHelperLogger, context);
 
-                var isInDatabase = databaseHelper.MatchStatsExists(matchId);
+                var isInDatabase = await databaseHelper.MatchStatsExistsAsync(matchId);
                 Assert.IsTrue(isInDatabase);
 
                 var onlyOneMatchInDatabase = context.MatchStats.Count() == 1;
@@ -107,7 +107,7 @@ namespace MatchWriterTestProject
             {
                 DatabaseHelper databaseHelper = new DatabaseHelper(_dbHelperLogger, context);
 
-                var isInDatabase = databaseHelper.MatchStatsExists(matchId);
+                var isInDatabase = await databaseHelper.MatchStatsExistsAsync(matchId);
                 Assert.IsTrue(isInDatabase);
             }
         }
