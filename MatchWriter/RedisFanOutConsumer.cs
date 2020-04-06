@@ -79,6 +79,15 @@ namespace MatchWriter
                 producer.PublishMessage(msg);
                 return ConsumedMessageHandling.Resend;
             }
+            // As of now it seems like MatchWriter has a memory leak, which leads to OutOfMemoryException's being thrown for every message. 
+            // This catch-block is here to force a restart if this happens. A better solution would be to fix the memory leak.
+            catch (Exception e) when (e is OutOfMemoryException)
+            {
+                _logger.LogError(e, $"Match#{model.MatchId} could not be uploaded to database right now.");
+                _logger.LogCritical($"Exiting the application to force a restart with cleared RAM.");
+                Environment.Exit(-1);
+                return ConsumedMessageHandling.Resend;
+            }
             // When in doubt or the message itself might be corrupt, throw away
             catch (Exception e)
             {
