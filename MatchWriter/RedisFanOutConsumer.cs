@@ -89,7 +89,8 @@ namespace MatchWriter
             {
                 _logger.LogError(e, $"Match#{model.MatchId} could not be uploaded to database right now.");
                 _logger.LogCritical($"Exiting the application to force a restart with cleared RAM.");
-                Environment.Exit(-1);
+                // Exist with Code 14=ERROR_OUTOFMEMORY 
+                Environment.Exit(14);
                 return ConsumedMessageHandling.Resend;
             }
             // When in doubt or the message itself might be corrupt, throw away
