@@ -54,22 +54,26 @@ namespace MatchWriter
                     producer.PublishMessage(msg);
                     return ConsumedMessageHandling.ThrowAway;
                 }
-                var matchDataSet = await _cache.GetMatch(model.RedisKey).ConfigureAwait(false);
 
-                // Upload match to db
-                using var dbHelper = _sp.GetRequiredService<IDatabaseHelper>();
-                await dbHelper.PutMatchAsync(matchDataSet).ConfigureAwait(false);
+                using (var scope = _sp.CreateScope())
+                {
+                    var matchDataSet = await _cache.GetMatch(model.RedisKey).ConfigureAwait(false);
 
-                //Delete uploaded match from redis
-                await _cache.DeleteMatch(model.RedisKey).ConfigureAwait(false);
+                    // Upload match to db
+                    using var dbHelper = scope.ServiceProvider.GetRequiredService<IDatabaseHelper>();
+                    await dbHelper.PutMatchAsync(matchDataSet).ConfigureAwait(false);
 
-                _logger.LogInformation($"Succesfully handled Match#{model.MatchId}.");
+                    //Delete uploaded match from redis
+                    await _cache.DeleteMatch(model.RedisKey).ConfigureAwait(false);
 
-                msg.Success = true;
+                    _logger.LogInformation($"Succesfully handled Match#{model.MatchId}.");
+
+                    msg.Success = true;
 
 
-                producer.PublishMessage(msg);
-                return ConsumedMessageHandling.Done;
+                    producer.PublishMessage(msg);
+                    return ConsumedMessageHandling.Done;
+                }
             }
             // If it seems like a temporary failure, resend message
             catch (Exception e) when (e is TimeoutException || e is RedisConnectionException)
