@@ -54,22 +54,26 @@ namespace MatchWriter
                     producer.PublishMessage(msg);
                     return ConsumedMessageHandling.ThrowAway;
                 }
-                var matchDataSet = await _cache.GetMatch(model.RedisKey).ConfigureAwait(false);
 
-                // Upload match to db
-                using var dbHelper = _sp.GetRequiredService<IDatabaseHelper>();
-                await dbHelper.PutMatchAsync(matchDataSet).ConfigureAwait(false);
+                using (var scope = _sp.CreateScope())
+                {
+                    var matchDataSet = await _cache.GetMatch(model.RedisKey).ConfigureAwait(false);
 
-                //Delete uploaded match from redis
-                await _cache.DeleteMatch(model.RedisKey).ConfigureAwait(false);
+                    // Upload match to db
+                    using var dbHelper = scope.ServiceProvider.GetRequiredService<IDatabaseHelper>();
+                    await dbHelper.PutMatchAsync(matchDataSet).ConfigureAwait(false);
 
-                _logger.LogInformation($"Succesfully handled Match#{model.MatchId}.");
+                    //Delete uploaded match from redis
+                    await _cache.DeleteMatch(model.RedisKey).ConfigureAwait(false);
 
-                msg.Success = true;
+                    _logger.LogInformation($"Succesfully handled Match#{model.MatchId}.");
+
+                    msg.Success = true;
 
 
-                producer.PublishMessage(msg);
-                return ConsumedMessageHandling.Done;
+                    producer.PublishMessage(msg);
+                    return ConsumedMessageHandling.Done;
+                }
             }
             // If it seems like a temporary failure, resend message
             catch (Exception e) when (e is TimeoutException || e is RedisConnectionException)
@@ -77,6 +81,16 @@ namespace MatchWriter
                 _logger.LogError(e, $"Match#{model.MatchId} could not be uploaded to database right now. Instructing the message to be resent, assuming this is a temporary failure.");
 
                 producer.PublishMessage(msg);
+                return ConsumedMessageHandling.Resend;
+            }
+            // As of now it seems like MatchWriter has a memory leak, which leads to OutOfMemoryException's being thrown for every message. 
+            // This catch-block is here to force a restart if this happens. A better solution would be to fix the memory leak.
+            catch (Exception e) when (e is OutOfMemoryException)
+            {
+                _logger.LogError(e, $"Match#{model.MatchId} could not be uploaded to database right now.");
+                _logger.LogCritical($"Exiting the application to force a restart with cleared RAM.");
+                // Exit with Code 14 (ERROR_OUTOFMEMORY)
+                Environment.Exit(14);
                 return ConsumedMessageHandling.Resend;
             }
             // When in doubt or the message itself might be corrupt, throw away
