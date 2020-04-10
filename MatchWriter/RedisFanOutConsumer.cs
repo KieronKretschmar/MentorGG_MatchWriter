@@ -43,7 +43,7 @@ namespace MatchWriter
                 MatchId = model.MatchId,
             };
 
-            var producer = _sp.GetRequiredService<IProducer<TaskCompletedReport>>();
+            using var producer = _sp.GetRequiredService<IProducer<TaskCompletedReport>>();
             try
             {
                 // Get matchDataSetJson from redis
