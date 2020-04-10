@@ -14,21 +14,20 @@ using StackExchange.Redis;
 
 namespace MatchWriter
 {
-    public class MatchFanOutConsumer : FanOutConsumer<RedisLocalizationInstruction>
+    public class MatchDataConsumer : FanOutConsumer<RedisLocalizationInstruction>
     {
         private readonly IServiceProvider _sp;
-        private readonly ILogger<MatchFanOutConsumer> _logger;
+        private readonly ILogger<MatchDataConsumer> _logger;
         private readonly IMatchRedis _cache;
         private const string _versionString = "1";
 
-        public MatchFanOutConsumer(
+        public MatchDataConsumer(
             IServiceProvider sp,
             IExchangeQueueConnection exchangeQueueConnection,
             ushort prefetchCount = 1) : base(exchangeQueueConnection, prefetchCount)
         {
             _sp = sp;
-            _logger = sp.GetRequiredService<ILogger<MatchFanOutConsumer>>();
-            _cache = sp.GetRequiredService<IMatchRedis>();
+            _logger = sp.GetRequiredService<ILogger<MatchDataConsumer>>();
         }
 
         public override async Task<ConsumedMessageHandling> HandleMessageAsync(BasicDeliverEventArgs ea, RedisLocalizationInstruction model)
@@ -57,6 +56,7 @@ namespace MatchWriter
 
                 using (var scope = _sp.CreateScope())
                 {
+                    var _cache = scope.ServiceProvider.GetRequiredService<IMatchRedis>();
                     var matchDataSet = await _cache.GetMatch(model.RedisKey).ConfigureAwait(false);
 
                     // Upload match to db
