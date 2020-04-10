@@ -80,7 +80,6 @@ namespace MatchWriter
             {
                 _logger.LogError(e, $"Match#{model.MatchId} could not be uploaded to database right now. Instructing the message to be resent, assuming this is a temporary failure.");
 
-                producer.PublishMessage(msg);
                 return ConsumedMessageHandling.Resend;
             }
             // As of now it seems like MatchWriter has a memory leak, which leads to OutOfMemoryException's being thrown for every message. 
