@@ -28,7 +28,6 @@ namespace MatchWriter
         {
             _sp = sp;
             _logger = sp.GetRequiredService<ILogger<MatchDataConsumer>>();
-            _cache = sp.GetRequiredService<IMatchRedis>();
         }
 
         public override async Task<ConsumedMessageHandling> HandleMessageAsync(BasicDeliverEventArgs ea, RedisLocalizationInstruction model)
@@ -57,6 +56,7 @@ namespace MatchWriter
 
                 using (var scope = _sp.CreateScope())
                 {
+                    var _cache = scope.ServiceProvider.GetRequiredService<IMatchRedis>();
                     var matchDataSet = await _cache.GetMatch(model.RedisKey).ConfigureAwait(false);
 
                     // Upload match to db
