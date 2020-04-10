@@ -110,9 +110,9 @@ namespace MatchWriter
 
             // Setup Consumer
             var exchangeQueue = new ExchangeQueueConnection(AMQP_URI, AMQP_EXCHANGE_NAME, AMQP_EXCHANGE_CONSUME_QUEUE);
-            services.AddHostedService<MatchFanOutConsumer>(serviceProvider =>
+            services.AddHostedService<MatchDataConsumer>(serviceProvider =>
             {
-                return new MatchFanOutConsumer(
+                return new MatchDataConsumer(
                     serviceProvider,
                     exchangeQueue,
                     AMQP_PREFETCH_COUNT);
