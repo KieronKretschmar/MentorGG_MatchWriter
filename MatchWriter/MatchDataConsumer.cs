@@ -48,7 +48,7 @@ namespace MatchWriter
                 // Get matchDataSetJson from redis
                 if(model.ExpiryDate <= DateTime.Now)
                 {
-                    _logger.LogError($"Match#{model.MatchId} ExpiryDate has passed. Aborting");
+                    _logger.LogError($"MatchId [ {model.MatchId} ] ExpiryDate has passed. Aborting");
 
                     producer.PublishMessage(msg);
                     return ConsumedMessageHandling.Done;
@@ -66,7 +66,7 @@ namespace MatchWriter
                     //Delete uploaded match from redis
                     await _cache.DeleteMatch(model.RedisKey).ConfigureAwait(false);
 
-                    _logger.LogInformation($"Succesfully handled Match#{model.MatchId}.");
+                    _logger.LogInformation($"Successfully handled MatchId [ {model.MatchId} ]");
 
                     msg.Success = true;
 
@@ -81,7 +81,7 @@ namespace MatchWriter
             {
                 _logger.LogError(
                     e,
-                    $"Match#{model.MatchId} Could not retreive Match from Redis.");
+                    $"MatchId [ {model.MatchId} ] Could not retreive Match from Redis.");
 
                 await _cache.DeleteMatch(model.RedisKey).ConfigureAwait(false);
 
@@ -92,7 +92,7 @@ namespace MatchWriter
             // If it seems like a temporary failure, resend message
             catch (Exception e) when (e is TimeoutException || e is RedisConnectionException)
             {
-                _logger.LogError(e, $"Match#{model.MatchId} could not be uploaded to database right now. Instructing the message to be resent, assuming this is a temporary failure.");
+                _logger.LogError(e, $"MatchId [ {model.MatchId} ] could not be uploaded to database right now. Instructing the message to be resent, assuming this is a temporary failure.");
 
                 return ConsumedMessageHandling.Resend;
             }
@@ -101,7 +101,7 @@ namespace MatchWriter
             // This catch-block is here to force a restart if this happens. A better solution would be to fix the memory leak.
             catch (Exception e) when (e is OutOfMemoryException)
             {
-                _logger.LogError(e, $"Match#{model.MatchId} could not be uploaded to database right now.");
+                _logger.LogError(e, $"MatchId [ {model.MatchId} ] could not be uploaded to database right now.");
                 _logger.LogCritical($"Exiting the application to force a restart with cleared RAM.");
                 // Exit with Code 14 (ERROR_OUTOFMEMORY)
                 Environment.Exit(14);
@@ -114,7 +114,7 @@ namespace MatchWriter
                 _logger.LogError(
                     e,
                     "Unhandled Exception - " +
-                    $"Match#{model.MatchId} could not stored in the Database, " +
+                    $"MatchId [ {model.MatchId} ] could not stored in the Database, " +
                     "Instructing the message to be thrown away.");
 
                 producer.PublishMessage(msg);
