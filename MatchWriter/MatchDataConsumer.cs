@@ -51,7 +51,7 @@ namespace MatchWriter
                     _logger.LogError($"ExpiryDate has already passed. Aborting. Incoming message: {model.ToString()}");
 
                     producer.PublishMessage(msg);
-                    return ConsumedMessageHandling.ThrowAway;
+                    return ConsumedMessageHandling.Done;
                 }
 
                 using (var scope = _sp.CreateScope())
@@ -92,13 +92,18 @@ namespace MatchWriter
                 Environment.Exit(14);
                 return ConsumedMessageHandling.Resend;
             }
+
             // When in doubt or the message itself might be corrupt, throw away
             catch (Exception e)
             {
-                _logger.LogError(e, $"Match#{model.MatchId} could not be uploaded to database. Instructing the message to be thrown away, assuming the message is corrupt.");
+                _logger.LogError(
+                    e,
+                    "Unhandled Exception - " +
+                    $"Match#{model.MatchId} could not stored in the Database, " +
+                    "Instructing the message to be thrown away.");
 
                 producer.PublishMessage(msg);
-                return ConsumedMessageHandling.Done;
+                return ConsumedMessageHandling.ThrowAway;
             }
         }
     }
