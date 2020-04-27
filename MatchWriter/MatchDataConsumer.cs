@@ -75,6 +75,20 @@ namespace MatchWriter
                     return ConsumedMessageHandling.Done;
                 }
             }
+
+            // If a match was expected in Redis but not found
+            catch (Exception e) when (e is MatchEmptyOrNull)
+            {
+                _logger.LogError(
+                    e,
+                    $"Match#{model.MatchId} Could not retreive Match from Redis.");
+
+                await _cache.DeleteMatch(model.RedisKey).ConfigureAwait(false);
+
+                producer.PublishMessage(msg);
+                return ConsumedMessageHandling.Done;
+            }
+
             // If it seems like a temporary failure, resend message
             catch (Exception e) when (e is TimeoutException || e is RedisConnectionException)
             {
@@ -82,6 +96,7 @@ namespace MatchWriter
 
                 return ConsumedMessageHandling.Resend;
             }
+
             // As of now it seems like MatchWriter has a memory leak, which leads to OutOfMemoryException's being thrown for every message. 
             // This catch-block is here to force a restart if this happens. A better solution would be to fix the memory leak.
             catch (Exception e) when (e is OutOfMemoryException)

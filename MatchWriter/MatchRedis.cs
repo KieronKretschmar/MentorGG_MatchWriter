@@ -12,7 +12,7 @@ namespace MatchWriter
     public interface IMatchRedis
     {
         Task<MatchDataSet> GetMatch(string key);
-        Task DeleteMatch(string redisKey);
+        Task DeleteMatch(string key);
     }
 
     /// <summary>
@@ -23,7 +23,9 @@ namespace MatchWriter
         private readonly ILogger<MatchRedis> _logger;
         private IDatabase cache;
 
-        public MatchRedis(ILogger<MatchRedis> logger, IConnectionMultiplexer connectionMultiplexer)
+        public MatchRedis(
+            ILogger<MatchRedis> logger,
+            IConnectionMultiplexer connectionMultiplexer)
         {
             _logger = logger;
             cache = connectionMultiplexer.GetDatabase();
@@ -33,24 +35,39 @@ namespace MatchWriter
         /// Attempts to load a MatchDataSet from redis.
         /// 
         /// </summary>
-        /// <param name="matchId"></param>
+        /// <param name="key">Redis key</param>
         /// <returns></returns>
         public async Task<MatchDataSet> GetMatch(string key)
         {
-            _logger.LogInformation($"Attempting to load match with key {key} from redis.");
+            _logger.LogDebug($"Attempting to load match with key [ {key} from redis.");
             var response = await cache.StringGetAsync(key).ConfigureAwait(false);
+
+            if (response.IsNullOrEmpty){
+                throw new MatchEmptyOrNull($"Received NULL value from Redis for key [ {key} ]");
+            }
+
             var match = MatchDataSet.FromJson(response.ToString());
 
-            _logger.LogInformation($"Succesfully loaded Match with key {key} from redis.");
+            _logger.LogDebug($"Succesfully loaded Match with key [ {key} ] from redis.");
             return match;
         }
 
-        public async Task DeleteMatch(string redisKey)
+        public async Task DeleteMatch(string key)
         {
-            _logger.LogInformation($"Attempting to delete key [ {redisKey} ]");
-            await cache.KeyDeleteAsync(redisKey).ConfigureAwait(false);
-            _logger.LogInformation($"Deleted key [ {redisKey} ] from RedisCache");
+            _logger.LogDebug($"Attempting to delete key [ {key} ]");
+            await cache.KeyDeleteAsync(key).ConfigureAwait(false);
+            _logger.LogDebug($"Deleted key [ {key} ] from RedisCache");
         }
+    }
+
+    /// <summary>
+    /// Indicates a Match is empty or null
+    /// </summary>
+    class MatchEmptyOrNull : Exception
+    {
+        public MatchEmptyOrNull() { }
+        public MatchEmptyOrNull(string message) : base(message) { }
+
     }
 
     public class MockRedis : IMatchRedis
@@ -58,9 +75,9 @@ namespace MatchWriter
         /// <summary>
         /// Do nothing
         /// </summary>
-        /// <param name="redisKey"></param>
+        /// <param name="key"></param>
         /// <returns></returns>
-        public Task DeleteMatch(string redisKey)
+        public Task DeleteMatch(string key)
         {
             return Task.CompletedTask;
         }
