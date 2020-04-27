@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.1.0] 2020-04-27
 ### Changed
+- Default prefetch count to `1`.
 - Added handling of null or empty Match when querying Redis.
 
 ## [1.0.4] 2020-04-08

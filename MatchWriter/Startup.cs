@@ -28,7 +28,7 @@ namespace MatchWriter
     /// </summary>
     public class Startup
     {
-        private const ushort AMQP_PREFETCH_COUNT_DEFAULT = 0;
+        private const ushort AMQP_PREFETCH_COUNT_DEFAULT = 1;
         private const string AMQP_EXCHANGE_CONSUME_QUEUE_DEFAULT = "MW_ConsumeQueue";
 
         public Startup(IConfiguration configuration)
