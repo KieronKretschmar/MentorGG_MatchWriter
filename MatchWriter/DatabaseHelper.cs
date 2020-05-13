@@ -1,5 +1,6 @@
 ﻿using Database;
 using MatchEntities;
+using MatchEntities.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
