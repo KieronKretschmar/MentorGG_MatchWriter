@@ -14,12 +14,11 @@ using StackExchange.Redis;
 
 namespace MatchWriter
 {
-    public class MatchDataConsumer : FanOutConsumer<RedisLocalizationInstruction>
+    public class MatchDataConsumer : FanOutConsumer<MatchDatabaseInsertionInstruction>
     {
         private readonly IServiceProvider _sp;
         private readonly ILogger<MatchDataConsumer> _logger;
         private readonly IMatchRedis _cache;
-        private const string _versionString = "1";
 
         public MatchDataConsumer(
             IServiceProvider sp,
@@ -30,17 +29,12 @@ namespace MatchWriter
             _logger = sp.GetRequiredService<ILogger<MatchDataConsumer>>();
         }
 
-        public override async Task<ConsumedMessageHandling> HandleMessageAsync(BasicDeliverEventArgs ea, RedisLocalizationInstruction model)
+        public override async Task<ConsumedMessageHandling> HandleMessageAsync(BasicDeliverEventArgs ea, MatchDatabaseInsertionInstruction model)
         {
             _logger.LogInformation($"Received message for Match#{model.MatchId}: [ {model.ToJson()} ]");
 
             // Initialize TaskCompleted message
-            var msg = new TaskCompletedReport
-            {
-                Version = _versionString, 
-                Success = false,
-                MatchId = model.MatchId,
-            };
+            var msg = new MatchDatabaseInsertionReport(model.MatchId);
 
             using var producer = _sp.GetRequiredService<IProducer<TaskCompletedReport>>();
             try
@@ -50,6 +44,7 @@ namespace MatchWriter
                 {
                     _logger.LogError($"MatchId [ {model.MatchId} ] ExpiryDate has passed. Aborting");
 
+                    msg.Block = DemoAnalysisBlock.MatchWriter_MatchDataSetUnavailable;
                     producer.PublishMessage(msg);
                     return ConsumedMessageHandling.Done;
                 }
@@ -70,7 +65,6 @@ namespace MatchWriter
 
                     msg.Success = true;
 
-
                     producer.PublishMessage(msg);
                     return ConsumedMessageHandling.Done;
                 }
@@ -85,21 +79,41 @@ namespace MatchWriter
 
                 await _cache.DeleteMatch(model.RedisKey).ConfigureAwait(false);
 
+                msg.Block = DemoAnalysisBlock.MatchWriter_MatchDataSetUnavailable;
                 producer.PublishMessage(msg);
                 return ConsumedMessageHandling.Done;
             }
 
-            // If it seems like a temporary failure, resend message
-            catch (Exception e) when (e is TimeoutException || e is RedisConnectionException)
+            catch (RedisConnectionException e)
             {
-                _logger.LogError(e, $"MatchId [ {model.MatchId} ] could not be uploaded to database right now. Instructing the message to be resent, assuming this is a temporary failure.");
+                _logger.LogError(e, $"MatchId [ {model.MatchId} ] could not be uploaded to database right now due to a RedisConnectionException.");
 
-                return ConsumedMessageHandling.Resend;
+                msg.Block = DemoAnalysisBlock.MatchWriter_RedisConnectionFailed;
+                producer.PublishMessage(msg);
+                return ConsumedMessageHandling.Done;
             }
 
-            // As of now it seems like MatchWriter has a memory leak, which leads to OutOfMemoryException's being thrown for every message. 
+            catch (TimeoutException e)
+            {
+                _logger.LogError(e, $"MatchId [ {model.MatchId} ] could not be uploaded to database right now due to a TimeoutException.");
+
+                msg.Block = DemoAnalysisBlock.MatchWriter_Timeout;
+                producer.PublishMessage(msg);
+                return ConsumedMessageHandling.Done;
+            }
+
+            catch (Microsoft.EntityFrameworkCore.DbUpdateException e)
+            {
+                _logger.LogError(e, $"MatchId [ {model.MatchId} ] could not be uploaded to database right now due to a Microsoft.EntityFrameworkCore.DbUpdateException.");
+
+                msg.Block = DemoAnalysisBlock.MatchWriter_DatabaseUpload;
+                producer.PublishMessage(msg);
+                return ConsumedMessageHandling.Done;
+            }
+
+            // As of now it seems like MatchWriter has a memory leak, which, at a critical point, leads to OutOfMemoryExceptions being thrown for every message. 
             // This catch-block is here to force a restart if this happens. A better solution would be to fix the memory leak.
-            catch (Exception e) when (e is OutOfMemoryException)
+            catch (OutOfMemoryException e)
             {
                 _logger.LogError(e, $"MatchId [ {model.MatchId} ] could not be uploaded to database right now.");
                 _logger.LogCritical($"Exiting the application to force a restart with cleared RAM.");
@@ -117,8 +131,9 @@ namespace MatchWriter
                     $"MatchId [ {model.MatchId} ] could not stored in the Database, " +
                     "Instructing the message to be thrown away.");
 
+                msg.Block = DemoAnalysisBlock.MatchWriter_Unknown;
                 producer.PublishMessage(msg);
-                return ConsumedMessageHandling.ThrowAway;
+                return ConsumedMessageHandling.Done;
             }
         }
     }
