@@ -58,9 +58,6 @@ namespace MatchWriter
                     using var dbHelper = scope.ServiceProvider.GetRequiredService<IDatabaseHelper>();
                     await dbHelper.PutMatchAsync(matchDataSet).ConfigureAwait(false);
 
-                    //Delete uploaded match from redis
-                    await _cache.DeleteMatch(model.RedisKey).ConfigureAwait(false);
-
                     _logger.LogInformation($"Successfully handled MatchId [ {model.MatchId} ]");
 
                     msg.Success = true;

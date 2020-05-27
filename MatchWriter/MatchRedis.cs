@@ -12,7 +12,6 @@ namespace MatchWriter
     public interface IMatchRedis
     {
         Task<MatchDataSet> GetMatch(string key);
-        Task DeleteMatch(string key);
     }
 
     /// <summary>
@@ -51,13 +50,6 @@ namespace MatchWriter
             _logger.LogDebug($"Succesfully loaded Match with key [ {key} ] from redis.");
             return match;
         }
-
-        public async Task DeleteMatch(string key)
-        {
-            _logger.LogDebug($"Attempting to delete key [ {key} ]");
-            await cache.KeyDeleteAsync(key).ConfigureAwait(false);
-            _logger.LogDebug($"Deleted key [ {key} ] from RedisCache");
-        }
     }
 
     /// <summary>
@@ -72,16 +64,6 @@ namespace MatchWriter
 
     public class MockRedis : IMatchRedis
     {
-        /// <summary>
-        /// Do nothing
-        /// </summary>
-        /// <param name="key"></param>
-        /// <returns></returns>
-        public Task DeleteMatch(string key)
-        {
-            return Task.CompletedTask;
-        }
-
         public async Task<MatchDataSet> GetMatch(string key)
         {
             return new MatchDataSet();
