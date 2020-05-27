@@ -5,6 +5,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.0] 2020-05-27
+### Changed
+- Replace FanoutConsumer with ordinary Consumer
+- Change behaviour on failure: Provide DemoCentral with details and leave it to DemoCentral to decide whether or not to reattempt the analysis
 
 ## [1.1.0] 2020-04-27
 ### Changed
