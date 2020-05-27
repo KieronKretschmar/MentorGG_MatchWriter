@@ -14,7 +14,7 @@ using StackExchange.Redis;
 
 namespace MatchWriter
 {
-    public class MatchDataConsumer : FanOutConsumer<MatchDatabaseInsertionInstruction>
+    public class MatchDataConsumer : Consumer<MatchDatabaseInsertionInstruction>
     {
         private readonly IServiceProvider _sp;
         private readonly ILogger<MatchDataConsumer> _logger;
