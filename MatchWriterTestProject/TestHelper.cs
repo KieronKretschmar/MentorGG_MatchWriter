@@ -37,5 +37,20 @@ namespace MatchWriterTestProject
             var data = JsonConvert.DeserializeObject<MatchDataSet>(json);
             return data.MatchStats.MatchId;
         }
+
+        /// <summary>
+        /// Provides the same settings as MatchDataSet.ToJson().
+        /// </summary>
+        /// <returns></returns>
+        public static JsonSerializerSettings GetJsonSerializerSettings()
+        {
+            return new JsonSerializerSettings
+            {
+                DateFormatHandling = DateFormatHandling.IsoDateFormat,
+                NullValueHandling = NullValueHandling.Ignore,
+                TypeNameHandling = TypeNameHandling.Auto,
+                Formatting = Formatting.Indented
+            };
+        }
     }
 }
