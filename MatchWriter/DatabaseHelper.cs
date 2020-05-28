@@ -7,7 +7,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace MatchWriter
@@ -206,28 +208,50 @@ namespace MatchWriter
         {
             await RemoveMatchAsync(data.MatchStats.MatchId).ConfigureAwait(false);
 
-            _logger.LogInformation($"Attempting to insert match with MatchId [ {data.MatchStats.MatchId} ]");
-
-            // Insert all tables but positions
-            foreach (IEnumerable<IMatchDataEntity> table in data.Tables())
-            {
-                // Skip positions, it will be inserted later
-                var type = table.FirstOrDefault()?.GetType() ?? null; 
-                if (type == typeof(PlayerPosition))
-                {
-                    continue;
-                }
-
-                _context.AddRange(table);
-            }
-            await _context.SaveChangesAsync().ConfigureAwait(false);
-
-            // Insert positions this way as its much more efficient
-            _context.BulkInsert(data.PlayerPositionList);
-
-            _logger.LogInformation($"Inserted match with MatchId [ {data.MatchStats.MatchId} ]");
+            await InsertMatchAsync(data).ConfigureAwait(false);
         }
 
+        private async Task InsertMatchAsync(MatchDataSet data)
+        {
+            _logger.LogInformation($"Attempting to insert match with MatchId [ {data.MatchStats.MatchId} ]");
+
+            // Start transaction, which is necessary because we use ExecuteSqlRawAsync
+            // For more info on transactions, see https://docs.microsoft.com/en-us/ef/core/saving/transactions
+            using (var transaction = _context.Database.BeginTransaction())
+            {
+                // Insert all tables but positions
+                foreach (IEnumerable<IMatchDataEntity> table in data.Tables())
+                {
+                    // Skip positions, it will be inserted later
+                    var type = table.FirstOrDefault()?.GetType() ?? null;
+                    if (type == typeof(PlayerPosition))
+                    {
+                        continue;
+                    }
+
+                    _context.AddRange(table);
+                }
+                await _context.SaveChangesAsync().ConfigureAwait(false);
+
+                // Insert positions with raw sql as its much more efficient than using Add / AddRange
+                // See https://stackoverflow.com/questions/6889065/inserting-multiple-rows-in-mysql for syntax
+                // Could be optimized even further utilizing mysql feature LOAD DATA INFILE
+                // For more info see https://dev.mysql.com/doc/refman/5.7/en/insert-optimization.html
+                var positionTableName = _context.Database.IsInMemory()
+                    ? "PlayerPosition"
+                    : _context.Model.FindEntityType(typeof(PlayerPosition)).GetTableName();
+
+                foreach (var chunk in data.PlayerPositionList.Chunk(2000))
+                {
+                    var sql = CreatePlayerPositionSql(chunk, positionTableName);
+                    await _context.Database.ExecuteSqlRawAsync(sql).ConfigureAwait(false);
+                }
+
+                await transaction.CommitAsync().ConfigureAwait(false);                
+
+                _logger.LogInformation($"Inserted match with MatchId [ {data.MatchStats.MatchId} ]");
+            }
+        }
 
         public async Task RemoveMatchAsync(long id)
         {
@@ -277,5 +301,38 @@ namespace MatchWriter
 
             return isEmpty;
         }
+
+        /// <summary>
+        /// Creates a raw sql string for inserting the given PlayerPositions.
+        /// 
+        /// WARNING: We do not use parametrization as these values are all guaranteed to be numeric only and thus are not susceptible to SQL Injection
+        /// When adding new values, make sure to make them injection-safe by either validating or parametrizing the query string
+        /// </summary>
+        /// <param name="positions"></param>
+        /// <param name="table"></param>
+        /// <returns></returns>
+        private string CreatePlayerPositionSql(IEnumerable<PlayerPosition> positions, string table)
+        {
+            // Set Culture to make sure floats like "167.1" are not parsed as "167,1"
+            Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
+
+            var sql =
+                $"INSERT INTO {table} " +
+                    $"(MatchId, Round, Time, PlayerId, Tick, IsCt, PlayerPosX, PlayerPosY, PlayerPosZ, " +
+                    $"PlayerViewX, PlayerViewY, PlayerVeloX, PlayerVeloY, PlayerVeloZ, Weapon) " +
+                $"VALUES ";
+            foreach (var p in positions)
+            {
+                sql += $"({p.MatchId},{p.Round},{p.Time},{p.PlayerId},{p.Tick},{p.IsCt},{p.PlayerPos.X},{p.PlayerPos.Y},{p.PlayerPos.Z}," +
+                    $"{p.PlayerView.X},{p.PlayerView.Y},{p.PlayerVelo.X},{p.PlayerVelo.Y},{p.PlayerVelo.Z},{(short) p.Weapon}),";
+            }
+
+            // replace last "," with a ';'
+            sql = sql.Remove(sql.Length - 1, 1) + ";";
+
+            return sql;
+        }
+
+
     }
 }
