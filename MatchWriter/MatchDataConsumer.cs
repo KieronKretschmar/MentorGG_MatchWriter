@@ -39,16 +39,6 @@ namespace MatchWriter
             using var producer = _sp.GetRequiredService<IProducer<TaskCompletedReport>>();
             try
             {
-                // Get matchDataSetJson from redis
-                if(model.ExpiryDate <= DateTime.Now)
-                {
-                    _logger.LogError($"MatchId [ {model.MatchId} ] ExpiryDate has passed. Aborting");
-
-                    msg.Block = DemoAnalysisBlock.MatchWriter_MatchDataSetUnavailable;
-                    producer.PublishMessage(msg);
-                    return ConsumedMessageHandling.Done;
-                }
-
                 using (var scope = _sp.CreateScope())
                 {
                     var _cache = scope.ServiceProvider.GetRequiredService<IMatchRedis>();
