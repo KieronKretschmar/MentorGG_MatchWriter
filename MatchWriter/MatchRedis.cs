@@ -11,7 +11,7 @@ namespace MatchWriter
 {
     public interface IMatchRedis
     {
-        Task<MatchDataSet> GetMatch(string key);
+        Task<MatchDataSet> GetMatch(long matchId);
     }
 
     /// <summary>
@@ -34,10 +34,12 @@ namespace MatchWriter
         /// Attempts to load a MatchDataSet from redis.
         /// 
         /// </summary>
-        /// <param name="key">Redis key</param>
+        /// <param name="matchId"></param>
         /// <returns></returns>
-        public async Task<MatchDataSet> GetMatch(string key)
+        public async Task<MatchDataSet> GetMatch(long matchId)
         {
+            var key = matchId.ToString();
+
             _logger.LogDebug($"Attempting to load match with key [ {key} from redis.");
             var response = await cache.StringGetAsync(key).ConfigureAwait(false);
 
@@ -64,7 +66,7 @@ namespace MatchWriter
 
     public class MockRedis : IMatchRedis
     {
-        public async Task<MatchDataSet> GetMatch(string key)
+        public async Task<MatchDataSet> GetMatch(long matchId)
         {
             return new MatchDataSet();
         }

@@ -42,7 +42,7 @@ namespace MatchWriter
                 using (var scope = _sp.CreateScope())
                 {
                     var _cache = scope.ServiceProvider.GetRequiredService<IMatchRedis>();
-                    var matchDataSet = await _cache.GetMatch(model.RedisKey).ConfigureAwait(false);
+                    var matchDataSet = await _cache.GetMatch(model.MatchId).ConfigureAwait(false);
 
                     // Upload match to db
                     using var dbHelper = scope.ServiceProvider.GetRequiredService<IDatabaseHelper>();
