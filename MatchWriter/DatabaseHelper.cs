@@ -233,21 +233,26 @@ namespace MatchWriter
                 }
                 await _context.SaveChangesAsync().ConfigureAwait(false);
 
-                // Insert positions with raw sql as its much more efficient than using Add / AddRange
-                // See https://stackoverflow.com/questions/6889065/inserting-multiple-rows-in-mysql for syntax
-                // Could be optimized even further utilizing mysql feature LOAD DATA INFILE
-                // For more info see https://dev.mysql.com/doc/refman/5.7/en/insert-optimization.html
-                var positionTableName = _context.Database.IsInMemory()
-                    ? "PlayerPosition"
-                    : _context.Model.FindEntityType(typeof(PlayerPosition)).GetTableName();
-
-                foreach (var chunk in data.PlayerPositionList.Chunk(2000))
+                // Insert PlayerPositions
+                // Skip PlayerPositions for tests with InMemory database because raw SQL is not possible with InMemory
+                if (_context.Database.IsInMemory() == false)
                 {
-                    var sql = CreatePlayerPositionSql(chunk, positionTableName);
-                    await _context.Database.ExecuteSqlRawAsync(sql).ConfigureAwait(false);
-                }
+                    // Insert positions with raw sql as its much more efficient than using Add / AddRange
+                    // See https://stackoverflow.com/questions/6889065/inserting-multiple-rows-in-mysql for syntax
+                    // Could be optimized even further utilizing mysql feature LOAD DATA INFILE
+                    // For more info see https://dev.mysql.com/doc/refman/5.7/en/insert-optimization.html
+                    var positionTableName = _context.Database.IsInMemory()
+                        ? "PlayerPosition"
+                        : _context.Model.FindEntityType(typeof(PlayerPosition)).GetTableName();
 
-                await transaction.CommitAsync().ConfigureAwait(false);                
+                    foreach (var chunk in data.PlayerPositionList.Chunk(2000))
+                    {
+                        var sql = CreatePlayerPositionSql(chunk, positionTableName);
+                        await _context.Database.ExecuteSqlRawAsync(sql).ConfigureAwait(false);
+                    }
+
+                    await transaction.CommitAsync().ConfigureAwait(false);
+                }
 
                 _logger.LogInformation($"Inserted match with MatchId [ {data.MatchStats.MatchId} ]");
             }
