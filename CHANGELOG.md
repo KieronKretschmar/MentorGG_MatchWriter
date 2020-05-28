@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Replace FanoutConsumer with ordinary Consumer
 - Change behaviour on failure: Provide DemoCentral with details and leave it to DemoCentral to decide whether or not to reattempt the analysis
 - Redis entries are no longer removed after processing
+### Removed
+- RansomWare aka. EFCore.Extensions package and replace its usage with raw sql
 
 ## [1.1.0] 2020-04-27
 ### Changed
