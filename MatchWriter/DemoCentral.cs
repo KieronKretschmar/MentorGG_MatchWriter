@@ -35,11 +35,7 @@ namespace MatchWriter
             try
             {
                 await _databaseHelper.RemoveMatchAsync(model.MatchId).ConfigureAwait(false);
-                var report = new TaskCompletedReport
-                {
-                    MatchId = model.MatchId,
-                    Success = true,
-                };
+                var report = new TaskCompletedReport(model.MatchId);
 
 
                 return new ConsumedMessageHandling<TaskCompletedReport>
