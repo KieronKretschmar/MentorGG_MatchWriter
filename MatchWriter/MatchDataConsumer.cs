@@ -36,10 +36,11 @@ namespace MatchWriter
             // Initialize TaskCompleted message
             var msg = new MatchDatabaseInsertionReport(model.MatchId);
 
-            using var producer = _sp.GetRequiredService<IProducer<TaskCompletedReport>>();
-            try
+            using (var scope = _sp.CreateScope())
             {
-                using (var scope = _sp.CreateScope())
+                var producer = scope.ServiceProvider.GetRequiredService<IProducer<TaskCompletedReport>>();
+
+                try
                 {
                     var _cache = scope.ServiceProvider.GetRequiredService<IMatchRedis>();
                     var matchDataSet = await _cache.GetMatch(model.MatchId).ConfigureAwait(false);
@@ -55,72 +56,70 @@ namespace MatchWriter
                     producer.PublishMessage(msg);
                     return ConsumedMessageHandling.Done;
                 }
-            }
 
-            // If a match was expected in Redis but not found
-            catch (Exception e) when (e is MatchEmptyOrNull)
-            {
-                _logger.LogError(
-                    e,
-                    $"MatchId [ {model.MatchId} ] Could not retreive Match from Redis.");
+                // If a match was expected in Redis but not found
+                catch (Exception e) when (e is MatchEmptyOrNull)
+                {
+                    _logger.LogError(
+                        e,
+                        $"MatchId [ {model.MatchId} ] Could not retreive Match from Redis.");
 
-                await _cache.DeleteMatch(model.RedisKey).ConfigureAwait(false);
+                    msg.Block = DemoAnalysisBlock.MatchWriter_MatchDataSetUnavailable;
+                    producer.PublishMessage(msg);
+                    return ConsumedMessageHandling.Done;
+                }
 
-                msg.Block = DemoAnalysisBlock.MatchWriter_MatchDataSetUnavailable;
-                producer.PublishMessage(msg);
-                return ConsumedMessageHandling.Done;
-            }
+                catch (RedisConnectionException e)
+                {
+                    _logger.LogError(e, $"MatchId [ {model.MatchId} ] could not be uploaded to database right now due to a RedisConnectionException.");
 
-            catch (RedisConnectionException e)
-            {
-                _logger.LogError(e, $"MatchId [ {model.MatchId} ] could not be uploaded to database right now due to a RedisConnectionException.");
+                    msg.Block = DemoAnalysisBlock.MatchWriter_RedisConnectionFailed;
+                    producer.PublishMessage(msg);
+                    return ConsumedMessageHandling.Done;
+                }
 
-                msg.Block = DemoAnalysisBlock.MatchWriter_RedisConnectionFailed;
-                producer.PublishMessage(msg);
-                return ConsumedMessageHandling.Done;
-            }
+                catch (TimeoutException e)
+                {
+                    _logger.LogError(e, $"MatchId [ {model.MatchId} ] could not be uploaded to database right now due to a TimeoutException.");
 
-            catch (TimeoutException e)
-            {
-                _logger.LogError(e, $"MatchId [ {model.MatchId} ] could not be uploaded to database right now due to a TimeoutException.");
+                    msg.Block = DemoAnalysisBlock.MatchWriter_Timeout;
+                    producer.PublishMessage(msg);
+                    return ConsumedMessageHandling.Done;
+                }
 
-                msg.Block = DemoAnalysisBlock.MatchWriter_Timeout;
-                producer.PublishMessage(msg);
-                return ConsumedMessageHandling.Done;
-            }
+                catch (Microsoft.EntityFrameworkCore.DbUpdateException e)
+                {
+                    _logger.LogError(e, $"MatchId [ {model.MatchId} ] could not be uploaded to database right now due to a Microsoft.EntityFrameworkCore.DbUpdateException.");
 
-            catch (Microsoft.EntityFrameworkCore.DbUpdateException e)
-            {
-                _logger.LogError(e, $"MatchId [ {model.MatchId} ] could not be uploaded to database right now due to a Microsoft.EntityFrameworkCore.DbUpdateException.");
+                    msg.Block = DemoAnalysisBlock.MatchWriter_DatabaseUpload;
+                    producer.PublishMessage(msg);
+                    return ConsumedMessageHandling.Done;
+                }
 
-                msg.Block = DemoAnalysisBlock.MatchWriter_DatabaseUpload;
-                producer.PublishMessage(msg);
-                return ConsumedMessageHandling.Done;
-            }
+                // As of now it seems like MatchWriter has a memory leak, which, at a critical point, leads to OutOfMemoryExceptions being thrown for every message. 
+                // This catch-block is here to force a restart if this happens. A better solution would be to fix the memory leak.
+                catch (OutOfMemoryException e)
+                {
+                    _logger.LogError(e, $"MatchId [ {model.MatchId} ] could not be uploaded to database right now.");
+                    _logger.LogCritical($"Exiting the application to force a restart with cleared RAM.");
+                    // Exit with Code 14 (ERROR_OUTOFMEMORY)
+                    Environment.Exit(14);
+                    return ConsumedMessageHandling.Resend;
+                }
 
-            // As of now it seems like MatchWriter has a memory leak, which, at a critical point, leads to OutOfMemoryExceptions being thrown for every message. 
-            // This catch-block is here to force a restart if this happens. A better solution would be to fix the memory leak.
-            catch (OutOfMemoryException e)
-            {
-                _logger.LogError(e, $"MatchId [ {model.MatchId} ] could not be uploaded to database right now.");
-                _logger.LogCritical($"Exiting the application to force a restart with cleared RAM.");
-                // Exit with Code 14 (ERROR_OUTOFMEMORY)
-                Environment.Exit(14);
-                return ConsumedMessageHandling.Resend;
-            }
+                // When in doubt or the message itself might be corrupt, throw away
+                catch (Exception e)
+                {
+                    _logger.LogError(
+                        e,
+                        "Unhandled Exception - " +
+                        $"MatchId [ {model.MatchId} ] could not stored in the Database, " +
+                        "Instructing the message to be thrown away.");
 
-            // When in doubt or the message itself might be corrupt, throw away
-            catch (Exception e)
-            {
-                _logger.LogError(
-                    e,
-                    "Unhandled Exception - " +
-                    $"MatchId [ {model.MatchId} ] could not stored in the Database, " +
-                    "Instructing the message to be thrown away.");
-
-                msg.Block = DemoAnalysisBlock.MatchWriter_Unknown;
-                producer.PublishMessage(msg);
-                return ConsumedMessageHandling.Done;
+                    msg.Block = DemoAnalysisBlock.MatchWriter_Unknown;
+                    producer.PublishMessage(msg);
+                    return ConsumedMessageHandling.Done;
+                }
             }
         }
     }
