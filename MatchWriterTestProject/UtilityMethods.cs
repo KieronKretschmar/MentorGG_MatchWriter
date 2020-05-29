@@ -3,6 +3,7 @@ using MatchWriter;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -17,10 +18,7 @@ namespace MatchWriterTestProject
     [TestClass]
     public class UtilityMethods
     {
-        private const string CONNECTIONSTRING = "server=localhost;userid=localuser;password=passwort;database=matchdb;persistsecurityinfo=True";
-        
-        
-        private readonly ILogger<DatabaseHelper> _dbHelperLogger;
+        private const string CONNECTIONSTRING = "server=localhost;userid=localuser;password=passwort;database=matchdb;persistsecurityinfo=True";        
 
         /// <summary>
         /// Loads all specified matches into the database. 
@@ -48,7 +46,7 @@ namespace MatchWriterTestProject
             var jsonOriginal = File.ReadAllText(testFilePath);
             using (var context = new MatchContext(options))
             {
-                DatabaseHelper databaseHelper = new DatabaseHelper(_dbHelperLogger, context);
+                DatabaseHelper databaseHelper = new DatabaseHelper(new Mock<ILogger<DatabaseHelper>>().Object, context);
                 await databaseHelper.PutMatchAsync(jsonOriginal);
             }
         }

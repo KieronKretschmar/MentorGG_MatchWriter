@@ -10,6 +10,9 @@ using Newtonsoft.Json;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore.Diagnostics;
+using System.Collections.Generic;
+using System.Globalization;
 
 namespace MatchWriterTestProject
 {
@@ -91,7 +94,7 @@ namespace MatchWriterTestProject
                 var testFilePath = TestHelper.GetTestFilePath(jsonFileName);
                 var json = File.ReadAllText(testFilePath);
                 matchId = TestHelper.GetMatchIdFromJson(json);
-                if(matchId == 0)
+                if (matchId == 0)
                 {
                     // When inserting a MatchDataSet with MatchId=0, the database auto generates a new MatchId, 
                     // even when we call entity.Property(p => p.MatchId).ValueGeneratedNever();
@@ -156,7 +159,7 @@ namespace MatchWriterTestProject
 
         /// <summary>
         /// This test makes sure that writing and loading a serialized MatchDataSet to the database and loading 
-        /// it again does not change its contents, thereby guaranteeing no information to be lost when writing to the database.
+        /// it again does not change its contents except for PlayerPositions table, thereby guaranteeing no such information to be lost when writing to the database.
         /// </summary>
         /// <param name="jsonFileName"></param>
         /// <returns></returns>
@@ -164,9 +167,11 @@ namespace MatchWriterTestProject
         [DataRow("TestDemo_Valve3.json")]
         [DataRow("TestDemo_Valve1.json")]
         [DataTestMethod]
-        public async Task PutAndLoadInvariance(string jsonFileName)
+        public async Task PutAndLoadInvarianceWithoutPositions(string jsonFileName)
         {
             var options = new DbContextOptionsBuilder<MatchContext>()
+                // InMemory databases can't handle transactions, suppress the warning
+                .ConfigureWarnings(x => x.Ignore(InMemoryEventId.TransactionIgnoredWarning))
                 .UseInMemoryDatabase(databaseName: "PutAndLoadInvariance")
                 .Options;
 
@@ -190,10 +195,101 @@ namespace MatchWriterTestProject
             using (var context = new MatchContext(options))
             {
                 DatabaseHelper databaseHelper = new DatabaseHelper(_dbHelperLogger, context);
-                var matchDataSet = await databaseHelper.GetMatchDataSetAsync(matchId);
-                var jsonFromDb = matchDataSet.ToJson();
-                Assert.AreEqual(jsonOriginal, jsonFromDb);
+
+                // Get original dataset with removed positions
+                var originalDataWithoutPositions = GetMatchDataSetWithoutPositions(jsonOriginal);
+                var originalJsonWithoutPositions = originalDataWithoutPositions.ToJson();
+
+                var databaseDataWithoutPositions = await databaseHelper.GetMatchDataSetAsync(matchId);
+                databaseDataWithoutPositions.PlayerPositionList = new List<PlayerPosition>();
+                var databaseJsonWithoutPositions = databaseDataWithoutPositions.ToJson();
+
+                var resultsAreEqual = originalJsonWithoutPositions == databaseJsonWithoutPositions;
+                Assert.AreEqual(originalJsonWithoutPositions.Length, databaseJsonWithoutPositions.Length);
+                Assert.IsTrue(resultsAreEqual);
             }
+        }
+
+        /// <summary>
+        /// This test makes sure that writing and loading a serialized MatchDataSet to the database and loading 
+        /// it again does not change data in the PlayerPositions table, thereby guaranteeing no such information to be lost when writing to the database.
+        /// 
+        /// Warning: Only works with real database, as PlayerPositions uses RawSql which is not possible with InMemory.
+        /// </summary>
+        /// <param name="jsonFileName"></param>
+        /// <returns></returns>
+        //[DataRow("TestDemo_Valve4.json")]
+        //[DataRow("TestDemo_Valve3.json")]
+        [DataRow("TestDemo_Valve1.json")]
+        [DataTestMethod]
+        public async Task PutAndLoadInvariancePositions(string jsonFileName)
+        {
+            var options = new DbContextOptionsBuilder<MatchContext>()
+                .UseMySql("server=localhost;userid=localuser;password=passwort;database=matchdb;persistsecurityinfo=True")
+                .Options;
+
+            // Put match stats
+            var testFilePath = TestHelper.GetTestFilePath(jsonFileName);
+            var jsonOriginal = File.ReadAllText(testFilePath);
+
+            // Run each section of the test against seperate InMemory instances of the context
+            // See https://docs.microsoft.com/en-us/ef/core/miscellaneous/testing/in-memory#writing-tests
+            // Enter match
+            long matchId;
+            using (var context = new MatchContext(options))
+            {
+                DatabaseHelper databaseHelper = new DatabaseHelper(_dbHelperLogger, context);
+
+                matchId = TestHelper.GetMatchIdFromJson(jsonOriginal);
+                await databaseHelper.PutMatchAsync(jsonOriginal);
+            }
+
+            // Load match from database and serialize it
+            using (var context = new MatchContext(options))
+            {
+                DatabaseHelper databaseHelper = new DatabaseHelper(_dbHelperLogger, context);
+
+                // Get original dataset with removed positions
+                var originalPositions = MatchDataSet.FromJson(jsonOriginal).PlayerPositionList;
+                var databasePositions = (await databaseHelper.GetMatchDataSetAsync(matchId)).PlayerPositionList;
+
+                // Make sure they're both in the same order
+                originalPositions = originalPositions
+                    .OrderBy(x => x.Time)
+                    .ThenBy(x => x.PlayerId)
+                    .ToList();
+                databasePositions = databasePositions
+                    .OrderBy(x => x.Time)
+                    .ThenBy(x => x.PlayerId)
+                    .ToList();
+
+                var serializerSettings = TestHelper.GetJsonSerializerSettings();
+                serializerSettings.Culture = CultureInfo.InvariantCulture;
+
+                Assert.AreEqual(originalPositions.Count, databasePositions.Count);
+                for (int i = 0; i < originalPositions.Count; i++)
+                {
+                    var originalPos = originalPositions[i];
+                    var databasePos = databasePositions[i];
+
+                    Assert.AreEqual(originalPos.MatchId, databasePos.MatchId);
+                    Assert.AreEqual(originalPos.Round, databasePos.Round);
+                    Assert.AreEqual(originalPos.Time, databasePos.Time);
+                    Assert.AreEqual(originalPos.PlayerId, databasePos.PlayerId);
+                    Assert.AreEqual(originalPos.IsCt, databasePos.IsCt);
+                    Assert.IsTrue(originalPos.PlayerPos.AlmostEquals(databasePos.PlayerPos));
+                    Assert.IsTrue(originalPos.PlayerView.AlmostEquals(databasePos.PlayerView));
+                    Assert.IsTrue(originalPos.PlayerVelo.AlmostEquals(databasePos.PlayerVelo));
+                    Assert.AreEqual(originalPos.Weapon, databasePos.Weapon);
+                }
+            }
+        }
+
+        private MatchDataSet GetMatchDataSetWithoutPositions(string json)
+        {
+            var dataSet = MatchDataSet.FromJson(json);
+            dataSet.PlayerPositionList = new List<PlayerPosition>();
+            return dataSet;
         }
     }
 }

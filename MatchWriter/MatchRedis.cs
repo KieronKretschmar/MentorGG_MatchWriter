@@ -11,8 +11,7 @@ namespace MatchWriter
 {
     public interface IMatchRedis
     {
-        Task<MatchDataSet> GetMatch(string key);
-        Task DeleteMatch(string key);
+        Task<MatchDataSet> GetMatch(long matchId);
     }
 
     /// <summary>
@@ -35,10 +34,12 @@ namespace MatchWriter
         /// Attempts to load a MatchDataSet from redis.
         /// 
         /// </summary>
-        /// <param name="key">Redis key</param>
+        /// <param name="matchId"></param>
         /// <returns></returns>
-        public async Task<MatchDataSet> GetMatch(string key)
+        public async Task<MatchDataSet> GetMatch(long matchId)
         {
+            var key = matchId.ToString();
+
             _logger.LogDebug($"Attempting to load match with key [ {key} from redis.");
             var response = await cache.StringGetAsync(key).ConfigureAwait(false);
 
@@ -50,13 +51,6 @@ namespace MatchWriter
 
             _logger.LogDebug($"Succesfully loaded Match with key [ {key} ] from redis.");
             return match;
-        }
-
-        public async Task DeleteMatch(string key)
-        {
-            _logger.LogDebug($"Attempting to delete key [ {key} ]");
-            await cache.KeyDeleteAsync(key).ConfigureAwait(false);
-            _logger.LogDebug($"Deleted key [ {key} ] from RedisCache");
         }
     }
 
@@ -72,17 +66,7 @@ namespace MatchWriter
 
     public class MockRedis : IMatchRedis
     {
-        /// <summary>
-        /// Do nothing
-        /// </summary>
-        /// <param name="key"></param>
-        /// <returns></returns>
-        public Task DeleteMatch(string key)
-        {
-            return Task.CompletedTask;
-        }
-
-        public async Task<MatchDataSet> GetMatch(string key)
+        public async Task<MatchDataSet> GetMatch(long matchId)
         {
             return new MatchDataSet();
         }
