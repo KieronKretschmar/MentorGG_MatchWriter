@@ -22,7 +22,7 @@ namespace MatchWriter
 
         public MatchDataConsumer(
             IServiceProvider sp,
-            IExchangeQueueConnection exchangeQueueConnection,
+            IQueueConnection exchangeQueueConnection,
             ushort prefetchCount = 1) : base(exchangeQueueConnection, prefetchCount)
         {
             _sp = sp;
@@ -38,7 +38,7 @@ namespace MatchWriter
 
             using (var scope = _sp.CreateScope())
             {
-                var producer = scope.ServiceProvider.GetRequiredService<IProducer<TaskCompletedReport>>();
+                var producer = scope.ServiceProvider.GetRequiredService<IProducer<MatchDatabaseInsertionReport>>();
 
                 try
                 {
