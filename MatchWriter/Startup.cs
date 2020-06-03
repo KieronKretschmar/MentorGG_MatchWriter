@@ -23,13 +23,9 @@ using StackExchange.Redis;
 
 namespace MatchWriter
 {
-    /// <summary>
-    /// Requires env variables ["MYSQL_CONNECTION_STRING", "AMQP_URI","AMQP_DEMOFILEWORKER_QUEUE", "AMQP_CALLBACK_QUEUE"]
-    /// </summary>
     public class Startup
     {
         private const ushort AMQP_PREFETCH_COUNT_DEFAULT = 1;
-        private const string AMQP_EXCHANGE_CONSUME_QUEUE_DEFAULT = "MW_ConsumeQueue";
 
         public Startup(IConfiguration configuration)
         {
@@ -93,27 +89,26 @@ namespace MatchWriter
             #region Rabbit
             // Read environment variables
             var AMQP_URI = GetRequiredEnvironmentVariable<string>(Configuration, "AMQP_URI");
-            var AMQP_CALLBACK_QUEUE = GetRequiredEnvironmentVariable<string>(Configuration, "AMQP_CALLBACK_QUEUE");
-            var AMQP_EXCHANGE_NAME = GetRequiredEnvironmentVariable<string>(Configuration, "AMQP_EXCHANGE_NAME");
             var AMQP_PREFETCH_COUNT = GetOptionalEnvironmentVariable<ushort>(Configuration, "AMQP_PREFETCH_COUNT", AMQP_PREFETCH_COUNT_DEFAULT);
-            var AMQP_EXCHANGE_CONSUME_QUEUE = GetOptionalEnvironmentVariable<string>(Configuration, "AMQP_EXCHANGE_CONSUME_QUEUE", AMQP_EXCHANGE_CONSUME_QUEUE_DEFAULT);
+            var AMQP_INSERTION_INSTRUCTIONS = GetRequiredEnvironmentVariable<string>(Configuration, "AMQP_INSERTION_INSTRUCTIONS");
+            var AMQP_INSERTION_REPLY = GetRequiredEnvironmentVariable<string>(Configuration, "AMQP_INSERTION_REPLY");
             var AMQP_DEMOCENTRAL_DEMO_REMOVAL = GetRequiredEnvironmentVariable<string>(Configuration, "AMQP_DEMOCENTRAL_DEMO_REMOVAL");
             var AMQP_DEMOCENTRAL_DEMO_REMOVAL_REPLY = GetRequiredEnvironmentVariable<string>(Configuration, "AMQP_DEMOCENTRAL_DEMO_REMOVAL_REPLY");
 
             // Setup Producer
-            var callbackQueue = new QueueConnection(AMQP_URI, AMQP_CALLBACK_QUEUE);
+            var insertionReportQueue = new QueueConnection(AMQP_URI, AMQP_INSERTION_REPLY);
             services.AddTransient<IProducer<TaskCompletedReport>>(sp =>
             {
-                return new Producer<TaskCompletedReport>(callbackQueue);
+                return new Producer<TaskCompletedReport>(insertionReportQueue);
             });
 
             // Setup Consumer
-            var exchangeQueue = new ExchangeQueueConnection(AMQP_URI, AMQP_EXCHANGE_NAME, AMQP_EXCHANGE_CONSUME_QUEUE);
+            var insertionInstructionsQueue = new QueueConnection(AMQP_URI, AMQP_INSERTION_INSTRUCTIONS);
             services.AddHostedService<MatchDataConsumer>(serviceProvider =>
             {
                 return new MatchDataConsumer(
                     serviceProvider,
-                    exchangeQueue,
+                    insertionInstructionsQueue,
                     AMQP_PREFETCH_COUNT);
             });
 

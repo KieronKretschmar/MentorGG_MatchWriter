@@ -22,7 +22,7 @@ namespace MatchWriter
 
         public MatchDataConsumer(
             IServiceProvider sp,
-            IExchangeQueueConnection exchangeQueueConnection,
+            IQueueConnection exchangeQueueConnection,
             ushort prefetchCount = 1) : base(exchangeQueueConnection, prefetchCount)
         {
             _sp = sp;
