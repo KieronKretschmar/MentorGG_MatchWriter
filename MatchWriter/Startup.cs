@@ -97,9 +97,9 @@ namespace MatchWriter
 
             // Setup Producer
             var insertionReportQueue = new QueueConnection(AMQP_URI, AMQP_INSERTION_REPLY);
-            services.AddTransient<IProducer<TaskCompletedReport>>(sp =>
+            services.AddTransient<IProducer<MatchDatabaseInsertionReport>>(sp =>
             {
-                return new Producer<TaskCompletedReport>(insertionReportQueue);
+                return new Producer<MatchDatabaseInsertionReport>(insertionReportQueue);
             });
 
             // Setup Consumer

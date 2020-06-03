@@ -38,7 +38,7 @@ namespace MatchWriter
 
             using (var scope = _sp.CreateScope())
             {
-                var producer = scope.ServiceProvider.GetRequiredService<IProducer<TaskCompletedReport>>();
+                var producer = scope.ServiceProvider.GetRequiredService<IProducer<MatchDatabaseInsertionReport>>();
 
                 try
                 {
