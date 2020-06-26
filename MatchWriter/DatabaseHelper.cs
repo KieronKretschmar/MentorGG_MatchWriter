@@ -323,13 +323,13 @@ namespace MatchWriter
 
             var sql =
                 $"INSERT INTO {table} " +
-                    $"(MatchId, Round, Time, PlayerId, Tick, IsCt, PlayerPosX, PlayerPosY, PlayerPosZ, " +
-                    $"PlayerViewX, PlayerViewY, PlayerVeloX, PlayerVeloY, PlayerVeloZ, Weapon) " +
+                    $"(MatchId, Round, Time, PlayerId, IsCt, PlayerPosX, PlayerPosY, PlayerPosZ, " +
+                    $"PlayerViewX, PlayerViewY, Weapon) " +
                 $"VALUES ";
             foreach (var p in positions)
             {
-                sql += $"({p.MatchId},{p.Round},{p.Time},{p.PlayerId},{p.Tick},{p.IsCt},{p.PlayerPos.X},{p.PlayerPos.Y},{p.PlayerPos.Z}," +
-                    $"{p.PlayerView.X},{p.PlayerView.Y},{p.PlayerVelo.X},{p.PlayerVelo.Y},{p.PlayerVelo.Z},{(short) p.Weapon}),";
+                sql += $"({p.MatchId},{p.Round},{p.Time},{p.PlayerId},{p.IsCt},{p.PlayerPos.X},{p.PlayerPos.Y},{p.PlayerPos.Z}," +
+                    $"{p.PlayerView.X},{p.PlayerView.Y},{(short) p.Weapon}),";
             }
 
             // replace last "," with a ';'
