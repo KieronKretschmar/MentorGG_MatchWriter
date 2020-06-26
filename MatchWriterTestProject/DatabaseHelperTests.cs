@@ -279,7 +279,6 @@ namespace MatchWriterTestProject
                     Assert.AreEqual(originalPos.IsCt, databasePos.IsCt);
                     Assert.IsTrue(originalPos.PlayerPos.AlmostEquals(databasePos.PlayerPos));
                     Assert.IsTrue(originalPos.PlayerView.AlmostEquals(databasePos.PlayerView));
-                    Assert.IsTrue(originalPos.PlayerVelo.AlmostEquals(databasePos.PlayerVelo));
                     Assert.AreEqual(originalPos.Weapon, databasePos.Weapon);
                 }
             }

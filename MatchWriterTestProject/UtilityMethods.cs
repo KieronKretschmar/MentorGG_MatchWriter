@@ -18,7 +18,7 @@ namespace MatchWriterTestProject
     [TestClass]
     public class UtilityMethods
     {
-        private const string CONNECTIONSTRING = "server=localhost;userid=localuser;password=passwort;database=matchdb;persistsecurityinfo=True";        
+        private const string CONNECTIONSTRING = "server=localhost;userid=localuser;password=passwort;database=matchdata;persistsecurityinfo=True";        
 
         /// <summary>
         /// Loads all specified matches into the database. 
