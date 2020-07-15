@@ -66,7 +66,15 @@ namespace MatchWriter
             if (MYSQL_CONNECTION_STRING != null)
             {
                 // Add context as Transient instead of Scoped, as Scoped lead to DI error and does not have advantages under non-http conditions
-                services.AddDbContext<Database.MatchContext>(o => { o.UseMySql(MYSQL_CONNECTION_STRING); }, ServiceLifetime.Transient, ServiceLifetime.Transient);
+                services.AddDbContext<MatchContext>(o =>
+                {
+                    o.UseMySql(
+                        MYSQL_CONNECTION_STRING,
+                        options =>
+                        {
+                            options.EnableRetryOnFailure();
+                        });
+                }, ServiceLifetime.Transient, ServiceLifetime.Transient);
             }
             else
             {
